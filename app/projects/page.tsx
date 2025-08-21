@@ -1,19 +1,12 @@
 import { genPageMetadata } from 'app/seo';
 
 import projectsData from '@/data/projectsData';
-import { fetchRepoData } from '@/servers/github.server';
 import ProjectCard from '@/components/project/ProjectCard';
 
 export const metadata = genPageMetadata({ title: 'Projects' });
 
-export default async function Projects() {
-  await Promise.all(
-    projectsData.map(async (p) => {
-      if (p.repo && typeof p.repo === 'string') {
-        p.repo = await fetchRepoData(p.repo as string);
-      }
-    })
-  );
+export default function Projects() {
+  // Use static data for projects
 
   const description = 'My open-source side projects and stuff that I built with my colleagues at work';
 

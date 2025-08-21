@@ -10,8 +10,8 @@ import { genPageMetadata } from 'app/seo';
 import siteMetadata from '@/data/siteMetadata';
 
 export async function generateMetadata(props: { params: Promise<{ tag: string }> }): Promise<Metadata> {
-  const params = await props.params;
-  const tag = decodeURI(params.tag);
+  const resolvedParams = await props.params;
+  const tag = decodeURI(resolvedParams.tag);
 
   return genPageMetadata({
     title: tag,
@@ -38,8 +38,8 @@ export const generateStaticParams = async () => {
 };
 
 export default async function TagPage(props: { params: Promise<{ tag: string }> }) {
-  const params = await props.params;
-  const tag = decodeURI(params.tag);
+  const resolvedParams = await props.params;
+  const tag = decodeURI(resolvedParams.tag);
 
   // Capitalize first letter and convert space to dash
   const title = tag[0].toUpperCase() + tag.split(' ').join('-').slice(1);

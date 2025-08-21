@@ -25,21 +25,22 @@ const siteMetadata = {
     linkedin: 'karhdo',
     facebook: 'karhdo.dev',
   },
+  // Static configuration without environment variables
   analytics: {
     umamiAnalytics: {
-      umamiWebsiteId: process.env.UMAMI_WEBSITE_ID,
+      umamiWebsiteId: '',
     },
   },
   newsletter: {
-    provider: 'buttondown',
+    provider: '',
   },
   comments: {
-    provider: 'giscus',
+    provider: '',
     giscusConfig: {
-      repo: process.env.NEXT_PUBLIC_GISCUS_REPO,
-      repositoryId: process.env.NEXT_PUBLIC_GISCUS_REPOSITORY_ID,
-      category: process.env.NEXT_PUBLIC_GISCUS_CATEGORY,
-      categoryId: process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID,
+      repo: '',
+      repositoryId: '',
+      category: '',
+      categoryId: '',
       mapping: 'title',
       reactions: '1',
       metadata: '0',
@@ -51,10 +52,9 @@ const siteMetadata = {
     },
   },
   search: {
-    provider: 'kbar',
+    provider: '',
     kbarConfig: {
-      // path to load documents to search
-      searchDocumentsPath: `${process.env.BASE_PATH || ''}/search.json`,
+      searchDocumentsPath: '/search.json',
     },
   },
 };

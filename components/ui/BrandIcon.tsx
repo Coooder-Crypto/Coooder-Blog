@@ -6,7 +6,6 @@ import Liquid from 'public/static/icons/liquid.svg';
 import Markdown from 'public/static/icons/markdown.svg';
 import NextJS from 'public/static/icons/nextjs.svg';
 import Node from 'public/static/icons/nodejs.svg';
-import Prisma from 'public/static/icons/prisma.svg';
 import Railway from 'public/static/icons/railway.svg';
 import React from 'public/static/icons/react.svg';
 import Remix from 'public/static/icons/remix.svg';
@@ -17,8 +16,6 @@ import Umami from 'public/static/icons/umami.svg';
 import Vercel from 'public/static/icons/vercel.svg';
 import NestJS from 'public/static/icons/nestjs.svg';
 import Docker from 'public/static/icons/docker.svg';
-import Postgres from 'public/static/icons/postgres.svg';
-import Mongodb from 'public/static/icons/mongodb.svg';
 
 export const BrandIconsMap = {
   React,
@@ -33,15 +30,12 @@ export const BrandIconsMap = {
   Markdown,
   NextJS,
   TailwindCSS,
-  Prisma,
   Umami,
   Vercel,
   Railway,
   Spotify,
   NestJS,
   Docker,
-  Postgres,
-  Mongodb,
 };
 
 export type BrandIconType = keyof typeof BrandIconsMap;

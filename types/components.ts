@@ -1,6 +1,5 @@
 import type readingTime from 'reading-time';
 
-import type { StatsType } from '@prisma/client';
 import type projectsData from '@/data/projectsData';
 import type GiscusConfigs from './giscus-configs.type';
 
@@ -19,8 +18,7 @@ export interface BlogMetaProps {
 }
 
 export interface ViewCounterProps {
-  slug: string;
-  type: StatsType;
+  slug?: string;
   className?: string;
 }
 

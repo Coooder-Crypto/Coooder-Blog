@@ -2,8 +2,6 @@ import { ReactNode } from 'react';
 import { CoreContent } from 'pliny/utils/contentlayer';
 import type { Blog, Authors } from 'contentlayer/generated';
 
-import { StatsType } from '@prisma/client';
-
 import siteMetadata from '@/data/siteMetadata';
 import { BlogTags, BlogMeta, BlogNav, TableOfContents, Reactions } from '@/components/blog';
 import { Comments, PageTitle, SectionContainer, ScrollTopAndComment } from '@/components/ui';
@@ -51,7 +49,7 @@ export default function PostLayout(props: LayoutProps) {
           <div className="hidden lg:col-span-4 lg:block xl:col-span-3">
             <div className="space-y-4 divide-y divide-gray-200 dark:divide-gray-700 lg:sticky lg:top-16">
               <TableOfContents toc={toc} />
-              <Reactions className="pt-6" type={type.toLowerCase() as StatsType} slug={slug} />
+              <Reactions className="pt-6" />
             </div>
           </div>
         </main>

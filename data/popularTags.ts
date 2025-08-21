@@ -33,16 +33,16 @@ const popularTags: PopularTag[] = [
     title: 'React',
   },
   {
-    href: '/tags/database',
-    iconType: 'Mongodb',
-    slug: 'database',
-    title: 'Database',
+    href: '/tags/docker',
+    iconType: 'Docker',
+    slug: 'docker',
+    title: 'Docker',
   },
   {
-    href: '/tags/devops',
-    iconType: 'Docker',
-    slug: 'devops',
-    title: 'Devops',
+    href: '/tags/nextjs',
+    iconType: 'NextJS',
+    slug: 'nextjs',
+    title: 'Next.js',
   },
 ];
 

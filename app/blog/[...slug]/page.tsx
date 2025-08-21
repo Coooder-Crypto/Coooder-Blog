@@ -16,12 +16,13 @@ const layouts = {
   PostBanner,
 };
 
-export const generateStaticParams = () => {
+export const generateStaticParams = async () => {
   return allBlogs.map((p) => ({ slug: p.slug.split('/').map((name) => decodeURI(name)) }));
 };
 
-export default function Page({ params }: { params: { slug: string[] } }) {
-  const slug = decodeURI(params.slug.join('/'));
+export default async function Page({ params }: { params: Promise<{ slug: string[] }> }) {
+  const resolvedParams = await params;
+  const slug = decodeURI(resolvedParams.slug.join('/'));
   const post = allBlogs.find((p) => p.slug === slug) as Blog;
   const mainContent = coreContent(post);
   const jsonLd = post.structuredData;

@@ -1,4 +1,4 @@
-import type { GithubRepository, ProjectCardProps } from '@/types/index';
+import type { ProjectCardProps } from '@/types/index';
 
 import { Zoom, Link, Image } from '@/components/ui';
 import { GithubRepo } from '@/components/project';
@@ -6,9 +6,7 @@ import { GithubRepo } from '@/components/project';
 const ProjectCard = ({ project }: ProjectCardProps) => {
   const { title, description, imgSrc, url, repo, builtWith } = project;
 
-  const repository = repo as GithubRepository | undefined;
-
-  const href = repository?.url || url;
+  const href = repo ? `https://github.com/${repo}` : url;
 
   return (
     <div className="md max-w-[544px] p-4 md:w-1/2">
@@ -37,9 +35,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
               title
             )}
           </h2>
-          <p className="prose mb-3 max-w-none text-gray-500 dark:text-gray-400">
-            {repository?.description || description}
-          </p>
+          <p className="prose mb-3 max-w-none text-gray-500 dark:text-gray-400">{description}</p>
 
           <div className="mb-3 flex flex-wrap space-x-1.5">
             <span className="shrink-0">Built with: </span>
@@ -53,8 +49,8 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
             })}
             .
           </div>
-          {repository ? (
-            <GithubRepo repo={repository} />
+          {typeof repo === 'string' ? (
+            <GithubRepo repo={repo} />
           ) : (
             href && (
               <Link
