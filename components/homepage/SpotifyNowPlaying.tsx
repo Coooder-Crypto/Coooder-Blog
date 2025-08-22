@@ -1,5 +1,4 @@
 import Spotify from 'public/static/icons/spotify.svg';
-import MusicBar from '@/components/homepage/MusicBar';
 
 const SpotifyNowPlaying = () => {
   return (

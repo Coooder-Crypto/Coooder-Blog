@@ -10,6 +10,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import siteMetadata from '@/data/siteMetadata';
 import { SectionContainer, TiltedGridBackground } from '@/components/ui';
+import GlobalPreloader from '@/components/ui/GlobalPreloader';
 
 const FONT_OUTFIT = Outfit({
   subsets: ['latin'],
@@ -71,12 +72,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
       <body className="bg-white pl-[calc(100vw-100%)] text-black antialiased">
-        <TiltedGridBackground className="inset-x-0 top-0 z-[-1] h-[60vh]" />
-        <SectionContainer>
-          <Header />
-          <main className="mb-auto mt-20">{children}</main>
-          <Footer />
-        </SectionContainer>
+        <GlobalPreloader>
+          <TiltedGridBackground className="inset-x-0 top-0 z-[-1] h-[60vh]" />
+          <SectionContainer>
+            <Header />
+            <main className="mb-auto mt-20">{children}</main>
+            <Footer />
+          </SectionContainer>
+        </GlobalPreloader>
       </body>
     </html>
   );
