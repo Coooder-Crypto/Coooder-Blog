@@ -219,6 +219,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ashthornton/asscroll@npm:^2.0.11":
+  version: 2.0.11
+  resolution: "@ashthornton/asscroll@npm:2.0.11"
+  dependencies:
+    "@unseenco/e": ^2.2.2
+  checksum: 27334b1a0dc7486dd3e9d2b4806f417077e2f626a3d792df991a85c27a0ea88ab3590d25ddf3fd865d32e322c2b889bfa0f8c1b1741df8653e6331b9415ae47b
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.26.0, @babel/code-frame@npm:^7.26.2":
   version: 7.26.2
   resolution: "@babel/code-frame@npm:7.26.2"
@@ -3881,6 +3890,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@unseenco/e@npm:^2.2.2":
+  version: 2.5.0
+  resolution: "@unseenco/e@npm:2.5.0"
+  dependencies:
+    selector-set: ^1.1.5
+  checksum: 9af904c127ae37a8ca2d175826ae6811d39c8eddc80b2ccf2e135e76cd1d43ef5c6675a166f8555a84ec5b0ae0e1de0adf722ee197324d0cd95851bc66c2db1d
+  languageName: node
+  linkType: hard
+
 "abbrev@npm:^2.0.0":
   version: 2.0.0
   resolution: "abbrev@npm:2.0.0"
@@ -6483,6 +6501,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"gsap@npm:^3.13.0":
+  version: 3.13.0
+  resolution: "gsap@npm:3.13.0"
+  checksum: 40884726718b5bed8cdd6faa621b3eaec64541b6fc163a0af810d3626d750e5d010f7300f4b106327d4474623a9fd5f915a48081d7744eec38c57a1fce20fb62
+  languageName: node
+  linkType: hard
+
 "has-bigints@npm:^1.0.2":
   version: 1.1.0
   resolution: "has-bigints@npm:1.1.0"
@@ -7594,6 +7619,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "karhdo.dev@workspace:."
   dependencies:
+    "@ashthornton/asscroll": ^2.0.11
     "@eslint/eslintrc": ^3.2.0
     "@eslint/js": ^9.16.0
     "@headlessui/react": 2.2.0
@@ -7618,9 +7644,11 @@ __metadata:
     github-slugger: ^2.0.0
     globals: ^15.12.0
     gray-matter: ^4.0.2
+    gsap: ^3.13.0
     hast-util-from-html-isomorphic: ^2.0.0
     husky: ^9.0.0
     image-size: 1.2.0
+    lil-gui: ^0.20.0
     lint-staged: ^15.2.11
     lodash: ^4.17.21
     lucide-react: ^0.469.0
@@ -7647,6 +7675,8 @@ __metadata:
     remark-github-blockquote-alert: ^1.2.1
     remark-math: ^6.0.0
     tailwindcss: ^3.4.17
+    three: ^0.179.1
+    three-orbitcontrols-ts: ^0.1.2
     typed.js: ^2.1.0
     typescript: ^5.1.3
     unist-util-visit: ^5.0.0
@@ -7719,6 +7749,13 @@ __metadata:
     prelude-ls: ^1.2.1
     type-check: ~0.4.0
   checksum: 12c5021c859bd0f5248561bf139121f0358285ec545ebf48bb3d346820d5c61a4309535c7f387ed7d84361cf821e124ce346c6b7cef8ee09a67c1473b46d0fc4
+  languageName: node
+  linkType: hard
+
+"lil-gui@npm:^0.20.0":
+  version: 0.20.0
+  resolution: "lil-gui@npm:0.20.0"
+  checksum: ab47a91a012c45de4962979fb7f32ed82d0ffe6aa5eb8a40040d0684b7f2fbf351f64b5ae9f5eefd8f7b462496adedb1073ff85007d2aabca69b3f2d4f796301
   languageName: node
   linkType: hard
 
@@ -10918,6 +10955,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"selector-set@npm:^1.1.5":
+  version: 1.1.5
+  resolution: "selector-set@npm:1.1.5"
+  checksum: 025d3f8b98a6a43730ef39a00e2f3f5f478eb75fd783667e8ddd1066c6fd24c510c03bc104c4b15180ba037f8ef300918b929eb3a207f61b6592a75234fd6097
+  languageName: node
+  linkType: hard
+
 "semver@npm:^6.3.1":
   version: 6.3.1
   resolution: "semver@npm:6.3.1"
@@ -11660,6 +11704,29 @@ __metadata:
   peerDependencies:
     tslib: ^2
   checksum: 283a2785e513dc892822dd0bbadaa79e873a7fc90b84798164717bf7cf837553e0b4518d8027b2307d8f6fc6caab088fa717112cd9196c6222763cc3cc1b7e79
+  languageName: node
+  linkType: hard
+
+"three-orbitcontrols-ts@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "three-orbitcontrols-ts@npm:0.1.2"
+  dependencies:
+    three: ^0.83.0
+  checksum: 0ca1cd597d87c07275b67611139debeac64710cdabe06e2489c64fe5af1a04ddf9908aceeb2c8bc84c6ed4a768fdd47ff022f806d31f4b90832dbfbc4a9485aa
+  languageName: node
+  linkType: hard
+
+"three@npm:^0.179.1":
+  version: 0.179.1
+  resolution: "three@npm:0.179.1"
+  checksum: a84bf9ace76339ff5a90c6a0ba92080b70842d1efd2f667570082ac2370608d0d41353881739fa53624c8d70cd10fea3117270ddff0c7dd0da7315ab43756b00
+  languageName: node
+  linkType: hard
+
+"three@npm:^0.83.0":
+  version: 0.83.0
+  resolution: "three@npm:0.83.0"
+  checksum: fc677653a1fa9cf35b07148394060ab47901846f02ffdf1438a472c97195fc2c7eed644e489693648909b2de81a1419af82383f360962bf1864012e40d2a185a
   languageName: node
   linkType: hard
 
