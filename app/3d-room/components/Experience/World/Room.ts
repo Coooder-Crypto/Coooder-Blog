@@ -70,18 +70,24 @@ export default class Room {
       if (child.name === 'screen_photo') {
         const texture = new THREE.TextureLoader().load('/static/images/avatar.png');
         texture.flipY = false;
-        
+
         // 设置纹理不重复，剩余部分为黑色
         texture.wrapS = THREE.ClampToEdgeWrapping;
         texture.wrapT = THREE.ClampToEdgeWrapping;
-        
-        // 调整纹理缩放以适应屏幕比例
-        const aspectRatio = 1; // 方形图片的宽高比
-        texture.repeat.set(aspectRatio, 1);
-        texture.offset.set((1 - aspectRatio) / 2, 0); // 居中显示
-        
+
+        // 缩小图片让其完全显示在屏幕内
+        texture.repeat.set(1.3, 1.3); // 缩小到80%，确保完全显示
+        texture.offset.set(-0.1, -0.2); // 居中显示
+
+        // 保持原始颜色设置
+        texture.colorSpace = THREE.SRGBColorSpace; // 使用标准颜色空间
+        texture.minFilter = THREE.LinearFilter; // 减少模糊
+        texture.magFilter = THREE.LinearFilter; // 保持清晰度
+        texture.generateMipmaps = false; // 避免mipmap造成的色彩变化
+
         child.material = new THREE.MeshBasicMaterial({
           map: texture,
+          // 删除任何滤镜和色彩调整
         });
       }
 
