@@ -1,6 +1,6 @@
 export default function convert(element: HTMLElement | null): HTMLElement | null {
   if (!element) return null;
-  
+
   element.style.overflow = 'hidden';
   element.innerHTML = element.innerText
     .split('')

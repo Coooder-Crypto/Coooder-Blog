@@ -7,7 +7,6 @@ const siteMetadata = {
   language: 'en-us',
   theme: 'system',
   siteUrl: 'https://karhdo.dev',
-  analyticsURL: 'https://analytics.karhdo.dev/share/Z3eSINRnbzydz1gK/karhdo.dev',
   siteRepo: 'https://github.com/Karhdo/karhdo.dev',
   siteLogo: '/static/images/avatar.png',
   image: '/static/images/avatar.png',
@@ -24,38 +23,6 @@ const siteMetadata = {
     github: 'Karhdo',
     linkedin: 'karhdo',
     facebook: 'karhdo.dev',
-  },
-  // Static configuration without environment variables
-  analytics: {
-    umamiAnalytics: {
-      umamiWebsiteId: '',
-    },
-  },
-  newsletter: {
-    provider: '',
-  },
-  comments: {
-    provider: '',
-    giscusConfig: {
-      repo: '',
-      repositoryId: '',
-      category: '',
-      categoryId: '',
-      mapping: 'title',
-      reactions: '1',
-      metadata: '0',
-      theme: 'light',
-      darkTheme: 'transparent_dark',
-      themeURL: '',
-      lang: 'en',
-      inputPosition: 'bottom',
-    },
-  },
-  search: {
-    provider: '',
-    kbarConfig: {
-      searchDocumentsPath: '/search.json',
-    },
   },
 };
 

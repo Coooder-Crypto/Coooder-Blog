@@ -1,5 +1,5 @@
 ---
-title: 'Exploring module in NestJS'
+title: 'Chrome'
 date: '2023-12-10'
 lastmod: '2023-12-10'
 tags: ['nestjs', 'typescript', 'javascript', 'design-patterns']
@@ -8,272 +8,100 @@ summary: 'Modules are crucial components at the center of NestJS. In this post, 
 
 import Twemoji from './components/ui/Twemoji';
 
-## Introduction
+## 浏览器渲染流程全解：从 HTML 到屏幕的奇妙旅程
 
-Modules are crucial components at the center of NestJS. In this post, we'll take a closer look at what modules are in NestJS.
+我们平时写下的 HTML、CSS、JavaScript, 最终是怎么变成屏幕上的页面的呢？这背后有一条复杂而高效的流水线。可以大体分为 **解析** 和 **渲染** 两个阶段。
 
-A module is a class annotated with a `@Module()` decorator. The `@Module()` decorator provides metadata that **Nest** makes use of to organize the application structure:
+---
 
-- Each application has at least one module, a **root module**.
-- In **NestJS** modules are strongly recommended as an effective way to organize your components.
-- Each module will encapsulate a set of closely related functions.
+## 解析：搭建 DOM 世界
 
-![Diagram Module In NestJS](/static/images/blogs/module-in-nestjs.png)
+第一步, 浏览器需要把 HTML 代码“翻译”成它能理解的结构, 这个过程叫 **解析**。
 
-The decorator `@Module()` takes a single object whose properties describe the module:
+### 构建 DOM 树
 
-```ts:modules/product/product.module.ts showLineNumbers
-import { Module } from '@nestjs/common';
+- **HTML 解析器** 会把 HTML 一行行读进去, 交给 **分词器** 切分成 **token** (类似词法分析) 。
+- 然后这些 token 会被转化为 **DOM 节点**, 逐步拼装成一棵 **DOM 树**。
+- 在构建过程中, 会维护一个 **token 栈**, 来保证嵌套关系正确。
 
-import CategoryModule from 'modules/category.module'; // Expose route controller.
+📌 重点：
 
-import ProductController from './product.controller'; // Expose route controller.
-import ProductService from './product.service';       // Business Logic
-import ProductRepository from './product.repository'; // Data Access
+- 如果遇到 `<script>` 标签, 解析会被“打断”。
+  - 内联脚本：暂停解析 → 执行脚本 → 再继续解析。
+  - 外链脚本：需要先下载资源, 下载完成后再执行。
+- 为了减少等待, **Chrome 渲染进程里会有一个“预解析线程”**, 在后台悄悄帮你提前加载 script、link 等外部资源。
 
-@Module({
-  imports: [CategoryModule],
-  controllers: [ProductsController],
-  providers: [ProductService, ProductRepository],
-  exports: [ProductService],
-});
+### 实时解析
 
-export class ProductModule {}
-```
+解析不是一口气全做完的, 而是随着 HTML 流式下载 **边下载边解析**。这就是为什么页面能一点点出现, 而不是等所有内容都下完再显示。
 
-- `provider`: The Nest injector will create providers that can be shared within this module at a minimum.
-- `controllers`: The set of controllers defined in this module
-- `imports`: The list of imported modules that export the providers
-- `exports`: The subset of `providers` that are provided by this module and should be available in other modules which import this module.
+---
 
-## Types Of Modules In NestJS
+## 渲染：让页面“活”起来
 
-### Feature Module
+有了 DOM 树只是第一步, 接下来要经历一系列步骤, 才能真正画到屏幕上。
 
-- A **feature module** simply organizes code relevant for a specific feature, keeping code organized and establishing clear boundaries.
+### 计算样式 (Style)
 
-- To demonstrate this, we'll create the `ProductModule` (responsible for encapsulating Product logic and endpoints).
+- 浏览器会收集所有 CSS：包括 link 引入、style 标签、元素内嵌样式。
+- 它们会被转化为 **StyleSheet** 对象。
+- 接着为 DOM 树上的每个节点计算出最终的样式。
+- 样式有继承性, 子节点会自动继承父节点的属性。
 
-```ts:modules/product/product.module.ts showLineNumbers
-import { Module } from '@nestjs/common';
+### 布局 (Layout)
 
-import ProductController from './product.controller';
-import ProductService from './product.service';
+- 将 DOM 树和 StyleSheet 结合, 生成一棵 **布局树 (Layout Tree) **。
+- 遍历 DOM, 把所有可见节点都放进去。
+- 然后根据 CSS 规则, 计算出每个节点的具体 **位置和大小**。
 
-@Module({
-  controllers: [ProductController],
-  providers: [ProductService],
-})
-export default class ProductModule {}
-```
+### 分层 (Layering)
 
-- The last thing we need to do is import this module into the root module (the `AppModule`, defined in the `app.module.ts` file).
+- 页面上的元素不是一股脑画在一起, 而是会被划分成不同的“层”。
+- 比如有些复杂的元素 (position、z-index、动画等) 会单独成层。
+- 在 Chrome DevTools 的 **Layers 面板**里就能看到这些层。
 
-```ts:app.module.ts showLineNumbers
-import { Module } from '@nestjs/common';
+### 绘制 (Paint)
 
-import ProductModule from './product/product.module';
+- 每一层内部, 再拆分成具体的绘制步骤。
+- 比如先画背景, 再画边框, 最后画文字。
+- 这些信息被记录下来, 形成绘制列表。
 
-@Module({
-  imports: [ProductModule],
-})
-export class AppModule {}
-```
+### 分块 (Tiling)
 
-### Shared Modules
+- 绘制列表不会一次性渲染整个页面, 而是被切分成一个个小块 (tile) 。
+- 这样做的好处是：只需要渲染用户视口内的部分, 提高性能。
 
-- In **Nest**, modules are `singletons` (design patterns) by default, and thus you can share the same instance of any provider between multiple modules effortlessly.
+### 光栅化 (Rasterization)
 
-- Every module is automatically a **shared module**.
+- 每个 tile 会交给 **栅格化线程池**, 在后台把绘制指令转化为位图。
+- 这一步通常会借助 GPU 加速完成。
 
-![Diagram Shared Module In NestJS](/static/images/blogs/shared-module.png)
+### 合成 (Compositing)
 
-```ts:core/logger/logger.module.ts showLineNumbers
-import { Module } from '@nestjs/common';
+- 最后, 合成线程把各个图层、图块“拼接”在一起, 交给 GPU, 绘制到屏幕上。
+- 至此, 一个页面的完整画面就呈现出来啦！
 
-import LoggerService from './logger.service';
+---
 
-@Module({
-  providers: [LoggerService],
-  exports: [LoggerService],
-})
-export default class LoggerModule {}
-```
+## 重排、重绘、合成：性能杀手
 
-```ts:modules/product/product.module.ts showLineNumbers
-import { Module } from '@nestjs/common';
+在开发中, 我们经常会听到 **重排 (Reflow) **、**重绘 (Repaint) ** 和 **合成 (Composite) **, 它们其实就是渲染流水线的不同阶段被重新触发。
 
-import LoggerModule from 'core/logger/logger.module';
+- **重排**：当修改了元素的几何属性 (宽高、位置、结构等) , 需要重新布局。代价最高。
+- **重绘**：仅仅是样式改变 (颜色、背景) , 跳过布局, 但仍需重新绘制。
+- **合成**：只改变 transform、opacity 这类属性, 可以直接在合成阶段搞定, 性能最好。
 
-import ProductController from './product.controller';
-import ProductService from './product.service';
+开发时尽量优化, 避免频繁触发重排和重绘。
 
-@Module({
-  imports: [LoggerModule],
-  controllers: [ProductController],
-  providers: [ProductService],
-})
-export class ProductModule {}
+---
 
-// Import similar LoggerModule for ShopMonitoringModule and PriceMonitoringModule.
-```
+## 总结
 
-### Global Modules
+浏览器的渲染过程就像一条精密的装配线：
 
-- In the showcased example within the **shared module section**, the **LoggerModule** undergoes multiple imports across three distinct modules—namely, **ProductModule, ShopMonitoringModule, and PriceMonitoringModule**.
+1. **解析**：从 HTML 出发, 搭建 DOM 世界。
+2. **渲染**：计算样式 → 布局 → 分层 → 绘制 → 分块 → 光栅化 → 合成 → 屏幕显示。
 
-- This redundancy is both **noticeable and avoidable**. To address this issue, **Nest** offers a feature known as the **Global Module**.
-
-- Rather than importing the **LoggerModule** in each module requiring its functionality, we can simplify the process by importing the **LoggerModule** just once in the **AppModule** (the root module) and applying the `@Global()` decorator to the class, turning it into a **Global Module**.
-
-- This approach significantly reduces redundancy and promotes a more efficient and maintainable code structure.
-
-![Diagram Global Module In NestJS](/static/images/blogs/global-module.png)
-
-- `@Global()` decorator make the module global, that you want to provide a set of providers which should be available everywhere:
-
-```ts:core/logger/logger.module.ts showLineNumbers
-import { Module, Global } from '@nestjs/common';
-
-import LoggerService from './logger.service';
-
-@Global()
-@Module({
-  providers: [LoggerService],
-  exports: [LoggerService],
-})
-export class LoggerModule {}
-```
-
-- Import **LoggerModule** into **AppModule** (root module):
-
-```ts:app.module.ts showLineNumbers
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-
-import { LoggerModule } from './core/logger/logger.module';
-import { ProductModule } from './modules/product/product.module';
-import { ShopMonitoringModule } from './modules/shop-monitoring/shop-monitoring.module';
-import { PriceMonitoringModule } from './modules/price-monitoring/price-monitoring.module';
-
-@Module({
-  imports: [ProductModule, ShopMonitoringModule, PriceMonitoringModule, LoggerModule],
-  controllers: [],
-  providers: [],
-})
-export class AppModule {}
-```
-
-- Using **LoggerService** in **ProductService** (We do not need to import **LoggerModule** into **ProductModule**):
-
-```ts:modules/product/product.service.ts showLineNumbers
-import { Injectable } from '@nestjs/common';
-
-import { LoggerService } from '../../core/logger/logger.service';
-
-@Injectable()
-export class ProductService {
-  constructor(private logger: LoggerService) {}
-
-  async findAll(): Promise<any> {
-    this.logger.log('Get all products');
-
-    return [];
-  }
-}
-```
-
-### Dynamic Modules
-
-- This is a **feature** that allows you to easily create a custom module that can **register and configure providers dynamically**.
-
-- Following is an example of a **dynamic module** definition for a `DatabaseModule`:
-
-```ts:core/database/database.providers.ts showLineNumbers
-import { Connection } from './connection.provider';
-
-import { createConnection, Repository } from 'typeorm'; // Assuming TypeORM for database interaction
-
-export function createDatabaseProviders(options, entities): any[] {
-  const providers = entities.map((entity) => ({
-    provide: `${entity}Repository`, // Dynamic provider name based on the entity
-    useFactory: (connection: Connection) => connection.getRepository(entity),
-    inject: [Connection],
-  }));
-
-  return [
-    {
-      provide: 'DATABASE_CONNECTION',
-      useFactory: async () => {
-        const connection = await createConnection({
-          ...options,
-          entities: entities,
-        });
-        return connection;
-      },
-    },
-    ...providers, // Include additional providers related to entities
-  ];
-}
-```
-
-```ts:core/database/database.module.ts showLineNumbers
-import { Module, DynamicModule } from '@nestjs/common';
-
-import { createDatabaseProviders } from './database.providers';
-import { Connection } from './connection.provider';
-
-@Module({
-  providers: [Connection],
-})
-export class DatabaseModule {
-  static forRoot(entities = [], options?): DynamicModule {
-    const providers = createDatabaseProviders(options, entities);
-    return {
-      module: DatabaseModule,
-      providers: providers,
-      exports: providers,
-    };
-  }
-}
-```
-
-> **Hint**: The `forRoot()` method may return a _dynamic module_ either synchronously or asynchronously.
-
-- This **module** defines the `Connection` provider by default (in the `@Module()` decorator metadata), but additionally - depending on the **entities and options** objects passed into the `forRoot()` method - exposes a collection of providers, for example, **repositories**.
-
-- The `DatabaseModule` can be imported and configured in the following manner:
-
-```ts showLineNumbers
-import { Module } from '@nestjs/common';
-
-import { DatabaseModule } from 'core/database/database.module';
-import { User } from 'modules/user/user.entity.ts';
-import { Product } from 'modules/product/product.entity.ts';
-
-@Module({
-  imports: [
-    DatabaseModule.forRoot([User, Product], {
-      type: 'postgres',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'password',
-      database: 'mydatabase',
-    }),
-  ],
-})
-export class AppModule {}
-```
-
-## Conclusion
-
-- Understanding and effectively utilizing modules in **NestJS** is essential for building **scalable and maintainable** applications.
-- Whether organizing feature-specific code, sharing providers, optimizing global functionality, or dynamically configuring modules, **NestJS** modules offer a robust foundation for application development.
-
-## References
-
-- [Overview Modules In NestJS](https://docs.nestjs.com/modules)
-- [Fundamentals - Dynamic modules](https://docs.nestjs.com/fundamentals/dynamic-modules)
+理解这套机制, 可以帮助我们写出性能更好的前端代码, 也能在排查页面卡顿时更有思路。
 
 Happy reading! <Twemoji emoji="clinking-beer-mugs" />

@@ -3,10 +3,8 @@ import { ReactNode } from 'react';
 import { CoreContent } from 'pliny/utils/contentlayer';
 import type { Blog } from 'contentlayer/generated';
 
-import siteMetadata from '@/data/siteMetadata';
-
 import { BlogTags, BlogMeta } from '@/components/blog';
-import { Link, Comments, PageTitle, SectionContainer, ScrollTopAndComment } from '@/components/ui';
+import { Link, PageTitle, SectionContainer, ScrollTopAndComment } from '@/components/ui';
 
 interface LayoutProps {
   content: CoreContent<Blog>;
@@ -43,11 +41,6 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
             <div className="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0">
               <div className="prose max-w-none pb-8 pt-10 dark:prose-dark">{children}</div>
             </div>
-            {siteMetadata.comments && (
-              <div className="pb-6 pt-6 text-center text-gray-700 dark:text-gray-300" id="comment">
-                <Comments />
-              </div>
-            )}
 
             <footer>
               <div className="flex flex-col text-sm font-medium sm:flex-row sm:justify-between sm:text-base">

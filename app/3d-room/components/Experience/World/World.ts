@@ -25,7 +25,7 @@ export default class World extends EventEmitter {
       this.environment = new Environment();
       this.floor = new Floor();
       this.room = new Room();
-      
+
       // Emit world ready event for Preloader
       this.trigger('worldready');
     });

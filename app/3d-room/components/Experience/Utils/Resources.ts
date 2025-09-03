@@ -31,7 +31,7 @@ export default class Resources extends EventEmitter {
     this.loaders = {};
     this.loaders.gltfLoader = new GLTFLoader();
     this.loaders.dracoLoader = new DRACOLoader();
-    
+
     // Configure DRACO loader for newer Three.js versions
     this.loaders.dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
     this.loaders.dracoLoader.setDecoderConfig({ type: 'js' });

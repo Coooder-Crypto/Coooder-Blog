@@ -2,9 +2,7 @@
 
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
-import { ChevronsUp, MessageSquareText } from 'lucide-react';
-
-import siteMetadata from '@/data/siteMetadata';
+import { ChevronsUp } from 'lucide-react';
 import { ScrollButtonProps } from '@/types/index';
 
 const ScrollButton = (props: ScrollButtonProps) => {
@@ -42,16 +40,8 @@ const ScrollTopAndComment = () => {
     window.scrollTo({ top: 0 });
   };
 
-  const handleScrollToComment = () => {
-    document.getElementById('comment')?.scrollIntoView();
-  };
-
   return (
     <div className={`fixed bottom-8 right-8 hidden flex-col gap-3 ${show ? 'md:flex' : 'md:hidden'}`}>
-      {siteMetadata.comments?.provider && (
-        <ScrollButton icon={MessageSquareText} ariaLabel="Scroll To Comment" onClick={handleScrollToComment} />
-      )}
-
       <ScrollButton icon={ChevronsUp} ariaLabel="Scroll To Top" onClick={handleScrollTop} />
     </div>
   );

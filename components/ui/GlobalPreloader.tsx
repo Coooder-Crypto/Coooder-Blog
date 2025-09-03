@@ -11,7 +11,7 @@ export default function GlobalPreloader({ children }: { children: React.ReactNod
   useEffect(() => {
     // Check if preloader has already been shown in this session
     const hasShownPreloader = sessionStorage.getItem('hasShownPreloader');
-    
+
     if (hasShownPreloader === 'true') {
       // Already shown in this session, skip animation completely
       setIsLoading(false);
@@ -20,7 +20,7 @@ export default function GlobalPreloader({ children }: { children: React.ReactNod
 
     // First time in this session, show animation
     setIsLoading(true);
-    
+
     // Disable scrolling and interactions while loading
     document.body.style.overflow = 'hidden';
     document.body.style.touchAction = 'none';
@@ -53,9 +53,7 @@ export default function GlobalPreloader({ children }: { children: React.ReactNod
 
   return (
     <>
-      <AnimatePresence mode='wait'>
-        {isLoading && <Preloader />}
-      </AnimatePresence>
+      <AnimatePresence mode="wait">{isLoading && <Preloader />}</AnimatePresence>
       {children}
     </>
   );

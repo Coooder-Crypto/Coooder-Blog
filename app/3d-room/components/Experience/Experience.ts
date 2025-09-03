@@ -28,7 +28,7 @@ export default class Experience {
     }
 
     Experience.instance = this;
-    
+
     if (canvas) {
       this.canvas = canvas;
       this.scene = new THREE.Scene();

@@ -2,9 +2,8 @@ import { ReactNode } from 'react';
 import { CoreContent } from 'pliny/utils/contentlayer';
 import type { Blog, Authors } from 'contentlayer/generated';
 
-import siteMetadata from '@/data/siteMetadata';
 import { BlogTags, BlogMeta, BlogNav, TableOfContents, Reactions } from '@/components/blog';
-import { Comments, PageTitle, SectionContainer, ScrollTopAndComment } from '@/components/ui';
+import { PageTitle, SectionContainer, ScrollTopAndComment } from '@/components/ui';
 
 interface LayoutProps {
   content: CoreContent<Blog>;
@@ -58,12 +57,6 @@ export default function PostLayout(props: LayoutProps) {
         {/*START: Footer*/}
         <footer>
           <BlogNav next={next} prev={prev} />
-
-          {siteMetadata.comments && (
-            <div className="pb-6 pt-6 text-center text-gray-700 dark:text-gray-300" id="comment">
-              <Comments />
-            </div>
-          )}
         </footer>
         {/*END: Footer*/}
       </article>

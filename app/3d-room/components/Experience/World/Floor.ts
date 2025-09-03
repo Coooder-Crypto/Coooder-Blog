@@ -34,7 +34,7 @@ export default class Floor {
     this.geometry = new THREE.CircleGeometry(20, 128);
     this.material = new THREE.MeshStandardMaterial({ color: 0x555555 });
     this.circle = new THREE.Mesh(this.geometry, this.material);
-    
+
     this.circle.position.y = -0.9;
     this.circle.scale.set(0, 0, 0);
     this.circle.rotation.x = -Math.PI / 2;

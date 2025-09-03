@@ -7,13 +7,4 @@ import PopularTags from './PopularTags';
 import ShortDescription from './ShortDescription';
 import SpotifyNowPlaying from './SpotifyNowPlaying';
 
-export {
-  Avatar,
-  Heading,
-  Greeting,
-  BlogLinks,
-  TypedBios,
-  PopularTags,
-  ShortDescription,
-  SpotifyNowPlaying,
-};
+export { Avatar, Heading, Greeting, BlogLinks, TypedBios, PopularTags, ShortDescription, SpotifyNowPlaying };

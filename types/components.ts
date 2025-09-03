@@ -1,7 +1,6 @@
 import type readingTime from 'reading-time';
 
 import type projectsData from '@/data/projectsData';
-import type GiscusConfigs from './giscus-configs.type';
 
 export type ProjectDataType = (typeof projectsData)[0];
 
@@ -22,10 +21,6 @@ export interface ViewCounterProps {
   className?: string;
 }
 
-export interface CommentsProps {
-  className?: string;
-  configs?: Partial<GiscusConfigs>;
-}
 
 export interface ScrollButtonProps {
   onClick: () => void;

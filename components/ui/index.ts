@@ -5,7 +5,6 @@ import Link from './Link';
 import Image from './Image';
 import Button from './Button';
 import Twemoji from './Twemoji';
-import Comments from './Comments';
 import BrandIcon from './BrandIcon';
 import PageTitle from './PageTitle';
 import TableWrapper from './TableWrapper';
@@ -22,7 +21,6 @@ export {
   Image,
   Button,
   Twemoji,
-  Comments,
   BrandIcon,
   PageTitle,
   components,

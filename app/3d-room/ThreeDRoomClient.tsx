@@ -60,8 +60,8 @@ export default function ThreeDRoomClient() {
       <canvas ref={canvasRef} className="experience-canvas"></canvas>
 
       {/* Page Content - Foreground */}
-      <main className="w-screen max-w-none m-0 p-0">
-        <section className="hero w-screen h-screen flex justify-center items-center relative m-0 p-0">
+      <main className="m-0 w-screen max-w-none p-0">
+        <section className="hero relative m-0 flex h-screen w-screen items-center justify-center p-0">
           <div className="hero-wrapper">
             <div className="intro-text">Welcome to my 3D Room</div>
             <div className="arrow-svg-wrapper">
@@ -86,9 +86,9 @@ export default function ThreeDRoomClient() {
         </section>
 
         {/* 大间距区域 */}
-        <div className="first-move w-screen" style={{height: '200vh'}}></div>
+        <div className="first-move w-screen" style={{ height: '200vh' }}></div>
 
-        <section className="first-section section right w-1/2 ml-auto relative" style={{padding: '50vh 4%'}}>
+        <section className="first-section section right relative ml-auto w-1/2" style={{ padding: '50vh 4%' }}>
           <div className="progress-wrapper progress-bar-wrapper-right">
             <div className="progress-bar"></div>
           </div>
@@ -123,9 +123,9 @@ export default function ThreeDRoomClient() {
         </section>
 
         {/* 大间距区域 */}
-        <div className="second-move w-screen" style={{height: '200vh'}}></div>
+        <div className="second-move w-screen" style={{ height: '200vh' }}></div>
 
-        <section className="second-section section left w-1/2 mr-auto relative" style={{padding: '50vh 4%'}}>
+        <section className="second-section section left relative mr-auto w-1/2" style={{ padding: '50vh 4%' }}>
           <div className="progress-wrapper progress-bar-wrapper-left">
             <div className="progress-bar blue-background"></div>
           </div>
@@ -160,9 +160,9 @@ export default function ThreeDRoomClient() {
         </section>
 
         {/* 大间距区域 */}
-        <div className="third-move w-screen" style={{height: '200vh'}}></div>
+        <div className="third-move w-screen" style={{ height: '200vh' }}></div>
 
-        <section className="third-section section right w-1/2 ml-auto relative" style={{padding: '50vh 4%'}}>
+        <section className="third-section section right relative ml-auto w-1/2" style={{ padding: '50vh 4%' }}>
           <div className="progress-wrapper progress-bar-wrapper-right">
             <div className="progress-bar green-background"></div>
           </div>

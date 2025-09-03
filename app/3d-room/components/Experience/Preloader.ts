@@ -43,7 +43,7 @@ export default class Preloader extends EventEmitter {
       convert(document.querySelector('.hero-main-title'));
       convert(document.querySelector('.hero-main-description'));
     }
-    
+
     // Get room children for animation
     if (this.world.room) {
       this.roomChildren = this.world.room.roomChildren;
@@ -53,7 +53,7 @@ export default class Preloader extends EventEmitter {
   firstIntro() {
     return new Promise<void>((resolve) => {
       this.timeline = gsap.timeline();
-      
+
       // Hide loader quickly
       this.timeline.to('.loader', {
         opacity: 0,
@@ -64,36 +64,52 @@ export default class Preloader extends EventEmitter {
           if (loader) {
             (loader as HTMLElement).style.display = 'none';
           }
-        }
+        },
       });
 
       // Animate floor plane quickly
-      this.timeline.to(this.world.floor.plane.position, {
-        y: -1,
-        ease: 'power2.out',
-        duration: 1, // Faster animation
-      }, '-=0.3'); // Start earlier
+      this.timeline.to(
+        this.world.floor.plane.position,
+        {
+          y: -1,
+          ease: 'power2.out',
+          duration: 1, // Faster animation
+        },
+        '-=0.3'
+      ); // Start earlier
 
       // Animate text elements if they exist (faster)
-      this.timeline.to('.intro-text .animated', {
-        yPercent: 0,
-        stagger: 0.03, // Faster stagger
-        ease: 'power2.out',
-        duration: 0.8,
-      }).to('.arrow-svg-wrapper', {
-        opacity: 1,
-        duration: 0.5,
-      }).to('.hero-main-title .animated', {
-        yPercent: 0,
-        stagger: 0.05, // Faster stagger
-        ease: 'power2.out',
-        duration: 0.8,
-      }, '-=0.5').to('.hero-main-description .animated', {
-        yPercent: 0,
-        stagger: 0.05, // Faster stagger
-        ease: 'power2.out',
-        duration: 0.8,
-      }, '-=0.5');
+      this.timeline
+        .to('.intro-text .animated', {
+          yPercent: 0,
+          stagger: 0.03, // Faster stagger
+          ease: 'power2.out',
+          duration: 0.8,
+        })
+        .to('.arrow-svg-wrapper', {
+          opacity: 1,
+          duration: 0.5,
+        })
+        .to(
+          '.hero-main-title .animated',
+          {
+            yPercent: 0,
+            stagger: 0.05, // Faster stagger
+            ease: 'power2.out',
+            duration: 0.8,
+          },
+          '-=0.5'
+        )
+        .to(
+          '.hero-main-description .animated',
+          {
+            yPercent: 0,
+            stagger: 0.05, // Faster stagger
+            ease: 'power2.out',
+            duration: 0.8,
+          },
+          '-=0.5'
+        );
 
       this.timeline.call(() => {
         resolve();
@@ -106,13 +122,16 @@ export default class Preloader extends EventEmitter {
       this.timeline = gsap.timeline();
 
       // Add a small delay to ensure everything is ready
-      this.timeline.to({}, {
-        duration: 0.1, // Very small delay
-        onComplete: () => {
-          this.trigger('enablecontrols');
-          resolve();
+      this.timeline.to(
+        {},
+        {
+          duration: 0.1, // Very small delay
+          onComplete: () => {
+            this.trigger('enablecontrols');
+            resolve();
+          },
         }
-      });
+      );
     });
   }
 
@@ -126,7 +145,7 @@ export default class Preloader extends EventEmitter {
   }
 
   scale() {
-    // Room scaling logic if needed  
+    // Room scaling logic if needed
   }
 
   update() {
