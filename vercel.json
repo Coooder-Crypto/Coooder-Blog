@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/stats/:match*",
-      "destination": "https://analytics.karhdo.dev/:match*"
+      "destination": "https://analytics.coooder.dev/:match*"
     }
   ]
 }

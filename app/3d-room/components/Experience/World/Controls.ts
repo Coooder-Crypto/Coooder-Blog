@@ -59,7 +59,7 @@ export default class Controls {
     }
 
     const asscroll = new ASScroll({
-      element: container,
+      containerElement: container as HTMLElement,
       disableRaf: true,
       ease: 0.3,
     });

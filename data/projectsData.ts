@@ -7,7 +7,7 @@ const projectsData: Project[] = [
     description:
       'The pioneering E-commerce data intelligence platform in Vietnam for brands with the most granular data information.',
     imgSrc: '/static/images/projects/ecom-heat.png',
-    url: 'https://youneteci.com/en/eci-ecomheat/?ref=karhdo.dev',
+    url: 'https://youneteci.com/en/eci-ecomheat/?ref=coooder.dev',
     builtWith: ['React', 'Bootstrap', 'FeathersJS', 'MySQL', 'RabbitMQ'],
   },
   {
@@ -21,15 +21,15 @@ const projectsData: Project[] = [
   {
     type: 'self',
     title: 'Personal website',
-    imgSrc: '/static/images/projects/karhdo-blog.png',
-    repo: 'Karhdo/karhdo.dev',
+    imgSrc: '/static/images/projects/coooder-blog.png',
+    repo: 'coooder/coooder-blog',
     builtWith: ['Next.js', 'Tailwind', 'Typescript', 'Prisma', 'Umami'],
   },
   {
     type: 'self',
     title: 'Website Selling Food',
     imgSrc: '/static/images/projects/website-selling-food.png',
-    repo: 'Karhdo/Website-Selling-Food',
+    repo: 'coooder/Website-Selling-Food',
     builtWith: ['PHP', 'Laravel', 'MySQL', 'VueJS', 'Bootstrap'],
   },
   {
@@ -37,7 +37,7 @@ const projectsData: Project[] = [
     title: 'Simulate Basic Geometry',
     description: 'Explore the World of Basic 3D Modeling Simulations on Our Website.',
     imgSrc: '/static/images/projects/simulate-geometry.png',
-    repo: 'Karhdo/geometry-simulation',
+    repo: 'coooder/geometry-simulation',
     builtWith: ['Javascript', 'Jquery', 'ThreeJS'],
   },
 ];

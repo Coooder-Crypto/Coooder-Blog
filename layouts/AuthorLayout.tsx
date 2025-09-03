@@ -157,7 +157,7 @@ export default function AuthorLayout({ children, content }: Props) {
 
             <p>
               See my{' '}
-              <a target="_blank" href="https://github.com/Karhdo/karhdo.dev">
+              <a target="_blank" href="https://github.com/coooder/coooder-blog">
                 repository
               </a>{' '}
               for this blog.
