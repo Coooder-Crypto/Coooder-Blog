@@ -2,7 +2,6 @@
 
 import Snowfall from 'react-snowfall';
 import { formatDate } from 'pliny/utils/formatDate';
-// import NewsletterForm from 'pliny/ui/NewsletterForm';
 
 import siteMetadata from '@/data/siteMetadata';
 import { Tag, Link, Twemoji } from '@/components/ui';
@@ -118,11 +117,6 @@ export default function Home({ posts }) {
         </div>
       )}
 
-      {/* {siteMetadata.newsletter.provider && (
-        <div className="flex items-center justify-center pt-4">
-          <NewsletterForm />
-        </div>
-      )} */}
     </div>
   );
 }

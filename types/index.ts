@@ -1,3 +1,3 @@
 export * from './data';
-export * from './server';
+export * from './static';
 export * from './components';
