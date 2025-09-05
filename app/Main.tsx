@@ -11,7 +11,6 @@ import {
   Greeting,
   TypedBios,
   BlogLinks,
-  PopularTags,
   ShortDescription,
   SpotifyNowPlaying,
 } from '@/components/homepage';
@@ -49,8 +48,6 @@ export default function Home({ posts }) {
           </div>
         </div>
       </div>
-
-      <PopularTags />
 
       {/* List all post */}
       <div className="divide-y divide-gray-200 dark:divide-gray-700">

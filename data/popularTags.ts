@@ -12,19 +12,7 @@ const popularTags: PopularTag[] = [
     href: '/tags/javascript',
     iconType: 'Javascript',
     slug: 'javascript',
-    title: 'Javascript',
-  },
-  {
-    href: '/tags/typescript',
-    iconType: 'Typescript',
-    slug: 'typescript',
-    title: 'Typescript',
-  },
-  {
-    href: '/tags/nestjs',
-    iconType: 'NestJS',
-    slug: 'nestjs',
-    title: 'NestJS',
+    title: 'JavaScript',
   },
   {
     href: '/tags/react',
@@ -33,16 +21,28 @@ const popularTags: PopularTag[] = [
     title: 'React',
   },
   {
-    href: '/tags/docker',
-    iconType: 'Docker',
-    slug: 'docker',
-    title: 'Docker',
-  },
-  {
     href: '/tags/nextjs',
     iconType: 'NextJS',
     slug: 'nextjs',
     title: 'Next.js',
+  },
+  {
+    href: '/tags/typescript',
+    iconType: 'Typescript',
+    slug: 'typescript',
+    title: 'TypeScript',
+  },
+  {
+    href: '/tags/vercel',
+    iconType: 'Vercel',
+    slug: 'vercel',
+    title: 'Vercel',
+  },
+  {
+    href: '/tags/ai',
+    iconType: 'AI',
+    slug: 'ai',
+    title: 'AI',
   },
 ];
 

@@ -13,6 +13,7 @@ import Umami from 'public/static/icons/umami.svg';
 import Vercel from 'public/static/icons/vercel.svg';
 import NestJS from 'public/static/icons/nestjs.svg';
 import Docker from 'public/static/icons/docker.svg';
+import AI from 'public/static/icons/ai.svg';
 
 export const BrandIconsMap = {
   React,
@@ -30,6 +31,7 @@ export const BrandIconsMap = {
   Spotify,
   NestJS,
   Docker,
+  AI,
 };
 
 export type BrandIconType = keyof typeof BrandIconsMap;

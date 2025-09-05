@@ -28,9 +28,16 @@ export async function generateMetadata(props: { params: Promise<{ tag: string }>
 export const generateStaticParams = async () => {
   const tagCounts = tagData as Record<string, number>;
 
-  const tagKeys = Object.keys(tagCounts);
+  // Generate paths for all tags in tag-data.json
+  const existingTags = Object.keys(tagCounts);
+  
+  // Add common tags that might not have posts yet but are referenced in UI
+  const additionalTags = ['vercel', 'ai', 'react', 'typescript'];
+  
+  // Combine and deduplicate tags
+  const allTags = [...new Set([...existingTags, ...additionalTags])];
 
-  const paths = tagKeys.map((tag) => ({
+  const paths = allTags.map((tag) => ({
     tag: encodeURI(tag),
   }));
 
@@ -48,9 +55,6 @@ export default async function TagPage(props: { params: Promise<{ tag: string }> 
     sortPosts(allBlogs.filter((post) => post.tags && post.tags.map((t) => slug(t)).includes(tag)))
   );
 
-  if (filteredPosts.length === 0) {
-    return notFound();
-  }
-
+  // Always return the layout, even if no posts are found
   return <ListLayout posts={filteredPosts} title={title} />;
 }
