@@ -30,10 +30,10 @@ export const generateStaticParams = async () => {
 
   // Generate paths for all tags in tag-data.json
   const existingTags = Object.keys(tagCounts);
-  
+
   // Add common tags that might not have posts yet but are referenced in UI
   const additionalTags = ['vercel', 'ai', 'react', 'typescript'];
-  
+
   // Combine and deduplicate tags
   const allTags = [...new Set([...existingTags, ...additionalTags])];
 

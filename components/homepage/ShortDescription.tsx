@@ -1,10 +1,16 @@
+'use client';
+
+import { useLanguage } from '@/lib/i18n';
+
 const ShortDescription = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="mb-4 mt-4">
-      <p>I started learning to code in 2020 when I started college.</p>
-      <p>I landed my first job as a Front-end Developer in 2021.</p>
-      <p>I have a passion for JavaScript/Typescript and website development.</p>
-      <p>I started this blog to practice my skill and share my knowledge.</p>
+      <p>{t('bio.description1')}</p>
+      <p>{t('bio.description2')}</p>
+      <p>{t('bio.description3')}</p>
+      <p>{t('bio.description4')}</p>
     </div>
   );
 };

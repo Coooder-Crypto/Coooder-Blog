@@ -43,7 +43,6 @@ export default function AuthorLayout({ content }: Props) {
             </div>
           </div>
 
-
           <div className="prose max-w-none pb-8 dark:prose-dark xl:col-span-2">
             <h2>
               Hello, folks! <Twemoji className="mx-2" emoji="waving-hand" /> I'm Coooder

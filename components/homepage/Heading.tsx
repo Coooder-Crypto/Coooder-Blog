@@ -1,9 +1,14 @@
+'use client';
+
 import siteMetadata from '@/data/siteMetadata';
+import { useLanguage } from '@/lib/i18n';
 
 const Heading = () => {
+  const { t } = useLanguage();
+
   return (
     <h1 className="font-medium text-neutral-900 dark:text-neutral-200">
-      I'm <span>{siteMetadata.fullName}</span> - a dedicated <span>Fullstack Engineer</span>
+      {t('home.imName')} <span>{siteMetadata.fullName}</span> - {t('home.fullstackEngineer')}
     </h1>
   );
 };

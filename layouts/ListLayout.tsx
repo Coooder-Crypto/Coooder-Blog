@@ -9,6 +9,8 @@ import type { Blog } from 'contentlayer/generated';
 import { Link, Tag } from '@/components/ui';
 import { PopularTags } from '@/components/homepage';
 import siteMetadata from '@/data/siteMetadata';
+import { useLanguage } from '@/lib/i18n';
+import { getLocalizedBlogContent } from '@/lib/blogUtils';
 
 interface PaginationProps {
   totalPages: number;
@@ -22,6 +24,7 @@ interface ListLayoutProps {
 }
 
 function Pagination({ totalPages, currentPage }: PaginationProps) {
+  const { t } = useLanguage();
   const pathname = usePathname();
   const basePath = pathname.split('/')[1];
   const prevPage = currentPage - 1 > 0;
@@ -32,25 +35,25 @@ function Pagination({ totalPages, currentPage }: PaginationProps) {
       <nav className="flex justify-between">
         {!prevPage && (
           <button className="cursor-auto disabled:opacity-50" disabled={!prevPage}>
-            Previous
+            {t('blog.previous')}
           </button>
         )}
         {prevPage && (
           <Link href={currentPage - 1 === 1 ? `/${basePath}/` : `/${basePath}/page/${currentPage - 1}`} rel="prev">
-            Previous
+            {t('blog.previous')}
           </Link>
         )}
         <span>
-          {currentPage} of {totalPages}
+          {currentPage} {t('blog.pageOf')} {totalPages}
         </span>
         {!nextPage && (
           <button className="cursor-auto disabled:opacity-50" disabled={!nextPage}>
-            Next
+            {t('blog.next')}
           </button>
         )}
         {nextPage && (
           <Link href={`/${basePath}/page/${currentPage + 1}`} rel="next">
-            Next
+            {t('blog.next')}
           </Link>
         )}
       </nav>
@@ -59,6 +62,7 @@ function Pagination({ totalPages, currentPage }: PaginationProps) {
 }
 
 export default function ListLayout({ posts, title, initialDisplayPosts = [], pagination }: ListLayoutProps) {
+  const { t, language } = useLanguage();
   const [searchValue, setSearchValue] = useState('');
   const filteredBlogPosts = posts.filter((post) => {
     const searchContent = post.title + post.summary + post.tags?.join(' ');
@@ -78,12 +82,12 @@ export default function ListLayout({ posts, title, initialDisplayPosts = [], pag
           <div className="space-y-4">
             <div className="relative max-w-lg">
               <label>
-                <span className="sr-only">Search articles</span>
+                <span className="sr-only">{t('blog.searchArticles')}</span>
                 <input
-                  aria-label="Search articles"
+                  aria-label={t('blog.searchArticles')}
                   type="text"
                   onChange={(e) => setSearchValue(e.target.value)}
-                  placeholder="Search articles"
+                  placeholder={t('blog.searchArticles')}
                   className="block w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-900 dark:bg-gray-800 dark:text-gray-100"
                 />
               </label>
@@ -106,14 +110,16 @@ export default function ListLayout({ posts, title, initialDisplayPosts = [], pag
           </div>
         </div>
         <ul>
-          {!filteredBlogPosts.length && 'No posts found.'}
+          {!filteredBlogPosts.length && t('blog.noPostsFound')}
           {displayPosts.map((post) => {
-            const { path, date, title, summary, tags } = post;
+            const localizedPost = getLocalizedBlogContent(post, language);
+            const { path, date, tags } = post;
+            const { title, summary } = localizedPost;
             return (
               <li key={path} className="py-4">
                 <article className="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
                   <dl>
-                    <dt className="sr-only">Published on</dt>
+                    <dt className="sr-only">{t('common.publishedOn')}</dt>
                     <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
                       <time dateTime={date}>{formatDate(date, siteMetadata.locale)}</time>
                     </dd>
@@ -125,7 +131,11 @@ export default function ListLayout({ posts, title, initialDisplayPosts = [], pag
                           {title}
                         </Link>
                       </h3>
-                      <div className="flex flex-wrap">{tags?.map((tag) => <Tag key={tag} text={tag} />)}</div>
+                      <div className="flex flex-wrap">
+                        {tags?.map((tag) => (
+                          <Tag key={tag} text={tag} />
+                        ))}
+                      </div>
                     </div>
                     <div className="prose max-w-none text-gray-500 dark:text-gray-400">{summary}</div>
                   </div>

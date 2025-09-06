@@ -24,6 +24,7 @@
       "@/servers/*": ["servers/*"],
       "@/data/*": ["data/*"],
       "@/layouts/*": ["layouts/*"],
+      "@/lib/*": ["lib/*"],
       "@/libs/*": ["libs/*"],
       "@/css/*": ["css/*"],
       "contentlayer/generated": ["./.contentlayer/generated"]

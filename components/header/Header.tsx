@@ -1,10 +1,15 @@
+'use client';
+
 import clsx from 'clsx';
 import siteMetadata from '@/data/siteMetadata';
 import headerNavLinks from '@/data/headerNavLinks';
 import Link from '@/components/ui/Link';
+import LanguageSwitch from '@/components/ui/LanguageSwitch';
 import Logo from 'public/static/images/logo.svg';
+import { useLanguage } from '@/lib/i18n';
 
 const Header = () => {
+  const { t } = useLanguage();
   const headerClass =
     'mx-auto w-full max-w-6xl supports-backdrop-blur fixed left-0 right-0 top-1 z-10 bg-white/75 py-2 backdrop-blur dark:bg-dark/75 md:rounded-2xl';
 
@@ -33,10 +38,11 @@ const Header = () => {
                     'hover:bg-gray-200 dark:hover:bg-primary-600'
                   )}
                 >
-                  <span>{link.title}</span>
+                  <span>{t(link.key)}</span>
                 </Link>
               ))}
           </div>
+          <LanguageSwitch />
           <div
             role="separator"
             data-orientation="vertical"

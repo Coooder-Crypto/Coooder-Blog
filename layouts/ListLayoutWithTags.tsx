@@ -9,6 +9,8 @@ import type { Blog } from 'contentlayer/generated';
 import tagData from 'app/tag-data.json';
 import { Link, Tag } from '@/components/ui';
 import siteMetadata from '@/data/siteMetadata';
+import { useLanguage } from '@/lib/i18n';
+import { getLocalizedBlogContent } from '@/lib/blogUtils';
 
 interface PaginationProps {
   totalPages: number;
@@ -23,6 +25,7 @@ interface ListLayoutProps {
 }
 
 function Pagination({ totalPages, currentPage }: PaginationProps) {
+  const { t } = useLanguage();
   const pathname = usePathname();
   const basePath = pathname.split('/')[1];
 
@@ -34,25 +37,25 @@ function Pagination({ totalPages, currentPage }: PaginationProps) {
       <nav className="flex justify-between">
         {!prevPage && (
           <button className="cursor-auto disabled:opacity-50" disabled={!prevPage}>
-            Previous
+            {t('blog.previous')}
           </button>
         )}
         {prevPage && (
           <Link href={currentPage - 1 === 1 ? `/${basePath}/` : `/${basePath}/page/${currentPage - 1}`} rel="prev">
-            Previous
+            {t('blog.previous')}
           </Link>
         )}
         <span>
-          {currentPage} of {totalPages}
+          {currentPage} {t('blog.pageOf')} {totalPages}
         </span>
         {!nextPage && (
           <button className="cursor-auto disabled:opacity-50" disabled={!nextPage}>
-            Next
+            {t('blog.next')}
           </button>
         )}
         {nextPage && (
           <Link href={`/${basePath}/page/${currentPage + 1}`} rel="next">
-            Next
+            {t('blog.next')}
           </Link>
         )}
       </nav>
@@ -61,6 +64,7 @@ function Pagination({ totalPages, currentPage }: PaginationProps) {
 }
 
 export default function ListLayoutWithTags({ posts, title, initialDisplayPosts = [], pagination }: ListLayoutProps) {
+  const { t, language } = useLanguage();
   const pathname = usePathname();
   const tagCounts = tagData as Record<string, number>;
   const tagKeys = Object.keys(tagCounts);
@@ -80,13 +84,13 @@ export default function ListLayoutWithTags({ posts, title, initialDisplayPosts =
           <div className="hidden h-full max-h-screen min-w-[280px] max-w-[280px] flex-wrap overflow-auto rounded bg-gray-50 pt-5 shadow-md dark:bg-gray-900/70 dark:shadow-gray-800/40 sm:flex">
             <div className="px-6 py-4">
               {pathname.startsWith('/blog') ? (
-                <h3 className="font-bold uppercase text-primary-500">All Posts</h3>
+                <h3 className="font-bold uppercase text-primary-500">{t('blog.title')}</h3>
               ) : (
                 <Link
                   href={`/blog`}
                   className="font-bold uppercase text-gray-700 hover:text-primary-500 dark:text-gray-300 dark:hover:text-primary-500"
                 >
-                  All Posts
+                  {t('blog.title')}
                 </Link>
               )}
               <ul>
@@ -115,12 +119,14 @@ export default function ListLayoutWithTags({ posts, title, initialDisplayPosts =
           <div>
             <ul>
               {displayPosts.map((post) => {
-                const { path, date, title, summary, tags } = post;
+                const localizedPost = getLocalizedBlogContent(post, language);
+                const { path, date, tags } = post;
+                const { title, summary } = localizedPost;
                 return (
                   <li key={path} className="py-5">
                     <article className="flex flex-col space-y-2 xl:space-y-0">
                       <dl>
-                        <dt className="sr-only">Published on</dt>
+                        <dt className="sr-only">{t('common.publishedOn')}</dt>
                         <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
                           <time dateTime={date} suppressHydrationWarning>
                             {formatDate(date, siteMetadata.locale)}
@@ -134,7 +140,11 @@ export default function ListLayoutWithTags({ posts, title, initialDisplayPosts =
                               {title}
                             </Link>
                           </h2>
-                          <div className="flex flex-wrap">{tags?.map((tag) => <Tag key={tag} text={tag} />)}</div>
+                          <div className="flex flex-wrap">
+                            {tags?.map((tag) => (
+                              <Tag key={tag} text={tag} />
+                            ))}
+                          </div>
                         </div>
                         <div className="prose max-w-none text-gray-500 dark:text-gray-400">{summary}</div>
                       </div>

@@ -1,15 +1,36 @@
+'use client';
+
 import React from 'react';
 import Typed from 'typed.js';
 
 import Twemoji from '@/components/ui/Twemoji';
+import { useLanguage } from '@/lib/i18n';
 
 const TypedBios = () => {
   const el = React.useRef(null);
   const typed = React.useRef<Typed | null>(null);
+  const { t } = useLanguage();
 
   React.useEffect(() => {
+    // 销毁之前的实例
+    if (typed.current) {
+      typed.current.destroy();
+    }
+
+    // 创建新的实例，使用动态字符串
+    const strings = [
+      `${t('bio.alias')} <b class="font-medium">Coooder</b> ${t('bio.atWeb3')}`,
+      `${t('bio.liveIn')} <b class="font-medium">Beijing</b>.`,
+      `${t('bio.bornIn')} <b class="font-medium">Tai'an</b> ${t('bio.city')}`,
+      `${t('bio.firstLanguage')} <b class="font-medium">C++</b>.`,
+      t('bio.loveWebDev'),
+      `${t('bio.focusing')} <b class="font-medium">${t('bio.coolestSoftware')}</b>.`,
+      `${t('bio.workWith')} <b class="font-medium">Javascript/Typescript</b> ${t('bio.technologies')}`,
+      `${t('bio.loveGaming')} 🎮${t('bio.favoriteGame')}`,
+    ];
+
     typed.current = new Typed(el.current, {
-      stringsElement: '#bios',
+      strings: strings,
       typeSpeed: 40,
       backSpeed: 10,
       loop: true,
@@ -17,44 +38,10 @@ const TypedBios = () => {
     });
 
     return () => typed.current?.destroy();
-  }, []);
+  }, [t]); // 依赖于翻译函数，语言变化时重新初始化
 
   return (
     <div>
-      <ul id="bios" className="hidden">
-        <li>
-          I'm aliased as <b className="font-medium">Coooder</b> at Web3.
-        </li>
-        <li>
-          I live in <b className="font-medium">Beijing</b>.
-        </li>
-        <li>
-          I was born in the beautiful <b className="font-medium">Tai'an</b> city.
-        </li>
-        <li>
-          My first programming language I learned was <b className="font-medium">C++</b>.
-        </li>
-        <li>I love web development.</li>
-        <li>
-          I'm focusing on building <b className="font-medium">the Coolest software</b>.
-        </li>
-        <li>
-          I work mostly with <b className="font-medium">Javascript/Typescript</b> technologies.
-        </li>
-        {/* <li>
-          I'm a dog-person <Twemoji emoji="dog" />.
-        </li>
-        <li>
-          I'm a sporty-guy. I love
-          <span className="ml-1">
-            <Twemoji emoji="tennis" />, <Twemoji emoji="soccer-ball" />
-          </span>
-          .
-        </li> */}
-        <li>
-          I love playing video game <Twemoji emoji="video-game" />, OW is my favorite one.
-        </li>
-      </ul>
       <span ref={el} className="text-neutral-900 dark:text-neutral-200" />
     </div>
   );
