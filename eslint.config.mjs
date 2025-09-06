@@ -14,7 +14,7 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['tailwind.config.js'],
+    ignores: ['tailwind.config.js', 'app/3d-room/**/*'],
   },
   js.configs.recommended,
   ...compat.extends(
@@ -65,6 +65,10 @@ export default [
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-var-requires': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unsafe-function-type': 'off',
+      'import/no-anonymous-default-export': 'off',
+      '@next/next/no-img-element': 'off',
     },
   },
 ];

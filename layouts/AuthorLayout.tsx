@@ -4,10 +4,11 @@ import { Mail, Github, Twitter } from 'lucide-react';
 import { Link, Image, Twemoji } from '@/components/ui';
 
 interface Props {
+  children: React.ReactNode;
   content: Omit<Authors, '_id' | '_raw' | 'body'>;
 }
 
-export default function AuthorLayout({ content }: Props) {
+export default function AuthorLayout({ children, content }: Props) {
   const { name, avatar, occupation, company, email, twitter, linkedin, github } = content;
 
   return (
@@ -43,18 +44,7 @@ export default function AuthorLayout({ content }: Props) {
             </div>
           </div>
 
-          <div className="prose max-w-none pb-8 dark:prose-dark xl:col-span-2">
-            <h2>
-              Hello, folks! <Twemoji className="mx-2" emoji="waving-hand" /> I'm Coooder
-            </h2>
-            <h2>Why have this blog?</h2>
-            <blockquote>
-              <p>
-                The greatest danger in times of turbulence is not the turbulence; it is to act with your yesterday's
-                logic.
-              </p>
-            </blockquote>
-          </div>
+          <div className="prose max-w-none pb-8 dark:prose-dark xl:col-span-2">{children}</div>
         </div>
       </div>
     </>
