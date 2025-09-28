@@ -1,52 +1,11 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import { genPageMetadata } from 'app/seo';
 
 import projectsData from '@/data/projectsData';
 import { Link } from '@/components/ui';
 
 export default function Projects() {
-  const projectsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const projects = projectsRef.current;
-
-    if (!projects) return;
-
-    const handleScroll = () => {
-      const scrolled = window.pageYOffset;
-
-      // Project cards stagger effect
-      const projectCards = projects.querySelectorAll('.project-card');
-      projectCards.forEach((card, index) => {
-        const rect = card.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-
-        if (isVisible) {
-          const cardElement = card as HTMLElement;
-          const offset = (scrolled - cardElement.offsetTop) * (0.1 + index * 0.02);
-          cardElement.style.transform = `translateY(${offset}px)`;
-        }
-      });
-    };
-
-    // Throttle scroll events for better performance
-    let ticking = false;
-    const optimizedScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(handleScroll);
-        ticking = true;
-        setTimeout(() => {
-          ticking = false;
-        }, 16);
-      }
-    };
-
-    window.addEventListener('scroll', optimizedScroll);
-    return () => window.removeEventListener('scroll', optimizedScroll);
-  }, []);
-
   const workProjects = projectsData.filter(({ type }) => type === 'work');
   const sideProjects = projectsData.filter(({ type }) => type === 'self');
 
@@ -66,7 +25,7 @@ export default function Projects() {
       </div>
 
       {/* Projects Grid with Parallax Cards */}
-      <div ref={projectsRef} className="relative">
+      <div className="relative">
         {/* Work Projects */}
         <section className="py-24">
           <div className="container mx-auto px-4">
@@ -91,9 +50,9 @@ export default function Projects() {
               <div className="mx-auto h-1 w-24 rounded bg-gradient-to-r from-green-500 to-blue-500"></div>
             </div>
 
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {sideProjects.map((project, index) => (
-                <CompactProjectCard key={project.title} project={project} index={index} />
+                <CompactProjectCard key={`${project.title}-${index}`} project={project} index={index} />
               ))}
             </div>
           </div>
@@ -181,56 +140,96 @@ function ParallaxProjectCard({ project, index, reverse = false }: { project: any
 
 function CompactProjectCard({ project, index }: { project: any; index: number }) {
   const { title, description, imgSrc, url, repo, builtWith } = project;
-  const href = repo ? `https://github.com/${repo}` : url;
+  const displayTech = Array.isArray(builtWith) ? builtWith : [];
+  const primaryTech = displayTech.slice(0, 3);
+  const remainingTechCount = Math.max(displayTech.length - primaryTech.length, 0);
 
   return (
-    <div
-      className="project-card group cursor-pointer rounded-2xl bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl dark:bg-gray-700"
-      style={{ animationDelay: `${index * 0.1}s` }}
-    >
-      {imgSrc && (
-        <div className="mb-6 overflow-hidden rounded-xl">
-          <img
-            src={imgSrc}
-            alt={title}
-            className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+    <article className="project-card side-project-card group relative flex h-full flex-col overflow-hidden rounded-3xl border border-gray-200/70 bg-white/95 shadow-[0_18px_45px_-30px_rgba(30,41,59,0.55)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_60px_-40px_rgba(30,64,175,0.6)] dark:border-gray-700/60 dark:bg-gray-800/80">
+      <div className="relative overflow-hidden">
+        <div className="aspect-[16/9] w-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+          {imgSrc ? (
+            <img
+              src={imgSrc}
+              alt={title}
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-sm text-gray-400 dark:text-gray-500">
+              Preview coming soon
+            </div>
+          )}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
         </div>
-      )}
+      </div>
 
-      <div className="space-y-4">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{title}</h3>
+      <div className="flex flex-1 flex-col gap-4 p-6">
+        <h3 className="text-xl font-semibold text-slate-900 transition-colors duration-300 group-hover:text-blue-600 dark:text-slate-100 dark:group-hover:text-sky-400">
+          {title}
+        </h3>
 
-        {description && <p className="line-clamp-3 text-gray-600 dark:text-gray-300">{description}</p>}
+        {description && (
+          <p className="line-clamp-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{description}</p>
+        )}
 
-        {builtWith && (
-          <div className="flex flex-wrap gap-1">
-            {builtWith.slice(0, 3).map((tech, i) => (
+        {primaryTech.length > 0 && (
+          <div className="flex flex-wrap gap-2 pt-1">
+            {primaryTech.map((tech, i) => (
               <span
                 key={i}
-                className="rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700 dark:bg-gray-600 dark:text-gray-300"
+                className="rounded-full border border-slate-200/70 px-3 py-1 text-[11px] font-medium tracking-wide text-slate-600 transition-colors duration-200 group-hover:border-blue-200 group-hover:text-blue-600 dark:border-slate-600 dark:text-slate-300 dark:group-hover:border-sky-500/60 dark:group-hover:text-sky-300"
               >
                 {tech}
               </span>
             ))}
-            {builtWith.length > 3 && <span className="text-xs text-gray-500">+{builtWith.length - 3} more</span>}
+            {remainingTechCount > 0 && (
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-medium text-slate-500 dark:bg-slate-700/80 dark:text-slate-300">
+                +{remainingTechCount} more
+              </span>
+            )}
           </div>
         )}
 
-        {href && (
-          <div className="pt-2">
-            <Link
-              href={href}
-              className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+        {(repo || url) && (
+          <div className="mt-auto flex items-center justify-between pt-4 text-sm font-medium">
+            <div className="flex items-center gap-3 text-blue-600 dark:text-sky-300">
+              {url && (
+                <Link
+                  href={url}
+                  className="inline-flex items-center gap-1 rounded-full border border-transparent px-3 py-1 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 dark:hover:border-sky-500/40 dark:hover:bg-sky-500/10"
+                >
+                  <span>Live</span>
+                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M7 7h10v10" />
+                  </svg>
+                </Link>
+              )}
+              {repo && (
+                <Link
+                  href={`https://github.com/${repo}`}
+                  className="inline-flex items-center gap-1 rounded-full border border-transparent px-3 py-1 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 dark:hover:border-sky-500/40 dark:hover:bg-sky-500/10"
+                >
+                  <span>Code</span>
+                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 18l6-6-6-6" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 6l-6 6 6 6" />
+                  </svg>
+                </Link>
+              )}
+            </div>
+
+            <svg
+              className="h-5 w-5 text-slate-300 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-blue-500 dark:text-slate-500 dark:group-hover:text-sky-300"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              viewBox="0 0 24 24"
             >
-              <span className="text-sm font-medium">{repo ? 'View Code' : 'Learn More'}</span>
-              <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
           </div>
         )}
       </div>
-    </div>
+    </article>
   );
 }

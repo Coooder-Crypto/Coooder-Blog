@@ -4,6 +4,7 @@ import Snowfall from 'react-snowfall';
 import { formatDate } from 'pliny/utils/formatDate';
 
 import siteMetadata from '@/data/siteMetadata';
+import projectsData from '@/data/projectsData';
 import { Tag, Link, Twemoji } from '@/components/ui';
 import {
   Avatar,
@@ -19,8 +20,63 @@ import { getLocalizedBlogContent } from '@/lib/blogUtils';
 
 const MAX_DISPLAY = 5;
 
+function ProjectCard({ project }: { project: any }) {
+  const { title, description, imgSrc, url, repo, builtWith } = project;
+  const href = repo ? `https://github.com/${repo}` : url;
+
+  return (
+    <div className="group cursor-pointer rounded-xl bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:bg-gray-800">
+      {imgSrc && (
+        <div className="mb-4 overflow-hidden rounded-lg">
+          <img
+            src={imgSrc}
+            alt={title}
+            className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
+      )}
+
+      <div className="space-y-3">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{title}</h3>
+
+        {description && <p className="line-clamp-2 text-gray-600 dark:text-gray-300">{description}</p>}
+
+        {builtWith && (
+          <div className="flex flex-wrap gap-2">
+            {builtWith.slice(0, 3).map((tech, i) => (
+              <span
+                key={i}
+                className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+              >
+                {tech}
+              </span>
+            ))}
+            {builtWith.length > 3 && <span className="text-xs text-gray-500">+{builtWith.length - 3} more</span>}
+          </div>
+        )}
+
+        {href && (
+          <div className="pt-2">
+            <Link
+              href={href}
+              className="text-primary inline-flex items-center hover:text-sky-600 dark:hover:text-sky-400"
+            >
+              <span className="text-sm font-medium">{repo ? 'View Code' : 'Visit Project'}</span>
+              <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Home({ posts }) {
   const { t, language } = useLanguage();
+  const workProjects = projectsData.filter(({ type }) => type === 'work');
+
   return (
     <div className="relative">
       <Snowfall
@@ -49,6 +105,35 @@ export default function Home({ posts }) {
               <Twemoji emoji="clinking-beer-mugs" />
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Professional Work */}
+      <div className="py-12">
+        <div className="mb-8 text-center">
+          <h2 className="mb-4 text-3xl font-bold text-gray-900 dark:text-gray-100">Professional Work</h2>
+          <div className="mx-auto h-1 w-16 rounded bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
+            Selected projects from my professional experience
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          {workProjects.map((project, index) => (
+            <ProjectCard key={`${project.title}-${index}`} project={project} />
+          ))}
+        </div>
+
+        <div className="mt-8 text-center">
+          <Link
+            href="/projects"
+            className="text-primary inline-flex items-center hover:text-sky-600 dark:hover:text-sky-400"
+          >
+            <span className="font-medium">View All Projects</span>
+            <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
         </div>
       </div>
 
