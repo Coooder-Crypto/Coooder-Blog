@@ -1,0 +1,464 @@
+---
+title: '前端事件循环全解析：微任务、宏任务与渲染时序'
+titleEn: 'Frontend Event Loop Explained: Microtasks, Macrotasks and Rendering'
+date: '2025-9-14'
+lastmod: '2025-9-14'
+tags: ['javascript', 'event-loop', 'async', 'browser', 'performance']
+summary: '以图解思维和实例代码系统讲解浏览器事件循环：调用栈、任务队列、微任务与宏任务、渲染帧顺序、常见陷阱与性能实践。'
+summaryEn: 'A practical guide to the browser event loop: call stack, task queues, microtasks vs macrotasks, rendering phases, pitfalls, and performance tips with runnable examples.'
+---
+
+当你写下 `setTimeout`、`Promise.then` 或 `async/await` 时，幕后真正驱动一切的是“事件循环”。理解事件循环不仅能准确预判代码的执行顺序，也是写出流畅交互与高性能应用的关键。
+
+---
+
+## 为什么需要事件循环？
+
+JavaScript 在浏览器中是“单线程”的：同一时刻只能执行一段代码。为避免长任务阻塞页面交互，浏览器将“耗时或异步的工作”（计时、网络、UI 事件等）交给宿主环境，并在合适的时机将回调排入队列，由事件循环调度执行。
+
+直观理解：
+
+- 主线程只负责“执行 JS”。
+- 异步能力由“浏览器/Web APIs”提供。
+- 回调进入“队列”，事件循环不断从队列取出并执行。
+
+---
+
+## 核心构件：调用栈、堆、队列
+
+- 调用栈 Call Stack：当前正在执行的函数帧集合，后进先出。
+- 堆 Heap：对象、闭包等分配的内存区域。
+- 任务队列 Task Queues：待执行的回调列表，按类型与优先级划分（宏任务、微任务）。
+
+---
+
+## 术语澄清：规范与“宏/微”说法
+
+在最新的 HTML 规范（Living Standard）中，规范性的术语是：
+
+- Task（任务）、Task queue（任务队列）、Task source（任务源）
+- Microtask（微任务）、Microtask queue（微任务队列）
+
+注意：规范并不使用“宏任务（macrotask）/宏队列（macro-queue）”这一表述。社区常用“宏任务”来泛指“普通的 Task（位于各自的任务队列中）”，以便与“Microtask”对照理解。因此：
+
+- 社区口语中的“宏任务” ≈ 规范里的“Task（普通任务）”；并不存在一个叫“宏队列”的单一队列，实际是“多个任务源对应的一个或多个任务队列”。
+- “微任务”是规范术语，具有明确的“微任务检查点（microtask checkpoint）”规则：在任务结束后清空微任务队列。
+
+为兼顾实践可读性，本文继续使用“宏任务/微任务”的对比来讲解执行时序，但请读者心中对应到规范术语。
+
+---
+
+## 宏任务 vs 微任务（社区术语对照）
+
+两类最常被讨论的队列：
+
+- 宏任务（Macrotask）：如 `setTimeout`/`setInterval`、`MessageChannel`、`postMessage`、UI 事件回调、网络回调等。
+- 微任务（Microtask）：如 `Promise.then/catch/finally`、`queueMicrotask`、`MutationObserver`。
+
+规则要点：
+
+1) 每次执行栈清空后，会“清空本轮所有微任务队列”。
+2) 然后可能触发一次浏览器渲染（布局/绘制）。
+3) 再进入下一次宏任务，重复上述流程。
+
+---
+
+## 一次事件循环的典型顺序
+
+1. 执行同步代码（进入/退出调用栈）。
+2. 清空微任务队列（直到队列为空）。
+3. 浏览器有机会渲染一帧。
+4. 取出下一个宏任务并执行。
+
+示例：
+
+```js
+console.log('A');
+
+setTimeout(() => console.log('B'), 0); // 宏任务
+
+Promise.resolve()
+  .then(() => console.log('C'))        // 微任务
+  .then(() => console.log('C2'));      // 仍是微任务（链式）
+
+console.log('D');
+
+// 期望输出：A, D, C, C2, B
+```
+
+---
+
+## 微任务为何“更早”执行？
+
+因为规范要求在当前宏任务结束、渲染前“清空微任务队列”。这让 `Promise.then` 等场景非常适合做“紧随其后”的小收尾工作。
+
+```js
+setTimeout(() => {
+  console.log('T1');
+  Promise.resolve().then(() => console.log('micro in T1'));
+}, 0);
+
+Promise.resolve().then(() => console.log('M1'));
+console.log('sync');
+
+// 输出顺序：sync, M1, T1, micro in T1
+```
+
+同时，`queueMicrotask` 与 `Promise.then` 都会排入微任务：
+
+```js
+queueMicrotask(() => console.log('qm'));
+Promise.resolve().then(() => console.log('then'));
+console.log('sync');
+// 输出：sync, qm, then（两者都是微任务，彼此相对顺序取决于入队时机）
+```
+
+---
+
+## 渲染与 requestAnimationFrame
+
+浏览器通常在清空微任务后、进入下一宏任务前“有机会”进行一次渲染。`requestAnimationFrame`（rAF）回调在下一帧渲染前执行，非常适合执行与绘制相关的读取/写入操作。
+
+```js
+const start = performance.now();
+requestAnimationFrame(ts => {
+  console.log('rAF before paint ~ delta(ms):', Math.round(ts - start));
+});
+```
+
+对比：
+
+- `setTimeout(..., 0)`：排入宏任务，真实延迟受最小计时器分辨率、主线程负载影响。
+- `requestAnimationFrame`：对齐屏幕刷新节奏（通常 60fps），在绘制前调用。
+
+实践建议：
+
+- 批量 DOM 更新，尽量在一帧内完成（读写分离，避免强制同步布局）。
+- 需要“下一帧再做”的工作放进 rAF；需要“马上但在当前栈之后”的工作用微任务。
+
+---
+
+## DOM 事件与任务队列
+
+用户交互（click、input 等）由浏览器捕获并在适当时机将事件回调作为“宏任务”入队。回调执行期间产生的微任务，依旧会在该回调返回后被“立即清空”。
+
+```js
+button.addEventListener('click', () => {
+  console.log('click macro');
+  Promise.resolve().then(() => console.log('click micro'));
+});
+// 点击输出：click macro, click micro
+```
+
+---
+
+## async/await 与微任务
+
+`await` 的本质是把后续代码放入微任务：
+
+```js
+async function demo() {
+  console.log('1');
+  await null;            // 等价于 Promise.resolve(null)
+  console.log('2');      // 微任务阶段执行
+}
+demo();
+console.log('3');
+// 输出：1, 3, 2
+```
+
+多个 `await` 会产生多次微任务切片，使异步代码读起来像同步流程，但执行顺序遵循“清空微任务”的规则。
+
+---
+
+## MessageChannel 与 postMessage
+
+在浏览器中，`MessageChannel` 和 `window.postMessage` 都可用来调度“宏任务”，通常比 `setTimeout(..., 0)` 更稳定：
+
+```js
+const channel = new MessageChannel();
+channel.port1.onmessage = () => console.log('macro via message');
+channel.port2.postMessage(null);
+
+Promise.resolve().then(() => console.log('micro'));
+// 输出：micro, macro via message
+```
+
+---
+
+## 与 Node.js 的差异（简述）
+
+Node.js 有自己的事件循环实现与队列阶段（timers、pending、poll、check、close callbacks 等），以及微任务（`process.nextTick`、`Promise`）。在浏览器中只需记住本文规则；在 Node 中需结合其阶段模型具体分析。
+
+---
+
+## 常见陷阱与误解
+
+- setTimeout(fn, 0) 并非“立即执行”：会进入宏任务队列，最短延迟也受平台最小计时器分辨率与主线程繁忙程度影响。
+- 微任务过多会“饿死渲染”：若持续向微任务队列塞任务（例如在微任务里递归入队），浏览器可能迟迟得不到渲染时机，导致卡顿。
+- 事件回调中的微任务：事件回调返回前不会执行，回调返回后会一次性清空，注意避免在回调中制造“微任务风暴”。
+- 读写混用导致强制同步布局：在同一任务内交替读写 DOM 样式/几何信息可能触发布局抖动，降低帧率。
+
+反例（请勿在生产使用）：
+
+```js
+// 递归微任务：会长时间占用主线程，阻塞渲染
+let count = 0;
+function storm() {
+  Promise.resolve().then(() => {
+    if (++count % 1000 === 0) console.log('microtasks:', count);
+    storm();
+  });
+}
+// storm(); // 小心：容易让页面失去响应
+```
+
+---
+
+## 性能与实践建议清单
+
+- 用微任务做“紧随其后的小收尾”；用宏任务/事件驱动做“节奏切换”。
+- 批量 DOM 更新：同类操作合并，使用 rAF 对齐刷新节奏。
+- 避免在微任务中创建无界循环；必要时在人为的宏任务边界处让出主线程。
+- 衡量与监控：用 `performance.now()`、`Long Task` API、性能面板确认是否出现长任务与掉帧。
+- 对关键交互路径做“切片”：长计算拆分到多帧，或借助 `Web Worker` 移出主线程。
+
+---
+
+## 小测验：判断输出顺序
+
+试着在脑中运行，答案见注释：
+
+```js
+console.log(1);
+setTimeout(() => console.log(2));
+Promise.resolve().then(() => console.log(3));
+queueMicrotask(() => console.log(4));
+requestAnimationFrame(() => console.log(5));
+console.log(6);
+
+// 期望：1, 6, 3/4(取决于入队时刻，通常 3, 4), 5(下一帧前), 2(宏任务)
+```
+
+---
+
+## 总结
+
+记住三件事：
+
+- 同步 → 微任务 →（渲染）→ 下一个宏任务。
+- 微任务用于“当前宏任务的收尾”；宏任务用于“节奏切换”。
+- 善用 rAF/微任务/宏任务的组合，才能既正确又流畅。
+
+---
+
+## 标准模型与时间线细节
+
+HTML 标准（WHATWG）将事件循环抽象为：事件循环 → 任务队列（按“任务源”分组）→ 微任务检查点 → 更新渲染。
+
+一帧内的典型时间线（示意）：
+
+```
+[ 同步/宏任务 ] → [ 清空微任务 ] → [ 样式/布局/绘制(可选) ] → [ 下一宏任务 ]
+```
+
+- 任务源 Task Source：计时器、网络、DOM 操作、历史导航、用户交互、postMessage、文件系统等（实际划分由规范定义）。
+- 每个事件循环可有多个任务队列；不同任务源可能落在不同队列中，浏览器对“下一个执行的任务”有调度自由度（在规范边界内）。
+- 微任务检查点 Microtask checkpoint：在任务结束时运行，直至微任务队列清空为止（期间新增的微任务也会被继续执行）。
+
+要点：规范不定义“宏队列”的概念，也未规定所有 Task 的全局固定优先级；不同浏览器可采用不同启发式，但“在任务结束后清空微任务队列”是确定的。
+
+---
+
+## 计时器细节：最小延迟、背景节流与漂移
+
+- 最小延迟（clamp）：当嵌套计时器层级较深时，最小延迟会被限制（通常≥4ms）。这意味着 `setTimeout(fn, 0)` 也可能不是 0ms。
+- 背景标签页节流：浏览器会显著提高最小延迟（常见≥1000ms），以节省电量与资源。
+- setInterval 漂移：受主线程繁忙影响，间隔会累积误差；推荐使用“自校正”的 `setTimeout` 实现周期任务。
+
+自校正定时器示例：
+
+```js
+function scheduleEvery(ms, fn) {
+  const start = performance.now();
+  let count = 1;
+  function tick() {
+    const target = start + count * ms;
+    const delay = Math.max(0, target - performance.now());
+    setTimeout(() => {
+      fn({ count, drift: performance.now() - target });
+      count++;
+      tick();
+    }, delay);
+  }
+  tick();
+}
+
+scheduleEvery(1000, ({ count, drift }) => {
+  console.log('tick', count, 'drift(ms)=', Math.round(drift));
+});
+```
+
+---
+
+## 微任务来源的对比：Promise、queueMicrotask、MutationObserver
+
+三者都属于微任务，执行顺序取决于入队先后：
+
+```js
+const mo = new MutationObserver(() => console.log('MO'));
+mo.observe(document.body, { childList: true });
+
+Promise.resolve().then(() => console.log('P'));
+queueMicrotask(() => console.log('Q'));
+
+document.body.appendChild(document.createTextNode('x'));
+
+// 可能输出：Q/P/MO 或 P/Q/MO —— 取决于各自入队时机
+```
+
+实践上，`Promise.then` 与 `queueMicrotask` 可互换用于“当前栈后的微任务”；`MutationObserver` 适合响应 DOM 结构变动。
+
+---
+
+## 与渲染管线的衔接：rAF、rIC 与样式/布局/绘制
+
+- requestAnimationFrame（rAF）：在下一帧绘制前执行；适合读写影响布局/绘制的 DOM 逻辑。
+- requestIdleCallback（rIC）：在浏览器空闲时段执行，可能被延后；适合低优先级、可中断的工作（回退到 `setTimeout` 时需小心间隔）。
+- 读写分离：同一帧内先批量读取布局信息，再批量写入，避免强制同步布局（layout thrash）。
+
+示例：读写分离更新样式（避免交替读写）：
+
+```js
+requestAnimationFrame(() => {
+  // 先读
+  const h = box.offsetHeight;
+  const w = box.offsetWidth;
+
+  // 再写
+  box.style.transform = `translate(${w / 10}px, ${h / 10}px)`;
+});
+```
+
+---
+
+## 长任务切片：避免微任务“饿死渲染”
+
+若在微任务中递归排队，浏览器可能久得不到渲染机会。将长任务切片到多帧或让出主线程：
+
+```js
+// 将大数组处理分片到多帧
+function chunkProcess(items, fn, chunk = 500) {
+  let i = 0;
+  function run() {
+    const end = Math.min(i + chunk, items.length);
+    for (; i < end; i++) fn(items[i]);
+    if (i < items.length) {
+      // 让出主线程：下一帧再继续
+      requestAnimationFrame(run);
+    }
+  }
+  run();
+}
+```
+
+或使用宏任务边界：
+
+```js
+function yieldMacro() {
+  return new Promise(resolve => setTimeout(resolve));
+}
+
+async function heavyWork() {
+  for (let i = 0; i < 10; i++) {
+    // 做一部分
+    doPartialWork(i);
+    // 让出主线程，避免阻塞渲染
+    await yieldMacro();
+  }
+}
+```
+
+---
+
+## DevTools 调试与验证方法
+
+- Performance 录制：
+  - 打开 Performance 面板 → 点击 Record → 触发交互/代码 → 停止。
+  - 查看 Main 线程火焰图：识别 Long Task（>50ms）与 rAF 回调、Timer 回调、微任务（Promise）等。
+- Timings 图层：关注 FPS、CPU、NET；确认掉帧点与计算高峰是否重叠。
+- Source 断点：对 XHR/fetch、Event Listener、定时器设断点；结合 Console 的时间戳打印，校验执行顺序。
+- Web Vitals：配合 `Long Tasks API` 或 Lighthouse 评估交互性能（INP、FID）。
+
+辅助日志工具：
+
+```js
+const log = (label) => console.log(label, performance.now().toFixed(2));
+
+console.log('sync');
+queueMicrotask(() => log('micro'));
+setTimeout(() => log('macro'), 0);
+requestAnimationFrame(() => log('rAF'));
+```
+
+---
+
+## FAQ：易混点速查
+
+- Q：`then` 和 `queueMicrotask` 谁先？
+  - A：谁先入队谁先执行；两者同为微任务。
+- Q：`await` 会阻塞线程吗？
+  - A：不会；`await` 后的代码被放入微任务，当前任务继续执行直至栈清空。
+- Q：为什么 `setTimeout(fn, 0)` 有时比 `rAF` 晚？
+  - A：`rAF` 对齐绘制节奏，通常在下一帧绘制前；`setTimeout` 是下一轮宏任务，受计时器分辨率与节流影响。
+- Q：背景标签页的计时器为何不准？
+  - A：浏览器出于节能目的大幅节流，最小延迟显著增加（常见≥1000ms）。
+- Q：大量 Promise 链会更快吗？
+  - A：不一定。过多微任务会占满主线程并饿死渲染，应切片或让出主线程。
+
+---
+
+## 再来几道顺序题
+
+题 1：
+
+```js
+console.log('1');
+setTimeout(() => {
+  console.log('2');
+  Promise.resolve().then(() => console.log('3'));
+});
+Promise.resolve().then(() => console.log('4'));
+console.log('5');
+// 输出：1, 5, 4, 2, 3
+```
+
+题 2：
+
+```js
+Promise.resolve().then(() => {
+  console.log('A');
+  setTimeout(() => console.log('B'));
+}).then(() => console.log('C'));
+// 输出：A, C, B
+```
+
+题 3：
+
+```js
+setTimeout(() => console.log('T')); // 宏
+queueMicrotask(() => console.log('Q')); // 微
+requestAnimationFrame(() => console.log('R')); // 绘制前
+console.log('S'); // 同步
+// 输出：S, Q, R, T（T 的实际时机可能略晚）
+```
+
+---
+
+## 实战清单（Cheatsheet）
+
+- 短小收尾放“微任务”；跨帧操作放 rAF；跨节奏或降优先级放宏任务或 rIC。
+- 读写分离，批量 DOM 更新；避免交替读写触发布局抖动。
+- 拆分长计算，避免长任务与微任务风暴；必要时 `await` 宏任务边界。
+- 计时器用自校正方案对抗漂移；背景标签页不依赖精确定时。
+- 用 Performance 面板验证推断，数据说话。
