@@ -4,7 +4,7 @@ import { slug } from 'github-slugger';
 import { allBlogs } from 'contentlayer/generated';
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer';
 
-import { ListLayout } from 'layouts';
+import { ListLayout } from '@/components/layouts';
 import tagData from 'app/tag-data.json';
 import { genPageMetadata } from 'app/seo';
 import siteMetadata from '@/data/siteMetadata';

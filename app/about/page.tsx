@@ -3,7 +3,7 @@ import { Authors, allAuthors } from 'contentlayer/generated';
 import { coreContent } from 'pliny/utils/contentlayer';
 import { MDXLayoutRenderer } from 'pliny/mdx-components';
 
-import AuthorLayout from '@/layouts/AuthorLayout';
+import AuthorLayout from '@/components/layouts/AuthorLayout';
 
 export const metadata = genPageMetadata({ title: 'About' });
 

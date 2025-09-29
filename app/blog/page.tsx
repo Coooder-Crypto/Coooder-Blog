@@ -1,6 +1,6 @@
 'use client';
 
-import ListLayout from '@/layouts/ListLayout';
+import ListLayout from '@/components/layouts/ListLayout';
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer';
 import { allBlogs } from 'contentlayer/generated';
 import { useLanguage } from '@/lib/i18n';

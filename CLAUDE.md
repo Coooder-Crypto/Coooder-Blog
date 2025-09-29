@@ -19,7 +19,7 @@ npm run build       # Build static site for production (outputs to out/)
 npm run serve       # Serve built static files locally
 
 # Code Quality
-npm run lint        # ESLint with auto-fix for app/, components/, layouts/, scripts/
+npm run lint        # ESLint with auto-fix for app/, components/, scripts/
 ```
 
 ### Content Development
@@ -51,6 +51,7 @@ app/                    # Next.js 15 App Router
 └── layout.tsx         # Root layout
 
 components/
+├── layouts/           # MDX layout components
 ├── ui/                # Reusable UI components
 ├── homepage/          # Homepage-specific components  
 ├── blog/              # Blog-specific components
@@ -64,7 +65,6 @@ data/
 ├── headerNavLinks.ts  # Navigation configuration
 └── projectsData.ts    # Projects data
 
-layouts/               # MDX layout components
 types/                 # TypeScript definitions
 hooks/                 # Custom React hooks (staticized for static site)
 ```

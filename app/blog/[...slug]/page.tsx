@@ -7,7 +7,7 @@ import { allBlogs } from 'contentlayer/generated';
 import { coreContent } from 'pliny/utils/contentlayer';
 
 import { components } from '@/components/ui';
-import { PostSimple, PostLayout, PostBanner } from 'layouts';
+import { PostSimple, PostLayout, PostBanner } from '@/components/layouts';
 
 const defaultLayout = 'PostLayout';
 const layouts = {
