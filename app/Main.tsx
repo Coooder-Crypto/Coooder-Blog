@@ -21,8 +21,13 @@ import { getLocalizedBlogContent } from '@/lib/blogUtils';
 const MAX_DISPLAY = 5;
 
 function ProjectCard({ project }: { project: any }) {
+  const { t, language } = useLanguage();
   const { title, description, imgSrc, url, repo, builtWith } = project;
+  const localizedTitle = (title && (title[language] ?? title.en)) || '';
+  const localizedDescription = description ? (description[language] ?? description.en) : undefined;
+  const techStack = Array.isArray(builtWith) ? builtWith : [];
   const href = repo ? `https://github.com/${repo}` : url;
+  const linkLabel = t('projects.aria.linkTo').replace('{title}', localizedTitle);
 
   return (
     <div className="group cursor-pointer rounded-xl bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:bg-gray-800">
@@ -30,20 +35,22 @@ function ProjectCard({ project }: { project: any }) {
         <div className="mb-4 overflow-hidden rounded-lg">
           <img
             src={imgSrc}
-            alt={title}
+            alt={localizedTitle}
             className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
       )}
 
       <div className="space-y-3">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{title}</h3>
+        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{localizedTitle}</h3>
 
-        {description && <p className="line-clamp-2 text-gray-600 dark:text-gray-300">{description}</p>}
+        {localizedDescription && (
+          <p className="line-clamp-2 text-gray-600 dark:text-gray-300">{localizedDescription}</p>
+        )}
 
-        {builtWith && (
+        {techStack.length > 0 && (
           <div className="flex flex-wrap gap-2">
-            {builtWith.slice(0, 3).map((tech, i) => (
+            {techStack.slice(0, 3).map((tech, i) => (
               <span
                 key={i}
                 className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200"
@@ -51,7 +58,11 @@ function ProjectCard({ project }: { project: any }) {
                 {tech}
               </span>
             ))}
-            {builtWith.length > 3 && <span className="text-xs text-gray-500">+{builtWith.length - 3} more</span>}
+            {techStack.length > 3 && (
+              <span className="text-xs text-gray-500">
+                {t('projects.moreTech').replace('{count}', String(techStack.length - 3))}
+              </span>
+            )}
           </div>
         )}
 
@@ -59,9 +70,12 @@ function ProjectCard({ project }: { project: any }) {
           <div className="pt-2">
             <Link
               href={href}
+              aria-label={linkLabel}
               className="text-primary inline-flex items-center hover:text-sky-600 dark:hover:text-sky-400"
             >
-              <span className="text-sm font-medium">{repo ? 'View Code' : 'Visit Project'}</span>
+              <span className="text-sm font-medium">
+                {repo ? t('projects.cta.viewCode') : t('projects.cta.visitProject')}
+              </span>
               <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -111,16 +125,14 @@ export default function Home({ posts }) {
       {/* Professional Work */}
       <div className="py-12">
         <div className="mb-8 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-gray-900 dark:text-gray-100">Professional Work</h2>
+          <h2 className="mb-4 text-3xl font-bold text-gray-900 dark:text-gray-100">{t('projects.workSectionTitle')}</h2>
           <div className="mx-auto h-1 w-16 rounded bg-gradient-to-r from-blue-500 to-purple-500"></div>
-          <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
-            Selected projects from my professional experience
-          </p>
+          <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">{t('projects.workSectionSubtitle')}</p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           {workProjects.map((project, index) => (
-            <ProjectCard key={`${project.title}-${index}`} project={project} />
+            <ProjectCard key={`${project.title.en}-${index}`} project={project} />
           ))}
         </div>
 
@@ -129,7 +141,7 @@ export default function Home({ posts }) {
             href="/projects"
             className="text-primary inline-flex items-center hover:text-sky-600 dark:hover:text-sky-400"
           >
-            <span className="font-medium">View All Projects</span>
+            <span className="font-medium">{t('projects.cta.viewAll')}</span>
             <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>

@@ -51,6 +51,24 @@ export const translations: Record<Language, Translations> = {
     'home.siteTitle': "Coooder's Blog - Coding Adventure",
     'home.siteDescription': 'My desire to practice my skills and share my acquired knowledge fuels my endeavors.',
 
+    // Projects
+    'projects.pageTitle': 'Projects',
+    'projects.pageDescription':
+      'A curated collection of my work and creative endeavors, from professional solutions to experimental side projects',
+    'projects.workSectionTitle': 'Professional Work',
+    'projects.workSectionSubtitle': 'Selected projects from my professional experience',
+    'projects.sideSectionTitle': 'Side Projects',
+    'projects.previewComingSoon': 'Preview coming soon',
+    'projects.builtWith': 'Built with:',
+    'projects.cta.viewCode': 'View Code',
+    'projects.cta.visitProject': 'Visit Project',
+    'projects.cta.live': 'Live',
+    'projects.cta.code': 'Code',
+    'projects.cta.learnMore': 'Learn more',
+    'projects.cta.viewAll': 'View All Projects',
+    'projects.moreTech': '+{count} more',
+    'projects.aria.linkTo': 'Link to {title}',
+
     // About/Bio
     'bio.alias': "I'm aliased as",
     'bio.atWeb3': 'at Web3.',
@@ -117,6 +135,23 @@ export const translations: Record<Language, Translations> = {
     'home.fullstackEngineer': '一名专注的全栈工程师',
     'home.siteTitle': 'Coooder 的博客 - 编程冒险',
     'home.siteDescription': '我渴望练习技能并分享所获得的知识，这是我努力的动力。',
+
+    // Projects
+    'projects.pageTitle': '项目',
+    'projects.pageDescription': '从专业解决方案到实验性副项目，我的精选作品集。',
+    'projects.workSectionTitle': '专业项目',
+    'projects.workSectionSubtitle': '来自我职业经历的精选项目',
+    'projects.sideSectionTitle': '个人项目',
+    'projects.previewComingSoon': '预览即将上线',
+    'projects.builtWith': '技术栈：',
+    'projects.cta.viewCode': '查看代码',
+    'projects.cta.visitProject': '访问项目',
+    'projects.cta.live': '访问',
+    'projects.cta.code': '代码',
+    'projects.cta.learnMore': '了解更多',
+    'projects.cta.viewAll': '查看所有项目',
+    'projects.moreTech': '+{count} 项更多',
+    'projects.aria.linkTo': '链接到 {title}',
 
     // About/Bio
     'bio.alias': '我的别名是',

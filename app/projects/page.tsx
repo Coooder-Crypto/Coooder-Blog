@@ -4,8 +4,10 @@ import { genPageMetadata } from 'app/seo';
 
 import projectsData from '@/data/projectsData';
 import { Link } from '@/components/ui';
+import { useLanguage } from '@/lib/i18n';
 
 export default function Projects() {
+  const { t } = useLanguage();
   const workProjects = projectsData.filter(({ type }) => type === 'work');
   const sideProjects = projectsData.filter(({ type }) => type === 'self');
 
@@ -15,12 +17,9 @@ export default function Projects() {
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="space-y-2 pb-8 pt-6 md:space-y-5">
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-            Projects
+            {t('projects.pageTitle')}
           </h1>
-          <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-            A curated collection of my work and creative endeavors, from professional solutions to experimental side
-            projects
-          </p>
+          <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">{t('projects.pageDescription')}</p>
         </div>
       </div>
 
@@ -30,13 +29,15 @@ export default function Projects() {
         <section className="py-24">
           <div className="container mx-auto px-4">
             <div className="mb-16 text-center">
-              <h2 className="mb-4 text-4xl font-bold text-gray-900 dark:text-gray-100">Professional Work</h2>
+              <h2 className="mb-4 text-4xl font-bold text-gray-900 dark:text-gray-100">
+                {t('projects.workSectionTitle')}
+              </h2>
               <div className="mx-auto h-1 w-24 rounded bg-gradient-to-r from-blue-500 to-purple-500"></div>
             </div>
 
             <div className="grid gap-12 md:gap-24">
               {workProjects.map((project, index) => (
-                <ParallaxProjectCard key={project.title} project={project} index={index} reverse={index % 2 !== 0} />
+                <ParallaxProjectCard key={project.title.en} project={project} reverse={index % 2 !== 0} />
               ))}
             </div>
           </div>
@@ -46,13 +47,15 @@ export default function Projects() {
         <section className="bg-gray-50 py-24 dark:bg-gray-800">
           <div className="container mx-auto px-4">
             <div className="mb-16 text-center">
-              <h2 className="mb-4 text-4xl font-bold text-gray-900 dark:text-gray-100">Side Projects</h2>
+              <h2 className="mb-4 text-4xl font-bold text-gray-900 dark:text-gray-100">
+                {t('projects.sideSectionTitle')}
+              </h2>
               <div className="mx-auto h-1 w-24 rounded bg-gradient-to-r from-green-500 to-blue-500"></div>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {sideProjects.map((project, index) => (
-                <CompactProjectCard key={`${project.title}-${index}`} project={project} index={index} />
+                <CompactProjectCard key={`${project.title.en}-${index}`} project={project} />
               ))}
             </div>
           </div>
@@ -71,9 +74,13 @@ export default function Projects() {
   );
 }
 
-function ParallaxProjectCard({ project, index, reverse = false }: { project: any; index: number; reverse?: boolean }) {
+function ParallaxProjectCard({ project, reverse = false }: { project: any; reverse?: boolean }) {
+  const { t, language } = useLanguage();
   const { title, description, imgSrc, url, repo, builtWith } = project;
+  const localizedTitle = (title && (title[language] ?? title.en)) || '';
+  const localizedDescription = description ? (description[language] ?? description.en) : undefined;
   const href = repo ? `https://github.com/${repo}` : url;
+  const linkLabel = t('projects.aria.linkTo').replace('{title}', localizedTitle);
 
   return (
     <div
@@ -84,7 +91,7 @@ function ParallaxProjectCard({ project, index, reverse = false }: { project: any
         <div className="group relative overflow-hidden rounded-2xl shadow-2xl">
           <img
             src={imgSrc}
-            alt={title}
+            alt={localizedTitle}
             className="h-80 w-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
@@ -94,13 +101,15 @@ function ParallaxProjectCard({ project, index, reverse = false }: { project: any
       {/* Project Info */}
       <div className="md:w-1/2">
         <div className="space-y-6">
-          <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{title}</h3>
+          <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{localizedTitle}</h3>
 
-          <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-300">{description}</p>
+          {localizedDescription && (
+            <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-300">{localizedDescription}</p>
+          )}
 
           {builtWith && (
             <div className="space-y-3">
-              <h4 className="font-semibold text-gray-700 dark:text-gray-300">Built with:</h4>
+              <h4 className="font-semibold text-gray-700 dark:text-gray-300">{t('projects.builtWith')}</h4>
               <div className="flex flex-wrap gap-2">
                 {builtWith.map((tech, i) => (
                   <span
@@ -118,9 +127,10 @@ function ParallaxProjectCard({ project, index, reverse = false }: { project: any
             <div className="pt-4">
               <Link
                 href={href}
+                aria-label={linkLabel}
                 className="inline-flex items-center space-x-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-3 font-semibold text-white transition-all hover:from-blue-600 hover:to-purple-700 hover:shadow-lg"
               >
-                <span>{repo ? 'View Code' : 'Visit Project'}</span>
+                <span>{repo ? t('projects.cta.viewCode') : t('projects.cta.visitProject')}</span>
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -138,11 +148,15 @@ function ParallaxProjectCard({ project, index, reverse = false }: { project: any
   );
 }
 
-function CompactProjectCard({ project, index }: { project: any; index: number }) {
+function CompactProjectCard({ project }: { project: any }) {
+  const { t, language } = useLanguage();
   const { title, description, imgSrc, url, repo, builtWith } = project;
   const displayTech = Array.isArray(builtWith) ? builtWith : [];
   const primaryTech = displayTech.slice(0, 3);
   const remainingTechCount = Math.max(displayTech.length - primaryTech.length, 0);
+  const localizedTitle = (title && (title[language] ?? title.en)) || '';
+  const localizedDescription = description ? (description[language] ?? description.en) : undefined;
+  const liveLabel = t('projects.aria.linkTo').replace('{title}', localizedTitle);
 
   return (
     <article className="project-card side-project-card group relative flex h-full flex-col overflow-hidden rounded-3xl border border-gray-200/70 bg-white/95 shadow-[0_18px_45px_-30px_rgba(30,41,59,0.55)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_60px_-40px_rgba(30,64,175,0.6)] dark:border-gray-700/60 dark:bg-gray-800/80">
@@ -151,12 +165,12 @@ function CompactProjectCard({ project, index }: { project: any; index: number })
           {imgSrc ? (
             <img
               src={imgSrc}
-              alt={title}
+              alt={localizedTitle}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
             <div className="flex h-full items-center justify-center text-sm text-gray-400 dark:text-gray-500">
-              Preview coming soon
+              {t('projects.previewComingSoon')}
             </div>
           )}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
@@ -165,11 +179,13 @@ function CompactProjectCard({ project, index }: { project: any; index: number })
 
       <div className="flex flex-1 flex-col gap-4 p-6">
         <h3 className="text-xl font-semibold text-slate-900 transition-colors duration-300 group-hover:text-blue-600 dark:text-slate-100 dark:group-hover:text-sky-400">
-          {title}
+          {localizedTitle}
         </h3>
 
-        {description && (
-          <p className="line-clamp-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{description}</p>
+        {localizedDescription && (
+          <p className="line-clamp-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+            {localizedDescription}
+          </p>
         )}
 
         {primaryTech.length > 0 && (
@@ -184,7 +200,7 @@ function CompactProjectCard({ project, index }: { project: any; index: number })
             ))}
             {remainingTechCount > 0 && (
               <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-medium text-slate-500 dark:bg-slate-700/80 dark:text-slate-300">
-                +{remainingTechCount} more
+                {t('projects.moreTech').replace('{count}', String(remainingTechCount))}
               </span>
             )}
           </div>
@@ -196,9 +212,10 @@ function CompactProjectCard({ project, index }: { project: any; index: number })
               {url && (
                 <Link
                   href={url}
+                  aria-label={liveLabel}
                   className="inline-flex items-center gap-1 rounded-full border border-transparent px-3 py-1 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 dark:hover:border-sky-500/40 dark:hover:bg-sky-500/10"
                 >
-                  <span>Live</span>
+                  <span>{t('projects.cta.live')}</span>
                   <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M7 7h10v10" />
                   </svg>
@@ -207,9 +224,10 @@ function CompactProjectCard({ project, index }: { project: any; index: number })
               {repo && (
                 <Link
                   href={`https://github.com/${repo}`}
+                  aria-label={t('projects.aria.linkTo').replace('{title}', localizedTitle)}
                   className="inline-flex items-center gap-1 rounded-full border border-transparent px-3 py-1 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 dark:hover:border-sky-500/40 dark:hover:bg-sky-500/10"
                 >
-                  <span>Code</span>
+                  <span>{t('projects.cta.code')}</span>
                   <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16 18l6-6-6-6" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 6l-6 6 6 6" />
