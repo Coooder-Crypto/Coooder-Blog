@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { formatDate } from 'pliny/utils/formatDate';
 import { CoreContent } from 'pliny/utils/contentlayer';
 import type { Blog } from 'contentlayer/generated';
@@ -12,21 +11,25 @@ import siteMetadata from '@/data/siteMetadata';
 import { useLanguage } from '@/lib/i18n';
 import { getLocalizedBlogContent } from '@/lib/blogUtils';
 
-interface PaginationProps {
+interface PaginationMeta {
   totalPages: number;
   currentPage: number;
 }
+
+interface PaginationProps extends PaginationMeta {
+  onPageChange: (page: number) => void;
+}
+
 interface ListLayoutProps {
   posts: CoreContent<Blog>[];
   title: string;
   initialDisplayPosts?: CoreContent<Blog>[];
-  pagination?: PaginationProps;
+  pagination?: PaginationMeta;
+  postsPerPage?: number;
 }
 
-function Pagination({ totalPages, currentPage }: PaginationProps) {
+function Pagination({ totalPages, currentPage, onPageChange }: PaginationProps) {
   const { t } = useLanguage();
-  const pathname = usePathname();
-  const basePath = pathname.split('/')[1];
   const prevPage = currentPage - 1 > 0;
   const nextPage = currentPage + 1 <= totalPages;
 
@@ -39,9 +42,9 @@ function Pagination({ totalPages, currentPage }: PaginationProps) {
           </button>
         )}
         {prevPage && (
-          <Link href={currentPage - 1 === 1 ? `/${basePath}/` : `/${basePath}/page/${currentPage - 1}`} rel="prev">
+          <button onClick={() => onPageChange(currentPage - 1)} className="text-primary-500 hover:underline">
             {t('blog.previous')}
-          </Link>
+          </button>
         )}
         <span>
           {currentPage} {t('blog.pageOf')} {totalPages}
@@ -52,25 +55,56 @@ function Pagination({ totalPages, currentPage }: PaginationProps) {
           </button>
         )}
         {nextPage && (
-          <Link href={`/${basePath}/page/${currentPage + 1}`} rel="next">
+          <button onClick={() => onPageChange(currentPage + 1)} className="text-primary-500 hover:underline">
             {t('blog.next')}
-          </Link>
+          </button>
         )}
       </nav>
     </div>
   );
 }
 
-export default function ListLayout({ posts, title, initialDisplayPosts = [], pagination }: ListLayoutProps) {
+export default function ListLayout({
+  posts,
+  title,
+  initialDisplayPosts = [],
+  pagination,
+  postsPerPage,
+}: ListLayoutProps) {
   const { t, language } = useLanguage();
   const [searchValue, setSearchValue] = useState('');
+  const [currentPage, setCurrentPage] = useState(pagination?.currentPage ?? 1);
+  const derivedPostsPerPage =
+    postsPerPage ??
+    (initialDisplayPosts.length || (pagination ? Math.ceil(posts.length / pagination.totalPages) : posts.length));
   const filteredBlogPosts = posts.filter((post) => {
     const searchContent = post.title + post.summary + post.tags?.join(' ');
     return searchContent.toLowerCase().includes(searchValue.toLowerCase());
   });
 
-  // If initialDisplayPosts exist, display it if no searchValue is specified
-  const displayPosts = initialDisplayPosts.length > 0 && !searchValue ? initialDisplayPosts : filteredBlogPosts;
+  const getPaginatedPosts = () => {
+    if (!pagination) {
+      return initialDisplayPosts.length > 0 ? initialDisplayPosts : filteredBlogPosts;
+    }
+
+    if (currentPage === pagination.currentPage && initialDisplayPosts.length > 0) {
+      return initialDisplayPosts;
+    }
+
+    const start = derivedPostsPerPage * (currentPage - 1);
+    return posts.slice(start, start + derivedPostsPerPage);
+  };
+
+  const displayPosts = searchValue ? filteredBlogPosts : getPaginatedPosts();
+
+  const handlePageChange = (page: number) => {
+    if (!pagination) return;
+    if (page < 1 || page > pagination.totalPages) return;
+    setCurrentPage(page);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   return (
     <>
@@ -146,7 +180,7 @@ export default function ListLayout({ posts, title, initialDisplayPosts = [], pag
         </ul>
       </div>
       {pagination && pagination.totalPages > 1 && !searchValue && (
-        <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} />
+        <Pagination currentPage={currentPage} totalPages={pagination.totalPages} onPageChange={handlePageChange} />
       )}
     </>
   );

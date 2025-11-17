@@ -5,7 +5,7 @@ import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer';
 import { allBlogs } from 'contentlayer/generated';
 import { useLanguage } from '@/lib/i18n';
 
-const POSTS_PER_PAGE = 5;
+const POSTS_PER_PAGE = 10;
 
 export default function BlogPage() {
   const { t } = useLanguage();
@@ -22,6 +22,7 @@ export default function BlogPage() {
       posts={posts}
       initialDisplayPosts={initialDisplayPosts}
       pagination={pagination}
+      postsPerPage={POSTS_PER_PAGE}
       title={t('blog.title')}
     />
   );
