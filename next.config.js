@@ -7,9 +7,6 @@ module.exports = withContentlayer({
   output: 'export', // Set to static export
   reactStrictMode: true,
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-  eslint: {
-    dirs: ['app', 'components', 'scripts'],
-  },
   images: {
     unoptimized: true, // Required for static export
   },
