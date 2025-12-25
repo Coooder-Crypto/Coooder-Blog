@@ -11,6 +11,10 @@ const projectsData: Project[] = [
       en: 'AI Web Scraper - Scrape any website in 2 click.',
       zh: 'AI 网页爬虫，支持两次点击抓取任意网站内容。',
     },
+    contribution: {
+      en: 'xxx',
+      zh: 'xxx',
+    },
     imgSrc: '/static/images/projects/thunderbit.png',
     url: 'https://thunderbit.com/',
     builtWith: ['React', 'Styled-Component', 'NextJS'],
@@ -24,6 +28,10 @@ const projectsData: Project[] = [
     description: {
       en: 'A comprehensive NFT collection and trading platform built with modern web technologies.',
       zh: '一个使用现代 Web 技术构建的综合 NFT 收藏与交易平台。',
+    },
+    contribution: {
+      en: 'xxx',
+      zh: 'xxx',
     },
     imgSrc: '/static/images/projects/ethpanda.png',
     url: 'https://ethpanda.org/',
@@ -39,6 +47,10 @@ const projectsData: Project[] = [
       en: 'A Personal website built with Next.js and Tailwind CSS.',
       zh: '使用 Next.js 和 Tailwind CSS 构建的个人网站。',
     },
+    contribution: {
+      en: 'xxx',
+      zh: 'xxx',
+    },
     imgSrc: '/static/images/projects/coooder-blog.png',
     url: 'https://coooder-blog.vercel.app/',
     builtWith: ['Next.js', 'Tailwind', 'Typescript', 'MDX'],
@@ -52,6 +64,10 @@ const projectsData: Project[] = [
     description: {
       en: 'A Personal website built with Next.js and Tailwind CSS.',
       zh: '使用 Next.js 和 Tailwind CSS 构建的 LXDAO 官方站点。',
+    },
+    contribution: {
+      en: 'xxx',
+      zh: 'xxx',
     },
     imgSrc: '/static/images/projects/lxdao.png',
     url: 'https://lxdao.io/',
@@ -67,6 +83,10 @@ const projectsData: Project[] = [
       en: 'A Personal website built with Next.js and Tailwind CSS.',
       zh: '使用 Next.js 和 Tailwind CSS 构建的开发者社区网站。',
     },
+    contribution: {
+      en: 'xxx',
+      zh: 'xxx',
+    },
     imgSrc: '/static/images/projects/openbuild.png',
     url: 'https://openbuild.xyz/',
     builtWith: ['Next.js', 'Tailwind', 'Typescript', 'MDX'],
@@ -80,6 +100,10 @@ const projectsData: Project[] = [
     description: {
       en: 'A Personal website built with Next.js and Tailwind CSS.',
       zh: '使用 Next.js 和 Tailwind CSS 构建的投资机构官网。',
+    },
+    contribution: {
+      en: 'xxx',
+      zh: 'xxx',
     },
     imgSrc: '/static/images/projects/mmcapital.png',
     url: 'https://lxdao.io/',
@@ -95,6 +119,10 @@ const projectsData: Project[] = [
       en: 'A Personal website built with Next.js and Tailwind CSS.',
       zh: '使用 Next.js 和 Tailwind CSS 构建的创意展示站点。',
     },
+    contribution: {
+      en: 'xxx',
+      zh: 'xxx',
+    },
     imgSrc: '/static/images/projects/circuit.png',
     url: 'https://lxdao.io/',
     builtWith: ['Next.js', 'Tailwind', 'Typescript'],
@@ -108,6 +136,10 @@ const projectsData: Project[] = [
     description: {
       en: 'A Personal website built with Next.js and Tailwind CSS.',
       zh: '使用 Next.js 和 Tailwind CSS 构建的零知识资产抽奖平台。',
+    },
+    contribution: {
+      en: 'xxx',
+      zh: 'xxx',
     },
     imgSrc: '/static/images/projects/zkassetraffle.png',
     url: 'https://lxdao.io/',

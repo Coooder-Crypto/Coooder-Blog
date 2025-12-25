@@ -7,6 +7,7 @@ export interface Project {
   type: 'work' | 'self';
   title: LocalizedText;
   description?: LocalizedText;
+  contribution?: LocalizedText;
   imgSrc: string;
   url?: string;
   repo?: string | null;
