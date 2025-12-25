@@ -1,0 +1,41 @@
+{
+  "updatedAt": "2025-12-25T08:16:55.561Z",
+  "pages": {
+    "2d42bc6e-bcde-8015-9c56-e7ac8b54dfa8": {
+      "slug": "frontend-learning-roadmap",
+      "filePath": "data/blog/frontend-learning-roadmap.mdx"
+    },
+    "2d42bc6e-bcde-8048-8f97-cd8409e4a91c": {
+      "slug": "js-event-loop",
+      "filePath": "data/blog/js-event-loop.mdx"
+    },
+    "2d42bc6e-bcde-8064-8ce8-d9663ada7740": {
+      "slug": "modularization-package-management",
+      "filePath": "data/blog/modularization-package-management.mdx"
+    },
+    "2d42bc6e-bcde-806a-9406-dcd392f9bc2c": {
+      "slug": "react-18-new-features",
+      "filePath": "data/blog/react-18-new-features.mdx"
+    },
+    "2d42bc6e-bcde-806a-af6f-e94b3d72479a": {
+      "slug": "nextjs-trpc-solo-development",
+      "filePath": "data/blog/nextjs-trpc-solo-development.mdx"
+    },
+    "2d42bc6e-bcde-8095-9b7f-cc147d17b79c": {
+      "slug": "javascript-prototype-chain",
+      "filePath": "data/blog/javascript-prototype-chain.mdx"
+    },
+    "2d42bc6e-bcde-809b-ab68-c418f9e6d730": {
+      "slug": "vue-vs-react-design-philosophy",
+      "filePath": "data/blog/vue-vs-react-design-philosophy.mdx"
+    },
+    "2d42bc6e-bcde-80a8-9b23-d0f433684c52": {
+      "slug": "react-19-new-features",
+      "filePath": "data/blog/react-19-new-features.mdx"
+    },
+    "2d42bc6e-bcde-80ae-b190-c6c5e93503be": {
+      "slug": "browser-loading-process",
+      "filePath": "data/blog/browser-loading-process.mdx"
+    }
+  }
+}

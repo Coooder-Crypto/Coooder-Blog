@@ -1,111 +1,126 @@
 ---
-title: 'React 18 新特性全解析：并发渲染与应用架构升级'
-titleEn: 'React 18 Deep Dive: Concurrent Rendering and Architecture Upgrades'
-date: '2025-11-06'
-lastmod: '2025-11-06'
-tags: ['react', 'react18', 'frontend', 'performance']
+title: 'React 18 新特性：并发渲染与应用架构升级'
+titleEn: 'React 18 Deep Dive: Concurrent Rendering and Architecture Upgrades.'
 summary: '梳理 React 18 的并发渲染、自动批处理、全新 Hook 与 SSR 能力，提供落地示例与升级路径，帮助团队快速拥抱新架构。'
 summaryEn: 'Overview of React 18 concurrent rendering, automatic batching, new hooks, and SSR capabilities with practical upgrade guidance.'
+date: '2025-07-09'
+lastmod: '2025-12-25'
+tags: ['react', 'frontend', 'performance']
+draft: false
 ---
 
-React 18 在 2022 年正式发布，标志着 React 团队向“并发架构”全面过渡。相较于 17 及之前版本，它不仅提供更平滑的用户体验，也为服务端渲染和跨端协同奠定基础。本文从核心能力、升级策略与工程实践出发，系统解析 React 18 的关键变化。
+React 18 在 2022 年正式发布，标志着 React 团队向「并发架构」全面过渡。相较于 17 及之前版本，它不仅提供更平滑的用户体验，也为服务端渲染和跨端协同奠定基础。
+
+本文从核心能力、升级策略与工程实践出发，系统解析 React 18 的关键变化。
 
 ---
 
 ## 发布背景与总体变化
 
-- **并发渲染进入默认能力**：虽然不会自启，但核心包已经具备调度多个渲染任务的能力，为后续特性（如服务器组件）打底。
-- **客户端入口 API 调整**：`ReactDOM.createRoot` 取代 `ReactDOM.render`，并与 StrictMode 配合帮助提前发现副作用问题。
-- **数据获取与 Suspense 的协同增强**：Suspense 现已支持服务端流式传输，为“边加载边渲染”的现代体验提供基础设施[^1]。
+- **并发渲染进入默认能力**：虽然不会自动开启，但核心包已经具备调度多个渲染任务的能力，为后续特性（如 Server Components）打好基础。
+- **客户端入口 API 调整**：`ReactDOM.createRoot` 取代 `ReactDOM.render`，并与 `StrictMode` 配合帮助提前发现副作用问题。
+- **数据获取与 Suspense 协同增强**：Suspense 现已支持服务端流式传输，为「边加载边渲染」的现代体验提供基础设施。[[1]](1)
 
 ---
 
 ## 并发渲染与 Transition 能力
 
-### startTransition 与 useTransition
+### `startTransition` 与 `useTransition`
 
-React 18 引入 `startTransition` 与 `useTransition`，允许开发者将昂贵的更新标记为“非紧急”。这类更新在主线程忙时会被延后，从而保证输入、滚动等高优先级交互的快速响应[^2]。
+React 18 引入 `startTransition` 与 `useTransition`，允许开发者将昂贵的更新标记为「非紧急」。这类更新在主线程忙时会被延后，从而保证输入、滚动等高优先级交互的快速响应。[[2]](2)
 
-```tsx
+```typescript
 const [isPending, startTransition] = useTransition();
 
 const onSearchChange = (value: string) => {
-  setKeyword(value);         // 紧急更新：输入框实时反馈
-  startTransition(() => {    // 非紧急更新：列表过滤
+  setKeyword(value); // 紧急更新：输入框实时反馈
+  startTransition(() => {
+    // 非紧急更新：列表过滤
     setFiltered(filterData(value));
   });
 };
 ```
 
-在实际项目中，Transition 特别适合搜索建议、切换大型数据视图或富文本编辑器状态。
+在实际项目中，Transition 特别适合：
 
-### useDeferredValue
+- 搜索建议输入框
+- 切换大型数据视图
+- 富文本编辑器或复杂表单的状态更新
 
-对于需要同步显示旧数据和加载状态的场景，可使用 `useDeferredValue` 延迟下游组件的更新，从而避免瞬间的“闪烁”。它依托于同样的并发调度机制，帮助平衡交互与数据一致性。
+### `useDeferredValue`
+
+对于需要同步显示旧数据和加载状态的场景，可以使用 `useDeferredValue` 延迟下游组件的更新，从而避免瞬间「闪烁」。
+
+它依托同样的并发调度机制，帮助在「交互响应」与「数据一致性」之间找到平衡。
 
 ---
 
 ## 自动批处理与更新模型
 
-React 18 将自动批处理（Automatic Batching）扩展到所有更新源，无论是事件回调、Promise、`setTimeout` 还是原生事件监听器[^3]。这意味着多个 `setState` 将合并为一次渲染，显著减少重复 diff。
+React 18 将自动批处理（Automatic Batching）扩展到所有更新源：
 
-```tsx
+- 事件回调
+- Promise
+- `setTimeout`
+- 原生事件监听器
+
+这意味着多个 `setState` 将合并为一次渲染，显著减少重复 diff。[[3]](3)
+
+```typescript
 // React 18 之前：两个 setState 触发两次渲染
 setCount((c) => c + 1);
 setFlag((f) => !f);
 
-// React 18 自动批处理：仅触发一次渲染
+// React 18：自动批处理，仅触发一次渲染
 ```
 
-如果某段逻辑需要即时生效，可显式调用 `flushSync` 打破批处理，但这通常只在动画或第三方集成中使用。
+如果某段逻辑需要「立即生效」，可以显式调用 `flushSync` 打破批处理，但这通常只在动画或第三方集成中使用，日常业务应尽量避免。
 
 ---
 
 ## 新增 Hook 与 API
 
-- **`useId`**：生成稳定的、对 SSR 友好的 ID，用于 ARIA 属性或列表 key，避免双端不一致。
+- **`useId`**：生成稳定且对 SSR 友好的 ID，用于 ARIA 属性或列表 key，避免双端不一致。
 - **`useSyncExternalStore`**：标准化订阅外部状态库的方式，解决 Concurrent 模式下外部数据源不一致的问题。
-- **`useInsertionEffect`**：为样式插入库（如 styled-components、emotion）提供同步注入 CSS 的时机，防止闪烁[^4]。
+- **`useInsertionEffect`**：为样式插入库（如 styled-components、emotion）提供同步注入 CSS 的时机，防止样式闪烁。[[4]](4)
 - **StrictMode 行为调整**：开发环境中会二次调用组件副作用，帮助识别不纯或泄漏的逻辑，提前适配并发渲染。
 
 ---
 
-## 服务端渲染与数据流改进
+## 服务端渲染（SSR）与数据流改进
 
-React 18 在服务端引入全新的 `renderToPipeableStream` 与 `renderToReadableStream` API，支持流式传输和选择性水合（Selective Hydration）[^1]。典型收益包括：
+React 18 在服务端引入全新的 `renderToPipeableStream` 与 `renderToReadableStream` API，支持流式传输和选择性水合（Selective Hydration）。[[1]](1)
 
-- **TTFB 降低**：服务端可以先发送骨架或首屏内容，再逐步推送剩余组件。
-- **渐进水合**：用户交互的区域优先水合，避免整页阻塞。
-- **与 Suspense 协同**：数据获取可通过 `Await`/`Suspense` 控制，缺数据的组件延后渲染，提升首屏可用性。
+典型收益包括：
 
-Next.js 12.2+、Remix、Hydrogen 等框架已经默认启用此能力。
+- **降低 TTFB**：服务端可以先发送骨架或首屏内容，再逐步推送剩余组件。
+- **渐进水合**：优先水合用户交互较多的区域，避免整页阻塞。
+- **与 Suspense 协同**：数据获取可通过 `Await` / `Suspense` 控制，缺数据的组件延后渲染，提升首屏可用性。
+
+Next.js 12.2+、Remix、Hydrogen 等框架已经默认启用这些能力。
 
 ---
 
 ## 升级策略与兼容建议
 
-1. **先升级依赖链**：确保 React、React DOM、类型定义（@types/react）等版本统一；检查第三方库是否已兼容新 Root API。
-2. **替换入口文件**：将 `ReactDOM.render` 替换为 `createRoot`，并确认 StrictMode 重复调用不会破坏业务逻辑。
-3. **观察副作用**：使用 React DevTools 记录渲染次数，确保自动批处理下无隐藏的竞态条件。
-4. **渐进引入并发特性**：从 Transition 或 `useDeferredValue` 入手，聚焦于列表、复杂表单等“重渲染”场景。
-5. **基准测试**：对关键业务流程（搜索、筛选、仪表盘）进行 Lighthouse/用户自定义指标对比，量化收益。
+1. **先升级依赖链**：确保 React、React DOM、类型定义（`@types/react`）等版本统一，并检查第三方库是否已兼容新 Root API。
+2. **替换入口文件**：将 `ReactDOM.render` 替换为 `createRoot`，并确认 StrictMode 下的重复调用不会破坏业务逻辑。
+3. **观察副作用**：使用 React DevTools 记录渲染次数，确保自动批处理下没有隐藏的竞态条件。
+4. **渐进引入并发特性**：从 Transition 或 `useDeferredValue` 入手，重点放在列表、复杂表单等「重渲染」场景。
+5. **基准测试**：对关键业务流程（搜索、筛选、仪表盘）进行 Lighthouse 或自定义指标对比，量化收益。
 
 ---
 
-## 实战案例与场景
+## 实战案例与典型场景
 
-- **内容检索**：在知识库、CRM 系统中，使用 `useTransition` 优化筛选列表的反馈，避免输入卡顿。
-- **可视化大屏**：通过自动批处理与 `useDeferredValue`，在切换时间区间或维度时保持动画顺滑。
+- **内容检索**：在知识库或 CRM 中，用 `useTransition` 优化筛选列表的反馈，避免输入卡顿。
+- **可视化大屏**：依托自动批处理与 `useDeferredValue`，在切换时间区间或维度时保持动画顺滑。
 - **多语言站点**：`useId` 与新的 SSR API 保证不同语言版本生成的 DOM 一致，降低水合失败概率。
 
 ---
 
-React 18 为 React 生态注入了“调度能力”和“流式渲染”这两个关键拼图。它不仅提升了用户体验的天花板，也为后续的 Server Components、Action API 铺平道路。对于已经升级到 18 的团队，建议持续关注并发模式下的性能监控，并探索与框架（Next.js、Remix）联合带来的整体效率收益。
+React 18 为 React 生态注入了「调度能力」和「流式渲染」这两块关键拼图。它不仅提高了用户体验的上限，也为后续的 Server Components、Actions API 等特性铺平道路。
+
+对于已经升级到 18 的团队，建议持续关注并发模式下的性能监控，并探索与框架（如 Next.js、Remix）结合带来的整体效率收益。
 
 ---
-
-[^1]: React Blog, “React 18 Is Here”, https://react.dev/blog/2022/03/29/react-v18
-[^2]: React Documentation, “startTransition”, https://react.dev/reference/react/startTransition
-[^3]: React Documentation, “Automatic Batching”, https://react.dev/learn/queueing-a-series-of-state-updates#react-batches-state-updates
-[^4]: React Documentation, “useInsertionEffect”, https://react.dev/reference/react/useInsertionEffect
-
