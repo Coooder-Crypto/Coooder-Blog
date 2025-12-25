@@ -5,6 +5,7 @@ import { Client } from '@notionhq/client';
 import { NotionToMarkdown } from 'notion-to-md';
 import { slug as slugify } from 'github-slugger';
 import sharp from 'sharp';
+import prettier from 'prettier';
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const DATABASE_ID = process.env.NOTION_DATABASE_ID;
@@ -16,7 +17,9 @@ if (!NOTION_TOKEN || !DATABASE_ID) {
 
 const CONTENT_DIR = path.join(process.cwd(), 'data', 'blog');
 const IMAGE_ROOT = path.join(process.cwd(), 'public', 'static', 'images', 'notion');
-const MANIFEST_PATH = path.join(process.cwd(), 'data', '.notion-sync.json');
+const MANIFEST_PATH = path.join(process.cwd(), '.notion-sync.json');
+const LEGACY_MANIFEST_PATH = path.join(process.cwd(), 'data', '.notion-sync.json');
+let legacyManifestUsed = false;
 
 const INCLUDE_DRAFTS = ['1', 'true'].includes((process.env.NOTION_INCLUDE_DRAFTS || '').toLowerCase());
 const IMAGE_QUALITY = Number.parseInt(process.env.NOTION_IMAGE_QUALITY || '75', 10);
@@ -39,11 +42,16 @@ const notion = new Client({ auth: NOTION_TOKEN });
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
 const readManifest = async () => {
-  if (!existsSync(MANIFEST_PATH)) {
-    return { pages: {} };
+  if (existsSync(MANIFEST_PATH)) {
+    const raw = await readFile(MANIFEST_PATH, 'utf8');
+    return JSON.parse(raw);
   }
-  const raw = await readFile(MANIFEST_PATH, 'utf8');
-  return JSON.parse(raw);
+  if (existsSync(LEGACY_MANIFEST_PATH)) {
+    legacyManifestUsed = true;
+    const raw = await readFile(LEGACY_MANIFEST_PATH, 'utf8');
+    return JSON.parse(raw);
+  }
+  return { pages: {} };
 };
 
 const writeManifest = async (manifest) => {
@@ -203,18 +211,21 @@ const rewriteImages = async (markdown, slug) => {
 };
 
 const buildFrontmatter = (data) => {
+  const formatYamlString = (value) => `'${String(value).replace(/'/g, "''")}'`;
+  const formatYamlArray = (values) => `[${values.map((value) => formatYamlString(value)).join(', ')}]`;
+
   const lines = [
     '---',
-    `title: ${JSON.stringify(data.title)}`,
-    data.titleEn ? `titleEn: ${JSON.stringify(data.titleEn)}` : null,
-    data.summary ? `summary: ${JSON.stringify(data.summary)}` : null,
-    data.summaryEn ? `summaryEn: ${JSON.stringify(data.summaryEn)}` : null,
-    `date: ${JSON.stringify(data.date)}`,
-    data.lastmod ? `lastmod: ${JSON.stringify(data.lastmod)}` : null,
-    `tags: ${JSON.stringify(data.tags ?? [])}`,
+    `title: ${formatYamlString(data.title)}`,
+    data.titleEn ? `titleEn: ${formatYamlString(data.titleEn)}` : null,
+    data.summary ? `summary: ${formatYamlString(data.summary)}` : null,
+    data.summaryEn ? `summaryEn: ${formatYamlString(data.summaryEn)}` : null,
+    `date: ${formatYamlString(data.date)}`,
+    data.lastmod ? `lastmod: ${formatYamlString(data.lastmod)}` : null,
+    `tags: ${formatYamlArray(data.tags ?? [])}`,
     data.draft ? 'draft: true' : 'draft: false',
-    data.layout ? `layout: ${JSON.stringify(data.layout)}` : null,
-    data.canonicalUrl ? `canonicalUrl: ${JSON.stringify(data.canonicalUrl)}` : null,
+    data.layout ? `layout: ${formatYamlString(data.layout)}` : null,
+    data.canonicalUrl ? `canonicalUrl: ${formatYamlString(data.canonicalUrl)}` : null,
     '---',
   ].filter(Boolean);
 
@@ -289,8 +300,17 @@ const main = async () => {
       canonicalUrl,
     });
 
-    const output = `${frontmatter}${updatedMarkdown.trim()}\n`;
     const outputPath = path.join(CONTENT_DIR, `${slug}.mdx`);
+    let formattedBody = updatedMarkdown.trim();
+    try {
+      formattedBody = await prettier.format(`${formattedBody}\n`, { parser: 'mdx' });
+    } catch (error) {
+      console.warn(`Prettier failed for ${slug}, using raw output.`);
+    }
+    if (!formattedBody.endsWith('\n')) {
+      formattedBody = `${formattedBody}\n`;
+    }
+    const output = `${frontmatter}${formattedBody}`;
     await ensureDir(path.dirname(outputPath));
     await writeFile(outputPath, output, 'utf8');
 
@@ -313,6 +333,9 @@ const main = async () => {
   }
 
   await writeManifest(nextManifest);
+  if (legacyManifestUsed) {
+    await rm(LEGACY_MANIFEST_PATH, { force: true });
+  }
   console.log(`Notion sync complete: ${Object.keys(nextManifest.pages).length} posts`);
 };
 

@@ -1,50 +1,55 @@
 ---
-title: 'JavaScript原型链深度解析: 对象继承的奥秘之旅'
+title: 'JavaScript 原型链深度解析: 对象继承的奥秘之旅'
 titleEn: 'Deep Dive into JavaScript Prototype Chain: The Mystery Journey of Object Inheritance'
-date: '2025-9-5'
-lastmod: '2025-9-5'
-tags: ['javascript', 'prototype', 'inheritance', 'oop', 'frontend']
-summary: '深入探索JavaScript原型链机制, 从基础概念到高级应用, 理解对象继承、属性查找、构造函数等核心原理, 掌握现代JavaScript中原型的实际应用.'
+summary: '深入探索JavaScript原型链机制, 从基础概念到高级应用, 理解对象继承、属性查找、构造函数等核心原理, 掌握现代JavaScript中原型的实际应用。'
 summaryEn: 'In-depth exploration of JavaScript prototype chain mechanism, from basic concepts to advanced applications, understanding object inheritance, property lookup, constructor functions and other core principles, mastering practical applications of prototypes in modern JavaScript.'
+date: '2025-04-10'
+lastmod: '2025-12-25'
+tags: ['javascript', 'prototype', 'frontend']
+draft: false
 ---
 
 第一次接触 JavaScript 时，可能会被它独特的继承机制所困惑。与传统的基于类的语言不同，JavaScript 采用基于原型的继承模型。
+
 这个看似复杂的概念实际上是 JavaScript 最强大和灵活的特性之一，它为动态编程和代码复用提供了无限可能。
 
 ---
 
-## 原型基础概念：理解 JavaScript 的继承之源
+## 一、原型基础概念：理解 JavaScript 的继承之源
 
-在深入原型链之前, 我们需要理解几个核心概念和它们之间的关系.
+在深入原型链之前，我们需要理解几个核心概念和它们之间的关系。
 
-### 什么是原型（Prototype）?
+### 1. 什么是原型（Prototype）？
 
 在 JavaScript 中，每个对象都有一个隐藏的内部属性 `[[Prototype]]`，它指向另一个对象，这个被指向的对象就是原型。
 
 ```javascript
 // 创建一个简单对象
 const person = {
-  name: 'Alice',
+  name: "Alice",
   greet() {
     console.log(`Hello, I'm ${this.name}`);
   },
 };
 
-// 创建另一个对象, 以person为原型
+// 创建另一个对象，以 person 为原型
 const student = Object.create(person);
-student.name = 'Bob';
+
+student.name = "Bob";
+
 student.study = function () {
   console.log(`${this.name} is studying`);
 };
 
 student.greet(); // "Hello, I'm Bob" - 从原型继承的方法
+
 student.study(); // "Bob is studying" - 自己的方法
 ```
 
-**三个重要属性的区别**:
+**三个重要属性的区别**
 
 1. `[[Prototype]]`：对象的内部原型引用（不可直接访问）
-2. `__proto__`：访问`[[Prototype]]`的非标准方式（已废弃）
+2. `__proto__`：访问 `[[Prototype]]` 的非标准方式（已废弃）
 3. `prototype`：函数的原型对象属性（用于构造函数）
 
 ```javascript
@@ -56,23 +61,23 @@ Person.prototype.greet = function () {
   console.log(`Hello, I'm ${this.name}`);
 };
 
-const alice = new Person('Alice');
+const alice = new Person("Alice");
 
 console.log(alice.__proto__ === Person.prototype); // true
-console.log(Object.getPrototypeOf(alice) === Person.prototype); // true (标准方式)
+console.log(Object.getPrototypeOf(alice) === Person.prototype); // true（标准方式）
 ```
 
-📌 **重要提示**: 始终使用 `Object.getPrototypeOf()` 和 `Object.setPrototypeOf()` 来操作原型, 避免使用已废弃的 `__proto__`.
+> 重要提示：始终使用 `Object.getPrototypeOf()` 和 `Object.setPrototypeOf()` 来操作原型，避免使用已废弃的 `__proto__`。
 
-### 原型链的工作机制
+### 2. 原型链的工作机制
 
-原型链是一个链式查找过程. 当访问对象属性时, JavaScript 引擎会按照以下顺序查找:
+原型链是一个链式查找过程。当访问对象属性时，JavaScript 引擎会按照以下顺序查找：
 
 ```javascript
 const grandParent = {
-  species: 'human',
+  species: "human",
   speak() {
-    console.log('Speaking...');
+    console.log("Speaking...");
   },
 };
 
@@ -80,20 +85,20 @@ const parent = Object.create(grandParent);
 parent.canWalk = true;
 
 const child = Object.create(parent);
-child.name = 'Tom';
+
+child.name = "Tom";
 child.age = 5;
 
 // 属性查找过程
-console.log(child.name); // "Tom" - 在 child 对象上找到
-console.log(child.canWalk); // true - 在 parent 原型上找到
-console.log(child.species); // "human" - 在 grandParent 原型上找到
-console.log(child.fly); // undefined - 整条链上都没找到
+console.log(child.name); // "Tom"     - 在 child 对象上找到
+console.log(child.canWalk); // true       - 在 parent 原型上找到
+console.log(child.species); // "human"   - 在 grandParent 原型上找到
+console.log(child.fly); // undefined  - 整条链上都没找到
 ```
 
-**查找算法详解**:
+伪代码描述属性查找过程：
 
 ```javascript
-// 伪代码描述属性查找过程
 function getProperty(obj, prop) {
   let current = obj;
 
@@ -110,101 +115,98 @@ function getProperty(obj, prop) {
 
 ---
 
-## 构造函数与原型：对象创建的经典模式
+## 二、构造函数与原型：对象创建的经典模式
 
-构造函数是 JavaScript 中创建对象的传统方式, 理解它与原型的关系是掌握继承的关键.
+构造函数是 JavaScript 中创建对象的传统方式，理解它与原型的关系是掌握继承的关键。
 
-### 构造函数的原型机制
+### 1. 构造函数的原型机制
 
-每个函数在创建时都会自动获得一个 `prototype` 属性:
+每个函数在创建时都会自动获得一个 `prototype` 属性：
 
 ```javascript
 function Animal(name) {
   this.name = name;
+
   this.energy = 100;
 }
 
 // 在原型上定义共享方法
+
 Animal.prototype.eat = function (food) {
   console.log(`${this.name} is eating ${food}`);
+
   this.energy += 10;
 };
 
 Animal.prototype.sleep = function () {
   console.log(`${this.name} is sleeping`);
+
   this.energy += 20;
 };
 
 Animal.prototype.play = function () {
   console.log(`${this.name} is playing`);
+
   this.energy -= 10;
 };
 
 // 创建实例
-const cat = new Animal('Whiskers');
-const dog = new Animal('Buddy');
+const cat = new Animal("Whiskers");
+const dog = new Animal("Buddy");
 
-cat.eat('fish'); // "Whiskers is eating fish"
-dog.play(); // "Buddy is playing"
+cat.eat("fish");
+
+dog.play();
 
 // 所有实例共享原型方法
 console.log(cat.eat === dog.eat); // true - 同一个函数引用
 ```
 
-**构造函数执行过程**:
+`new Animal('Whiskers')` 的执行过程：
 
 ```javascript
-// new Animal('Whiskers') 的执行过程:
-
-// 1. 创建一个新对象
-const newObj = {};
+// 1. 创建一个空对象
+const obj = {};
 
 // 2. 设置新对象的原型
 Object.setPrototypeOf(newObj, Animal.prototype);
 // 等价于: newObj.__proto__ = Animal.prototype;
 
 // 3. 执行构造函数, this 指向新对象
-Animal.call(newObj, 'Whiskers');
 
-// 4. 返回新对象(除非构造函数显式返回其他对象)
+Animal.call(newObj, "Whiskers");
+
+// 4. 返回新对象（除非构造函数显式返回其他对象）
 return newObj;
 ```
 
-### 原型方法 vs 实例方法
+### 2. 原型方法 vs 实例方法
 
-理解方法定义位置的影响对性能和内存使用很重要:
+方法定义位置会影响性能和内存使用：
 
 ```javascript
 function Person(name) {
   this.name = name;
 
-  // ❌ 不推荐: 每个实例都创建新函数
+  // 不推荐: 每个实例都创建新函数
   this.greetBad = function () {
     console.log(`Hello, I'm ${this.name}`);
   };
 }
 
-// ✅ 推荐: 所有实例共享同一个函数
+// 推荐: 所有实例共享同一个函数
 Person.prototype.greet = function () {
   console.log(`Hello, I'm ${this.name}`);
 };
 
-const person1 = new Person('Alice');
-const person2 = new Person('Bob');
+const person1 = new Person("Alice");
+const person2 = new Person("Bob");
 
-// 内存对比
 console.log(person1.greetBad === person2.greetBad); // false - 不同函数
-console.log(person1.greet === person2.greet); // true - 同一函数
-
-// 性能测试
-console.time('prototype method');
-for (let i = 0; i < 1000000; i++) {
-  person1.greet();
-}
-console.timeEnd('prototype method');
+console.log(person1.greet === person2.greet); // true  - 同一函数
 ```
 
-**最佳实践**:
+最佳实践：
 
 ```javascript
 function Vehicle(brand, model) {
@@ -212,8 +214,6 @@ function Vehicle(brand, model) {
   this.brand = brand;
   this.model = model;
   this.speed = 0;
-
-  // 避免在构造函数中定义方法
 }
 
 // 原型方法 - 所有实例共享
@@ -228,6 +228,7 @@ Vehicle.prototype.brake = function (decrement = 10) {
 };
 
 // 静态方法 - 属于构造函数本身
+
 Vehicle.compare = function (vehicle1, vehicle2) {
   return vehicle1.speed - vehicle2.speed;
 };
@@ -235,14 +236,14 @@ Vehicle.compare = function (vehicle1, vehicle2) {
 
 ---
 
-## 原型继承的实现方式
+## 三、原型继承的实现方式
 
-JavaScript 提供了多种实现继承的方式, 从传统的原型链到现代的 class 语法.
+JavaScript 提供了多种实现继承的方式，从传统的原型链到现代的 `class` 语法。
 
-### 经典原型继承
+### 1. 经典原型继承
 
 ```javascript
-// 父类构造函数
+// 父类
 function Animal(name) {
   this.name = name;
   this.alive = true;
@@ -259,6 +260,7 @@ Animal.prototype.move = function () {
 // 子类构造函数
 function Dog(name, breed) {
   // 调用父类构造函数
+
   Animal.call(this, name);
   this.breed = breed;
 }
@@ -281,34 +283,35 @@ Dog.prototype.move = function () {
   console.log(`${this.name} is running on four legs`);
 };
 
-const buddy = new Dog('Buddy', 'Golden Retriever');
+const buddy = new Dog("Buddy", "Golden Retriever");
+
 buddy.breathe(); // 继承的方法
 buddy.bark(); // 自己的方法
 buddy.move(); // 重写的方法
 ```
 
-**继承链检查**:
+继承链检查：
 
 ```javascript
 console.log(buddy instanceof Dog); // true
 console.log(buddy instanceof Animal); // true
 console.log(buddy instanceof Object); // true
 
-// 原型链关系
 console.log(Object.getPrototypeOf(buddy) === Dog.prototype); // true
 console.log(Object.getPrototypeOf(Dog.prototype) === Animal.prototype); // true
 console.log(Object.getPrototypeOf(Animal.prototype) === Object.prototype); // true
 console.log(Object.getPrototypeOf(Object.prototype) === null); // true
 ```
 
-### 工厂函数模式
+### 2. 工厂函数模式
 
-不使用构造函数的继承方式:
+不使用构造函数的继承方式：
 
 ```javascript
 // 父对象工厂
 function createAnimal(name) {
   const animal = Object.create(animalMethods);
+
   animal.name = name;
   animal.alive = true;
   return animal;
@@ -332,6 +335,7 @@ function createDog(name, breed) {
 }
 
 const dogMethods = Object.create(animalMethods);
+
 dogMethods.bark = function () {
   console.log(`${this.name} is barking: Woof!`);
 };
@@ -340,39 +344,39 @@ dogMethods.move = function () {
   console.log(`${this.name} is running on four legs`);
 };
 
-const rex = createDog('Rex', 'German Shepherd');
+const rex = createDog("Rex", "German Shepherd");
 rex.breathe(); // 继承的方法
 rex.bark(); // 子类方法
 ```
 
-### 组合继承的问题与解决
+### 3. 组合继承的问题与寄生组合继承
 
-传统继承模式的问题:
+传统组合继承的问题：
 
 ```javascript
 function Parent(name) {
   this.name = name;
-  this.colors = ['red', 'blue'];
+  this.colors = ["red", "blue"];
 }
 
 Parent.prototype.getName = function () {
-  return this.name;
+  return;
+  this.name;
 };
 
 function Child(name, age) {
-  Parent.call(this, name); // 第一次调用Parent构造函数
+  Parent.call(this, name); // 第一次调用 Parent 构造函数
   this.age = age;
 }
 
-// 第二次调用Parent构造函数
+// 第二次调用 Parent 构造函数
 Child.prototype = new Parent();
 Child.prototype.constructor = Child;
 
-// 问题: Parent构造函数被调用两次
-// 问题: Child.prototype上存在多余的属性
+// 问题：Parent 构造函数被调用两次，Child.prototype 上存在多余属性
 ```
 
-**寄生组合继承 - 最优解决方案**:
+寄生组合继承：
 
 ```javascript
 function inheritPrototype(child, parent) {
@@ -383,11 +387,12 @@ function inheritPrototype(child, parent) {
 
 function Parent(name) {
   this.name = name;
-  this.colors = ['red', 'blue'];
+  this.colors = ["red", "blue"];
 }
 
 Parent.prototype.getName = function () {
-  return this.name;
+  return;
+  this.name;
 };
 
 function Child(name, age) {
@@ -395,60 +400,37 @@ function Child(name, age) {
   this.age = age;
 }
 
-inheritPrototype(Child, Parent); // 建立继承关系
+inheritPrototype(Child, Parent);
 
 Child.prototype.getAge = function () {
   return this.age;
 };
 
-const child = new Child('Tom', 10);
+const child = new Child("Tom", 10);
 console.log(child.getName()); // "Tom"
 console.log(child.getAge()); // 10
 ```
 
 ### 常见继承模式优缺点
 
-#### 原型链继承
-
-- 优点：实现简单；原型方法可被所有实例共享，减少内存占用。
-- 缺点：无法向父构造函数传参；父级引用类型属性会被所有子实例共享，容易造成数据串扰。
-
-#### 借用构造函数继承（伪经典继承）
-
-- 优点：可以在子类构造函数中向父类传参；实例之间不会共享父级引用类型属性。
-- 缺点：父类方法无法复用，每个子实例都需要复制一份，内存开销大；原型上的方法无法访问。
-
-#### 组合继承
-
-- 优点：结合了原型链和借用构造函数的优势，既能传参又能复用原型上的方法。
-- 缺点：父构造函数会被调用两次（一次在子构造函数内，一次在原型赋值时），会产生冗余属性。
-
-#### 寄生式继承
-
-- 优点：基于 `Object.create()` 快速构建对象，可灵活添加额外能力。
-- 缺点：每次创建实例都要为新增方法创建新函数，无法复用；难以追踪构造过程。
-
-#### 寄生组合式继承
-
-- 优点：通过一次 `Object.create()` 建立原型链，只调用一次父构造函数；既支持传参又可复用方法，是传统继承的最佳实践。
-- 缺点：实现写法相对繁琐，需要辅助函数来封装继承逻辑。
-
-#### ES6 class 继承
-
-- 优点：语法更接近传统面向对象语言，`super`/`extends` 等关键字让继承关系更直观；本质仍然基于原型链，与旧代码兼容。
-- 缺点：语法糖可能掩盖原型链细节，调试时需要理解底层原理；某些高级场景下（如 mixin、动态继承）仍需回到原型层面操作。
+- 原型链继承：简单；但无法向父构造函数传参，父级引用类型属性会被所有子实例共享
+- 借用构造函数继承：可以传参；实例之间不会共享父级引用类型属性；但父类方法无法复用
+- 组合继承：结合了两者优势，但父构造函数会被调用两次
+- 寄生式继承：基于 `Object.create()` 快速构建对象，可灵活添加能力；但每次创建实例都要新建方法
+- 寄生组合式继承：只调用一次父构造函数 + 复用原型，是传统继承的最佳实践
+- ES6 class 继承：语法更直观，本质仍基于原型链
 
 ---
 
-## ES6+ 现代继承语法
+## 四、ES6+ 现代继承语法
 
-ES6引入的class语法为JavaScript提供了更清晰的继承语法.
+ES6 引入的 `class` 语法为 JavaScript 提供了更清晰的继承语法。
 
-### Class基础语法
+### 1. Class 基础语法
 
 ```javascript
 class Animal {
-  // 类字段(ES2022)
+  // 类字段 (ES2022)
   #energy = 100; // 私有字段
 
   constructor(name, species) {
@@ -467,33 +449,35 @@ class Animal {
     console.log(`${this.name} is sleeping. Energy: ${this.#energy}`);
   }
 
-  // Getter和Setter
+  // Getter 和 Setter
   get energy() {
     return this.#energy;
   }
 
   set energy(value) {
     if (value < 0) {
-      throw new Error('Energy cannot be negative');
+      throw new Error("Energy cannot be negative");
     }
     this.#energy = value;
   }
 
   // 静态方法
   static compare(animal1, animal2) {
-    return animal1.energy - animal2.energy;
+    return;
+    animal1.energy - animal2.energy;
   }
 
   // 静态字段
-  static kingdom = 'Animalia';
+  static kingdom = "Animalia";
 }
 
-const lion = new Animal('Leo', 'Lion');
-lion.eat('meat');
+const lion = new Animal("Leo", "Lion");
+
+lion.eat("meat");
 console.log(lion.energy); // 110
 ```
 
-### Class继承
+### 2. Class 继承
 
 ```javascript
 class Mammal extends Animal {
@@ -521,16 +505,16 @@ class Mammal extends Animal {
 
 class Dog extends Mammal {
   constructor(name, breed, furColor) {
-    super(name, 'Canis lupus', furColor);
+    super(name, "Canis lupus", furColor);
     this.breed = breed;
     this.loyalty = 100;
   }
 
-  bark(intensity = 'normal') {
+  bark(intensity = "normal") {
     const sounds = {
-      quiet: 'woof',
-      normal: 'Woof!',
-      loud: 'WOOF WOOF!',
+      quiet: "woof",
+      normal: "Woof!",
+      loud: "WOOF WOOF!",
     };
     console.log(`${this.name} barks: ${sounds[intensity]}`);
   }
@@ -540,27 +524,27 @@ class Dog extends Mammal {
     console.log(`${this.name} is looking for a toy...`);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log(`${this.name} found a ball!`);
-    return 'ball';
+    return "ball";
   }
 
-  // 重写toString
+  // 重写 toString
   toString() {
     return `${this.name} - ${this.breed} dog with ${this.furColor} fur`;
   }
 }
 
-const buddy = new Dog('Buddy', 'Golden Retriever', 'golden');
-buddy.eat('kibble'); // 调用重写的方法
-buddy.bark('loud'); // 调用自己的方法
+const buddy = new Dog("Buddy", "Golden Retriever", "golden");
+
+buddy.eat("kibble"); // 调用重写的方法
+buddy.bark("loud"); // 调用自己的方法
 console.log(buddy.toString());
 ```
 
-### Mixin模式 - 多重继承的实现
+### 3. Mixin 模式 - 多重继承的实现
 
-JavaScript不支持多重继承, 但可以通过Mixin实现类似功能:
+JavaScript 不支持多重继承，但可以通过 Mixin 实现类似功能：
 
 ```javascript
-// Mixin定义
 const Flyable = {
   fly() {
     console.log(`${this.name} is flying at altitude ${this.altitude}m`);
@@ -583,11 +567,11 @@ const Swimmable = {
   },
 };
 
-// Mixin辅助函数
+// Mixin 辅助函数
 function mixin(target, ...sources) {
   sources.forEach((source) => {
     Object.getOwnPropertyNames(source).forEach((name) => {
-      if (name !== 'constructor') {
+      if (name !== "constructor") {
         target.prototype[name] = source[name];
       }
     });
@@ -595,7 +579,7 @@ function mixin(target, ...sources) {
   return target;
 }
 
-// 应用Mixin
+// 应用 Mixin
 class Bird extends Animal {
   constructor(name, species, wingspan) {
     super(name, species);
@@ -606,38 +590,39 @@ class Bird extends Animal {
 
 class Duck extends Bird {
   constructor(name, wingspan) {
-    super(name, 'Duck', wingspan);
+    super(name, "Duck", wingspan);
     this.depth = 0;
   }
 }
 
-// 混入多个能力
 mixin(Duck, Flyable, Swimmable);
 
-const mallard = new Duck('Donald', 0.8);
-mallard.fly(); // 来自Flyable
-mallard.dive(2); // 来自Swimmable
-mallard.swim(); // 来自Swimmable
-mallard.land(); // 来自Flyable
+const mallard = new Duck("Donald", 0.8);
+
+mallard.fly(); // 来自 Flyable
+mallard.dive(2); // 来自 Swimmable
+mallard.swim(); // 来自 Swimmable
+
+mallard.land(); // 来自 Flyable
 ```
 
 ---
 
-## 原型链的高级应用
+## 五、原型链的高级应用
 
-掌握了基础知识后, 我们可以探索一些高级应用场景.
+掌握了基础知识后，我们可以探索一些高级应用场景。
 
-### 动态原型修改
+### 1. 动态原型修改
 
-JavaScript 允许在运行时修改原型, 这是其动态特性的体现:
+JavaScript 允许在运行时修改原型，这是其动态特性的体现：
 
 ```javascript
 function Person(name) {
   this.name = name;
 }
 
-const alice = new Person('Alice');
-const bob = new Person('Bob');
+const alice = new Person("Alice");
+const bob = new Person("Bob");
 
 // 动态添加方法到原型
 Person.prototype.greet = function () {
@@ -649,14 +634,15 @@ alice.greet(); // "Hello, I'm Alice"
 bob.greet(); // "Hello, I'm Bob"
 
 // 动态添加属性
-Person.prototype.species = 'Homo sapiens';
+Person.prototype.species = "Homo sapiens";
 console.log(alice.species); // "Homo sapiens"
 
 // 方法重写和原始方法保存
 const originalGreet = Person.prototype.greet;
+
 Person.prototype.greet = function () {
   originalGreet.call(this);
-  console.log('Nice to meet you!');
+  console.log("Nice to meet you!");
 };
 
 alice.greet();
@@ -664,30 +650,29 @@ alice.greet();
 // "Nice to meet you!"
 ```
 
-**注意事项**:
+注意事项：
 
 - 修改内置对象原型要谨慎
 - 可能影响第三方库
 - 性能开销需要考虑
 
 ```javascript
-// ❌ 不推荐: 修改内置原型
+// 不推荐: 修改内置原型
 Array.prototype.last = function () {
   return this[this.length - 1];
 };
 
-// ✅ 推荐: 使用工具函数
+// 推荐: 使用工具函数
 function getLastItem(array) {
   return array[array.length - 1];
 }
 
-// 或者使用更现代的方式
 const last = (arr) => arr[arr.length - 1];
 ```
 
-### 原型代理和拦截
+### 2. 原型代理和拦截
 
-使用Proxy可以拦截原型操作:
+使用 Proxy 可以拦截原型上的操作：
 
 ```javascript
 class SmartObject {
@@ -696,11 +681,11 @@ class SmartObject {
 
     return new Proxy(this, {
       get(target, prop) {
-        // 记录属性访问
         console.log(`Accessing property: ${prop}`);
 
         if (target.data.has(prop)) {
-          return target.data.get(prop);
+          return;
+          target.data.get(prop);
         }
 
         return target[prop];
@@ -709,7 +694,7 @@ class SmartObject {
       set(target, prop, value) {
         console.log(`Setting property: ${prop} = ${value}`);
 
-        if (typeof prop === 'string' && prop.startsWith('_')) {
+        if (typeof prop === "string" && prop.startsWith("_")) {
           console.warn(`Warning: Setting private property ${prop}`);
         }
 
@@ -718,30 +703,49 @@ class SmartObject {
       },
 
       has(target, prop) {
-        return target.data.has(prop) || prop in target;
+        return;
+        target.data.has(prop) || prop in target;
       },
     });
   }
+}
+
+unsafeAssign({}, JSON.parse('{ "__proto__": { "hacked": true } }'));
+
+console.log({}.hacked); // true —— 原型被污染
+```
+
+```javascript
+// ❌ 危险示例
+function unsafeAssign(target, source) {
+  for (const key in source) {
+    target[key] = source[key];
+  }
 
   toJSON() {
-    return Object.fromEntries(this.data);
+    return Object.fromEntries(
+this.data
+);
   }
 }
 
 const obj = new SmartObject();
-obj.name = 'John'; // Setting property: name = John
+
+obj.name
+ = 'John';     // Setting property: name = John
 obj._secret = 'hidden'; // Warning: Setting private property _secret
-console.log(obj.name); // Accessing property: name
+console.log(
+obj.name
+);  // Accessing property: name
 ```
 
-### 原型污染防护
+### 3. 原型污染防护
 
-原型污染是一个安全问题, 需要采取防护措施:
+原型污染是一个安全问题，需要采取防护措施：
 
 ```javascript
-// 防止原型污染的安全函数
 function safeAssign(target, source) {
-  const dangerousKeys = ['__proto__', 'constructor', 'prototype'];
+  const dangerousKeys = ["__proto__", "constructor", "prototype"];
 
   for (const key in source) {
     if (dangerousKeys.includes(key)) {
@@ -749,7 +753,7 @@ function safeAssign(target, source) {
       continue;
     }
 
-    if (typeof key === 'string' && key.includes('prototype')) {
+    if (typeof key === "string" && key.includes("prototype")) {
       console.warn(`Skipping suspicious key: ${key}`);
       continue;
     }
@@ -763,10 +767,11 @@ function safeAssign(target, source) {
 // 创建安全的对象
 function createSecureObject() {
   const obj = Object.create(null); // 没有原型链
+
   return new Proxy(obj, {
     set(target, prop, value) {
-      if (prop === '__proto__') {
-        throw new Error('Prototype pollution attempt blocked');
+      if (prop === "__proto__") {
+        throw new Error("Prototype pollution attempt blocked");
       }
       target[prop] = value;
       return true;
@@ -775,17 +780,18 @@ function createSecureObject() {
 }
 
 const secureObj = createSecureObject();
-secureObj.data = 'safe';
+
+secureObj.data = "safe";
 // secureObj.__proto__ = {}; // Error: Prototype pollution attempt blocked
 ```
 
 ---
 
-## 性能考虑与最佳实践
+## 六、性能考虑与最佳实践
 
-在实际开发中, 原型链的使用需要考虑性能和可维护性.
+在实际开发中，原型链的使用需要考虑性能和可维护性。
 
-### 原型查找的性能影响
+### 1. 原型查找的性能影响
 
 ```javascript
 // 性能测试: 不同深度的原型链
@@ -800,7 +806,7 @@ function createChain(depth) {
   }
 
   // 在最顶层添加属性
-  current.deepProperty = 'found';
+  current.deepProperty = "found";
 
   return root;
 }
@@ -824,7 +830,7 @@ function testLookupPerformance() {
 testLookupPerformance();
 ```
 
-**性能优化建议**:
+性能优化建议：
 
 ```javascript
 class OptimizedClass {
@@ -882,9 +888,9 @@ class ObjectPool {
 }
 ```
 
-### 内存泄漏预防
+### 2. 内存泄漏预防
 
-原型链使用不当可能导致内存泄漏:
+原型链使用不当可能导致内存泄漏：
 
 ```javascript
 class EventEmitter {
@@ -907,6 +913,7 @@ class EventEmitter {
 
     const callbacks = this.listeners.get(event);
     const index = callbacks.indexOf(callback);
+
     if (index > -1) {
       callbacks.splice(index, 1);
     }
@@ -923,7 +930,7 @@ class EventEmitter {
       try {
         callback(...args);
       } catch (error) {
-        console.error('Event callback error:', error);
+        console.error("Event callback error:", error);
       }
     });
   }
@@ -934,25 +941,23 @@ class EventEmitter {
   }
 }
 
-// 使用示例
 const emitter = new EventEmitter();
 
 // 自动清理的监听器
-const cleanup = emitter.on('data', (data) => {
-  console.log('Received data:', data);
+const cleanup = emitter.on("data", (data) => {
+  console.log("Received data:", data);
 });
 
-// 在适当时机清理
-window.addEventListener('beforeunload', cleanup);
+window.addEventListener("beforeunload", cleanup);
 ```
 
 ---
 
-## 调试和工具
+## 七、调试和工具
 
-掌握调试原型链的工具和技巧对开发很有帮助.
+掌握调试原型链的工具和技巧对开发很有帮助。
 
-### 原型链检查工具
+### 1. 原型链检查工具
 
 ```javascript
 // 通用原型链分析函数
@@ -965,14 +970,13 @@ function analyzePrototypeChain(obj, maxDepth = 10) {
     const info = {
       depth,
       object: current,
-      constructor: current.constructor?.name || 'Unknown',
+      constructor: current.constructor?.name || "Unknown",
       ownProperties: Object.getOwnPropertyNames(current),
       methods: [],
     };
 
-    // 收集方法
     Object.getOwnPropertyNames(current).forEach((name) => {
-      if (typeof current[name] === 'function') {
+      if (typeof current[name] === "function") {
         info.methods.push(name);
       }
     });
@@ -985,7 +989,6 @@ function analyzePrototypeChain(obj, maxDepth = 10) {
   return chain;
 }
 
-// 使用示例
 class A {}
 class B extends A {}
 class C extends B {}
@@ -999,23 +1002,24 @@ console.table(
     constructor: item.constructor,
     properties: item.ownProperties.length,
     methods: item.methods.length,
-  }))
+  })),
 );
 ```
 
-### 实时监控原型修改
+### 2. 实时监控原型修改
 
 ```javascript
 // 监控原型修改的工具
 function watchPrototype(constructor, callback) {
   const original = constructor.prototype;
+
   const handler = {
     set(target, prop, value) {
       callback({
-        action: 'set',
+        action: "set",
         property: prop,
-        value: value,
-        target: target,
+        value,
+        target,
       });
       target[prop] = value;
       return true;
@@ -1023,9 +1027,9 @@ function watchPrototype(constructor, callback) {
 
     deleteProperty(target, prop) {
       callback({
-        action: 'delete',
+        action: "delete",
         property: prop,
-        target: target,
+        target,
       });
       delete target[prop];
       return true;
@@ -1033,32 +1037,34 @@ function watchPrototype(constructor, callback) {
   };
 
   constructor.prototype = new Proxy(original, handler);
+
   return () => {
     constructor.prototype = original; // 恢复原始原型
   };
 }
 
-// 使用示例
 class TestClass {}
+
 const stopWatching = watchPrototype(TestClass, (change) => {
-  console.log('Prototype changed:', change);
+  console.log("Prototype changed:", change);
 });
 
 TestClass.prototype.newMethod = function () {
-  return 'added';
+  return "added";
 }; // 触发监控
 
 delete TestClass.prototype.newMethod; // 触发监控
+
 stopWatching(); // 停止监控
 ```
 
 ---
 
-## 现代 JavaScript 的替代方案
+## 八、现代 JavaScript 的替代方案
 
-随着 JavaScript 的发展, 出现了一些原型链的替代或补充方案.
+随着 JavaScript 的发展，出现了一些原型链的替代或补充方案。
 
-### 组合优于继承
+### 1. 组合优于继承
 
 ```javascript
 // 传统继承方式
@@ -1106,21 +1112,22 @@ class Bird {
   }
 }
 
-// 创建不同能力的鸟
-const eagle = new Bird('Eagle', [flyBehavior]);
-const duck = new Bird('Duck', [flyBehavior, swimBehavior, walkBehavior]);
-const penguin = new Bird('Penguin', [swimBehavior, walkBehavior]);
+const eagle = new Bird("Eagle", [flyBehavior]);
+const duck = new Bird("Duck", [flyBehavior, swimBehavior, walkBehavior]);
+const penguin = new Bird("Penguin", [swimBehavior, walkBehavior]);
 
 eagle.fly(); // ✅
 duck.swim(); // ✅
+
 duck.fly(); // ✅
 penguin.walk(); // ✅
-// penguin.fly(); // undefined - 没有此能力
+//
+penguin.fly(); // undefined - 没有此能力
 ```
 
-### WeakMap 私有属性
+### 2. WeakMap 私有属性
 
-使用 WeakMap 实现真正的私有属性:
+使用 WeakMap 实现真正的私有属性：
 
 ```javascript
 const privateData = new WeakMap();
@@ -1128,7 +1135,7 @@ const privateData = new WeakMap();
 class SecureClass {
   constructor(secret) {
     privateData.set(this, {
-      secret: secret,
+      secret,
       internalCounter: 0,
     });
   }
@@ -1142,23 +1149,20 @@ class SecureClass {
     data.internalCounter++;
     return data.internalCounter;
   }
-
-  // 外部无法访问privateData中的数据
 }
 
-const instance = new SecureClass('top-secret');
+const instance = new SecureClass("top-secret");
 console.log(instance.getSecret()); // "top-secret"
 console.log(instance.increment()); // 1
 
-// 无法直接访问私有数据
 console.log(instance.secret); // undefined
 console.log(Object.keys(instance)); // []
 ```
 
-### 函数式编程方法
+### 3. 函数式编程方法
 
 ```javascript
-// 函数式的"继承"方式
+// 函数式的 "继承" 方式
 const createAnimal = (name) => ({
   name,
   speak: () => console.log(`${name} makes a sound`),
@@ -1178,37 +1182,36 @@ const createCat = (name, color) => ({
   purr: () => console.log(`${name} purrs`),
 });
 
-// 使用
-const dog = createDog('Buddy', 'Golden Retriever');
-const cat = createCat('Whiskers', 'tabby');
+const dog = createDog("Buddy", "Golden Retriever");
+const cat = createCat("Whiskers", "tabby");
 
 dog.speak(); // "Buddy barks"
 cat.purr(); // "Whiskers purrs"
 
 // 优势: 简单、可预测、易测试
-// 劣势: 每个实例都有方法的副本(内存占用)
+// 劣势: 每个实例都有方法的副本（内存占用）
 ```
 
 ---
 
-## 总结与最佳实践
+## 九、总结与最佳实践
 
-JavaScript 的原型链是一个强大而灵活的特性, 理解它的工作原理对成为优秀的 JavaScript 开发者至关重要.
+JavaScript 的原型链是一个强大而灵活的特性，理解它的工作原理对成为优秀的 JavaScript 开发者至关重要。
 
-### 核心要点回顾
+### 1. 核心要点回顾
 
-1. **原型链是属性查找机制**: 当访问对象属性时, 会沿着原型链向上查找
-2. **构造函数的 `prototype` 属性**: 决定了实例对象的原型
-3. **`Object.getPrototypeOf()`**: 标准的获取对象原型的方式
-4. **继承的多种实现**: 从构造函数到ES6 class, 各有优劣
-5. **性能考虑**: 过深的原型链会影响属性访问性能
+1. 原型链是属性查找机制：访问对象属性时，会沿着原型链向上查找
+2. 构造函数的 `prototype` 属性：决定了实例对象的原型
+3. `Object.getPrototypeOf()`：标准的获取对象原型的方式
+4. 继承的多种实现：从构造函数到 ES6 class，各有优劣
+5. 性能考虑：过深的原型链会影响属性访问性能
 
-### 最佳实践总结
+### 2. 最佳实践总结
 
 ```javascript
-// ✅ 推荐的做法
+// 推荐的做法
 
-// 1. 使用ES6+ class语法(清晰简洁)
+// 1. 使用 ES6+ class 语法
 class Animal {
   constructor(name) {
     this.name = name;
@@ -1219,7 +1222,7 @@ class Animal {
   }
 }
 
-// 2. 优先组合而非继承
+// 2. 优先组合而非深层继承
 class Dog {
   constructor(name, behaviors) {
     this.name = name;
@@ -1233,15 +1236,15 @@ class Dog {
   }
 }
 
-// 3. 使用Object.create()创建原型关系
+// 3. 使用 Object.create() 创建原型关系
 const dogPrototype = Object.create(Animal.prototype);
 
 // 4. 避免修改内置原型
-// Array.prototype.customMethod = ... // ❌
+// Array.prototype.customMethod = ... // 不推荐
 
-// 5. 使用私有字段(ES2022)
+// 5. 使用私有字段（ES2022）
 class ModernClass {
-  #privateField = 'secret';
+  #privateField = "secret";
 
   getPrivateField() {
     return this.#privateField;
@@ -1249,33 +1252,36 @@ class ModernClass {
 }
 ```
 
-### 常见陷阱避免
+### 3. 常见陷阱避免
 
 ```javascript
-// ❌ 常见错误
+// 常见错误
 function Constructor() {}
 Constructor.prototype = {
   method: function () {},
-  // 忘记设置constructor属性
+  // 忘记设置 constructor 属性
 };
 
-// ✅ 正确做法
+// 正确做法
 function Constructor() {}
 Constructor.prototype = {
   constructor: Constructor,
   method: function () {},
 };
 
-// ❌ 原型污染风险
+// 原型污染风险
 function unsafeExtend(target, source) {
   for (let key in source) {
-    target[key] = source[key]; // 危险!
+    target[key] = source[key]; // 危险！
   }
 }
 
-// ✅ 安全的扩展
+// 安全的扩展
 function safeExtend(target, source) {
-  const safeKeys = Object.keys(source).filter((key) => !['__proto__', 'constructor', 'prototype'].includes(key));
+  const safeKeys = Object.keys(source).filter(
+    (key) => !["__proto__", "constructor", "prototype"].includes(key),
+  );
+
   safeKeys.forEach((key) => {
     target[key] = source[key];
   });
@@ -1283,4 +1289,5 @@ function safeExtend(target, source) {
 ```
 
 掌握原型链不仅帮助我们理解 JavaScript 的对象系统，更重要的是让我们能够写出更高效、更安全、更易维护的代码。
+
 在现代 JavaScript 开发中，虽然有了 class 语法等新特性，但原型链仍然是底层的核心机制（面试高频考点），值得每一个开发者深入掌握！

@@ -1,21 +1,20 @@
 ---
-title: 'React 19 新功能前瞻：Action API、use 钩子与元数据管理'
+title: 'React 19 新功能：Action API、use 钩子与元数据管理'
 titleEn: 'React 19 Preview: Actions, use Hook, and Document Metadata'
-date: '2025-11-06'
-lastmod: '2025-11-06'
-tags: ['react', 'react19', 'frontend', 'architecture']
 summary: '解析 React 19 Beta 的 Action API、use 钩子、文档元数据与资源加载改进，并结合升级策略与业务场景给出落地建议。'
 summaryEn: 'Explains React 19 Beta features including Actions, the use hook, document metadata, and asset loading with practical upgrade advice.'
+date: '2025-10-01'
+lastmod: '2025-12-25'
+tags: ['react', 'react19', 'frontend', 'architecture']
+draft: false
 ---
 
-React 19 Beta 在 2024 年释出，标志着 React 团队将此前的“并发基础设施”真正向开发者开放：Actions、`use` 钩子、Document Metadata、Asset Loading 等能力逐步走向稳定，并配合服务器组件（RSC）形成端到端的架构闭环[^1]。本文整理关键特性、适用场景与迁移注意事项，帮助团队提前规划升级路线。
-
----
+React 19 Beta 在 2024 年释出，标志着 React 团队将此前的“并发基础设施”真正向开发者开放：Actions、`use` 钩子、Document Metadata、Asset Loading 等能力逐步走向稳定，并配合服务器组件（RSC）形成端到端的架构闭环。本文整理关键特性、适用场景与迁移注意事项，帮助团队提前规划升级路线。
 
 ## 版本定位与核心亮点
 
 - **Action API**：让表单与异步副作用拥有统一的声明方式，无需手写 loading/error 状态管理。
-- **`use` 钩子**：在组件中直接等待 Promise、读取上下文或资源，实现与 Suspense 更紧密的协同。
+- `use` **钩子**：在组件中直接等待 Promise、读取上下文或资源，实现与 Suspense 更紧密的协同。
 - **Document Metadata**：可以在任意组件中声明 `<title>`、`<meta>`、`<link>`，由 React 负责去重与合并。
 - **Asset Loading**：通过 `preload`、`preinit` API 显式声明资源依赖，提升首屏加载效率。
 - **服务器组件与渐进增强**：React 19 将 RSC 紧密集成在官方工具链中，Actions 与 `use` 可跨客户端和服务器协同运行。
@@ -26,11 +25,11 @@ React 19 Beta 在 2024 年释出，标志着 React 团队将此前的“并发�
 
 React 19 引入的 Action API 让“触发异步逻辑”成为一等公民：
 
-- **`useActionState`**：将 action 函数的结果、pending 状态、错误信息整合到 Hook 中，适合处理表单提交、批量操作。
-- **`useOptimistic`**：在等待服务器响应期间应用乐观更新，提供撤销与合并策略，优化协作型应用的即时反馈[^2]。
-- **表单 `<form action={...}>`**：在组件中直接传入 action 函数，无需额外注册事件；React 自动托管 `disabled`、`pending` 状态。
+- `useActionState`：将 action 函数的结果、pending 状态、错误信息整合到 Hook 中，适合处理表单提交、批量操作。
+- `useOptimistic`：在等待服务器响应期间应用乐观更新，提供撤销与合并策略，优化协作型应用的即时反馈。
+- 表单 `<form action={...}>`：在组件中直接传入 action 函数，无需额外注册事件；React 自动托管 `disabled`、`pending` 状态。
 
-```tsx
+```typescript
 const [state, runAction, isPending] = useActionState(async (_, formData) => {
   return await saveProfile(Object.fromEntries(formData));
 }, initialState);
@@ -49,12 +48,12 @@ return (
 
 ## `use` 钩子与数据获取新范式
 
-React 19 将此前实验性的 `use` 钩子纳入正式 API。`use` 可以在组件中直接等待 Promise，读取 Context 或资源引用，并在 Suspense 边界内自动处理加载与错误[^3]。
+React 19 将此前实验性的 `use` 钩子纳入正式 API。`use` 可以在组件中直接等待 Promise，读取 Context 或资源引用，并在 Suspense 边界内自动处理加载与错误。
 
 - **与 RSC 联动**：`use` 支持在服务器组件中加载数据库查询或远程资源，并向客户端组件传递已解析的数据。
 - **渐进迁移**：现有代码可在数据获取层包装 Promise，再利用 Suspense 捕获加载状态，减少手动状态管理。
 
-```tsx
+```typescript
 function CommentsList() {
   const comments = use(fetchComments());
   return comments.map((item) => <Comment key={item.id} data={item} />);
@@ -67,13 +66,13 @@ function CommentsList() {
 
 ## Document Metadata：组件内管理 Head 信息
 
-React 19 允许在任意组件中直接声明文档元数据，React DOM 会对 `<title>`、`<meta>`、`<link>` 等标签进行去重和优先级合并[^4]。这让布局组件、页面组件、甚至嵌套的业务模块都能准确描述自己的 SEO 与分享信息。
+React 19 允许在任意组件中直接声明文档元数据，React DOM 会对 `<title>`、`<meta>`、`<link>` 等标签进行去重和优先级合并。这让布局组件、页面组件、甚至嵌套的业务模块都能准确描述自己的 SEO 与分享信息。
 
-- **避免手动管理 `<head>`**：不再需要依赖第三方 Head 管理库。
+- **避免手动管理** `<head>`：不再需要依赖第三方 Head 管理库。
 - **自动冲突解决**：同一类型的标签会根据组件层级自动覆盖或合并，保证页面状态一致。
 - **与 RSC 配套**：服务器组件渲染时即可生成完整元数据，减少客户端等待。
 
-```tsx
+```typescript
 export default function ProductPage({ product }: Props) {
   return (
     <>
@@ -85,19 +84,17 @@ export default function ProductPage({ product }: Props) {
 }
 ```
 
----
-
 ## Asset Loading：显式声明资源依赖
 
-React 19 提供 `ReactDOM.preload`、`ReactDOM.preconnect`、`ReactDOM.prefetchDNS` 等 API，允许在组件层面声明资源加载优先级[^5]。配合 Suspense，可以在组件渲染前预加载关键 CSS、字体或第三方脚本。
+React 19 提供 `ReactDOM.preload`、`ReactDOM.preconnect`、`ReactDOM.prefetchDNS` 等 API，允许在组件层面声明资源加载优先级。配合 Suspense，可以在组件渲染前预加载关键 CSS、字体或第三方脚本。
 
 - **减少闪烁**：在页面切换期间预加载目标路由的关键资源。
 - **与 bundler 集成**：Webpack、Vite、Metro 等 bundler 将逐步提供与 React 19 兼容的自动插入策略。
 - **Edge/Streaming 友好**：服务器可以在流式输出时提前声明依赖，加速客户端复用。
 
-```tsx
-ReactDOM.preload('/charts.css', { as: 'style' });
-ReactDOM.preconnect('https://api.example.com');
+```typescript
+ReactDOM.preload("/charts.css", { as: "style" });
+ReactDOM.preconnect("https://api.example.com");
 ```
 
 ---
@@ -122,24 +119,13 @@ React 19 将服务器组件从实验阶段推进到稳定通道，配合 Actions
 4. **梳理 Head 管理**：替换现有 Head 组件或第三方库，观测多路由/多语言情况下的 SEO 输出是否稳定。
 5. **工具链支持**：关注 bundler 插件、类型定义与 DevTools 更新，尤其是 SSR 框架对 RSC 的稳定度。
 
----
-
 ## 适用场景与实践建议
 
 - **数据密集型后台**：利用 Actions + `useOptimistic` 实现表格内联编辑、审批流的即时反馈。
-- **内容站与多语言门户**：Document Metadata 配合 RSC 提升 SEO 与分享信息一致性。
-- **跨端共享逻辑**：React Native 与 Web 双端可通过 Actions 共享业务流程，减少重复状态管理。
-- **前后端一体化团队**：通过服务器组件与 Edge Streaming，在云函数或大型 BFF 体系中实施“代码即数据接口”。
+- 内容站与多语言门户：Document Metadata 配合 RSC 提升 SEO 与分享信息一致性。
+- 跨端共享逻辑：React Native 与 Web 双端可通过 Actions 共享业务流程，减少重复状态管理。
+- 前后端一体化团队：通过服务器组件与 Edge Streaming，在云函数或大型 BFF 体系中实施“代码即数据接口”。
 
 ---
 
 React 19 将 React 18 奠定的并发基础拓展为贯穿数据获取、表单交互、资源加载的整体方案。它既能降低日常开发中对“状态胶水”代码的依赖，也为跨端与全栈框架提供更原生的支撑。建议团队在升级前设立试点项目，验证 Actions 与 RSC 对现有 CI/CD、监控体系的影响，并为正式 GA 做好准备。
-
----
-
-[^1]: React Blog, “React 19 Beta”, https://react.dev/blog/2024/05/22/react-19
-[^2]: React Documentation, “useOptimistic”, https://react.dev/reference/react/useOptimistic
-[^3]: React Documentation, “use”, https://react.dev/reference/react/use
-[^4]: React Documentation, “Document Metadata”, https://react.dev/reference/react-dom/components#document-metadata
-[^5]: React Documentation, “Resource Loading”, https://react.dev/reference/react-dom/components#resource-loading
-
