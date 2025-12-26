@@ -22,20 +22,18 @@ draft: false
 ```typescript
 // 后端 API 定义
 export const userRouter = router({
-  getById: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ input }) => {
-      return await db.user.findUnique({
-        where: { id: input.id },
-      });
-    }),
+  getById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
+    return await db.user.findUnique({
+      where: { id: input.id },
+    });
+  }),
 
   create: publicProcedure
     .input(
       z.object({
         name: z.string().min(2),
         email: z.string().email(),
-      }),
+      })
     )
     .mutation(async ({ input }) => {
       return await db.user.create({
@@ -140,11 +138,11 @@ model Post {
 Zod 负责运行时校验和类型推导：
 
 ```typescript
-import { z } from "zod";
+import { z } from 'zod';
 
 export const createPostSchema = z.object({
-  title: z.string().min(1, "标题不能为空").max(100, "标题过长"),
-  content: z.string().min(10, "内容至少10个字符"),
+  title: z.string().min(1, '标题不能为空').max(100, '标题过长'),
+  content: z.string().min(10, '内容至少10个字符'),
   published: z.boolean().default(false),
 });
 
@@ -225,10 +223,10 @@ my-app/
 
 ```typescript
 // src/server/api/routers/post.ts
-import { z } from "zod";
-import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
-import { createPostSchema } from "@/lib/schemas";
-import { TRPCError } from "@trpc/server";
+import { z } from 'zod';
+import { createTRPCRouter, publicProcedure, protectedProcedure } from '../trpc';
+import { createPostSchema } from '@/lib/schemas';
+import { TRPCError } from '@trpc/server';
 
 export const postRouter = createTRPCRouter({
   // 获取文章列表（公开）
@@ -238,7 +236,7 @@ export const postRouter = createTRPCRouter({
         limit: z.number().min(1).max(100).default(10),
         cursor: z.string().optional(),
         published: z.boolean().default(true),
-      }),
+      })
     )
     .query(async ({ ctx, input }) => {
       const posts = await ctx.prisma.post.findMany({
@@ -246,7 +244,7 @@ export const postRouter = createTRPCRouter({
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where: { published: input.published },
         include: { author: { select: { name: true, email: true } } },
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' },
       });
 
       let nextCursor: string | undefined = undefined;
@@ -259,35 +257,31 @@ export const postRouter = createTRPCRouter({
     }),
 
   // 获取单篇文章
-  getById: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const post = await ctx.prisma.post.findUnique({
-        where: { id: input.id },
-        include: { author: { select: { name: true, email: true } } },
+  getById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
+    const post = await ctx.prisma.post.findUnique({
+      where: { id: input.id },
+      include: { author: { select: { name: true, email: true } } },
+    });
+
+    if (!post) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: '文章不存在',
       });
+    }
 
-      if (!post) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "文章不存在",
-        });
-      }
-
-      return post;
-    }),
+    return post;
+  }),
 
   // 创建文章（需要认证）
-  create: protectedProcedure
-    .input(createPostSchema)
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.post.create({
-        data: {
-          ...input,
-          authorId: ctx.session.user.id,
-        },
-      });
-    }),
+  create: protectedProcedure.input(createPostSchema).mutation(async ({ ctx, input }) => {
+    return await ctx.prisma.post.create({
+      data: {
+        ...input,
+        authorId: ctx.session.user.id,
+      },
+    });
+  }),
 
   // 更新文章
   update: protectedProcedure
@@ -295,7 +289,7 @@ export const postRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         data: createPostSchema.partial(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const post = await ctx.prisma.post.findUnique({
@@ -304,8 +298,8 @@ export const postRouter = createTRPCRouter({
 
       if (!post || post.authorId !== ctx.session.user.id) {
         throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "无权限操作",
+          code: 'FORBIDDEN',
+          message: '无权限操作',
         });
       }
 
@@ -478,16 +472,16 @@ utils.post
 
 ```typescript
 // lib/trpc.ts
-import { httpBatchLink } from "@trpc/client";
-import { createTRPCNext } from "@trpc/next";
-import type { AppRouter } from "@/server/api/root";
+import { httpBatchLink } from '@trpc/client';
+import { createTRPCNext } from '@trpc/next';
+import type { AppRouter } from '@/server/api/root';
 
 export const trpc = createTRPCNext<AppRouter>({
   config() {
     return {
       links: [
         httpBatchLink({
-          url: "/api/trpc",
+          url: '/api/trpc',
           // 批量请求优化
           maxBatchSize: 10,
         }),
@@ -511,9 +505,9 @@ export const trpc = createTRPCNext<AppRouter>({
 
 ```typescript
 // pages/posts/index.tsx
-import { createServerSideHelpers } from "@trpc/react-query/server";
-import { appRouter } from "@/server/api/root";
-import { createTRPCContext } from "@/server/api/trpc";
+import { createServerSideHelpers } from '@trpc/react-query/server';
+import { appRouter } from '@/server/api/root';
+import { createTRPCContext } from '@/server/api/trpc';
 
 export async function getStaticProps() {
   const helpers = createServerSideHelpers({
@@ -608,7 +602,7 @@ export const TRPCErrorBoundary = ({ children }: { children: React.ReactNode }) =
 
 ```typescript
 // server/api/trpc.ts
-import { t } from "./trpc-core";
+import { t } from './trpc-core';
 
 const loggerMiddleware = t.middleware(async ({ path, type, next }) => {
   const start = Date.now();
@@ -618,9 +612,9 @@ const loggerMiddleware = t.middleware(async ({ path, type, next }) => {
   const meta = { path, type, durationMs };
 
   if (result.ok) {
-    console.log("✅ OK request timing:", meta);
+    console.log('✅ OK request timing:', meta);
   } else {
-    console.error("❌ Non-OK request timing", meta);
+    console.error('❌ Non-OK request timing', meta);
   }
 
   return result;

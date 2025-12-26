@@ -21,6 +21,16 @@ const TableOfContents = (props: TableOfContentsProps) => {
   const { toc, className } = props;
   const [activeId, setActiveId] = useState<string | null>(null);
 
+  const getSelector = (url: string) => {
+    if (!url.startsWith('#')) return url;
+    const id = url.slice(1);
+    const escaped =
+      typeof CSS !== 'undefined' && typeof CSS.escape === 'function'
+        ? CSS.escape(id)
+        : id.replace(/(^-?\d)/, '\\3$1 ').replace(/ /g, '\\ ');
+    return `#${escaped}`;
+  };
+
   useEffect(() => {
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
@@ -36,7 +46,7 @@ const TableOfContents = (props: TableOfContentsProps) => {
     });
 
     toc.forEach(({ url }) => {
-      const element = document.querySelector(url);
+      const element = document.querySelector(getSelector(url));
 
       if (element) {
         observer.observe(element);
@@ -45,7 +55,7 @@ const TableOfContents = (props: TableOfContentsProps) => {
 
     return () => {
       toc.forEach(({ url }) => {
-        const element = document.querySelector(url);
+        const element = document.querySelector(getSelector(url));
 
         if (element) {
           observer.unobserve(element);
