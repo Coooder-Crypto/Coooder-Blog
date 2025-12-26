@@ -14,7 +14,7 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, next, prev, children }: LayoutProps) {
-  const { slug, date, title, tags, readingTime } = content;
+  const { date, title, tags, readingTime } = content;
 
   return (
     <SectionContainer>
@@ -30,7 +30,7 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
                 <dl>
                   <div>
                     <dt className="sr-only">Published on</dt>
-                    <BlogMeta date={date} slug={slug} readingTime={readingTime} />
+                    <BlogMeta date={date} readingTime={readingTime} />
                   </div>
                 </dl>
               </div>
