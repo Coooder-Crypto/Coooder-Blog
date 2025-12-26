@@ -40,8 +40,8 @@ jobs:
       - name: Commit and push if changed
         run: |
           if [[ -n "$(git status --porcelain)" ]]; then
-            git config user.name "notion-sync-bot"
-            git config user.email "notion-sync-bot@users.noreply.github.com"
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -A data/blog .notion-sync.json
             git add -A public/static/images/notion || true
             git commit -m "chore: sync notion posts"
