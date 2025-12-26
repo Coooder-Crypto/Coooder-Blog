@@ -1,0 +1,233 @@
+---
+title: '用 Notion 作为信息源的博客系统实现：同步、渲染与自动化'
+titleEn: 'Notion as a Source: Sync, Render, and Automate a Blog System'
+summary: '从数据模型、同步脚本、图片处理到 CI 自动化，拆解使用 Notion 作为内容源的博客系统落地细节与工程权衡。'
+summaryEn: 'Breaks down the system design of a Notion-powered blog, covering data model, sync scripts, image handling, and CI automation.'
+date: '2025-12-25'
+lastmod: '2025-12-25'
+tags: ['nextjs', 'architecture', 'automation', 'cms', 'notion']
+draft: false
+---
+
+Notion 适合记录、协作和结构化整理内容，但它本身不是一个面向 Web 的渲染引擎。要把 Notion 变成稳定的博客信息源，核心是把「编辑体验」和「发布体验」解耦：编辑在 Notion，发布在构建系统中完成。
+
+这样能避免运行时对 Notion API 的依赖，保证部署稳定、可复现，并且让内容进入 Git 版本控制。下面以一个静态博客为例，拆解整体实现。
+
+---
+
+## 目标与约束
+
+- **目标**：编辑在 Notion、构建在 CI、页面在静态站点（如 Vercel）。
+- **约束**：不依赖运行时访问 Notion API；构建可离线复现；图片永久可用。
+- **策略**：Notion → 同步脚本 → 本地 MDX → Contentlayer → Next.js 构建。
+
+这么设计的核心动机是「稳定性优先」：运行时去拉 Notion 内容会受到 API 限流、网络波动、图片过期等影响，而构建阶段拉取并落盘，可以把这些不确定性提前消化掉。
+
+---
+
+## 为什么选择「同步到 MDX」这条路线
+
+- **稳定**：构建时拉取一次，发布后不再依赖 Notion API，可离线构建、回滚简单。
+- **性能**：静态输出，页面响应快；图片本地化后不再受 Notion CDN 影响。
+- **可控**：内容进入 Git，可审查、可追溯、可回滚，便于团队协作。
+- **低成本**：不需要额外服务器或数据库，CI + 静态托管即可运行。
+
+简单说，Notion 负责写作体验，静态站点负责访问体验，两者通过同步脚本连接。
+
+---
+
+## 数据模型设计（Notion Database）
+
+将 Notion 的 Database 视作内容 schema，保证与前端 frontmatter 对齐：
+
+- `Title`（Title）：文章标题
+- `Slug`（Text）：URL 片段，可选；为空时根据 Title 生成
+- `Date`（Date）：发布时间
+- `Tags`（Multi-select）：标签
+- `Summary`（Text）：摘要
+- `Draft`（Checkbox）：草稿开关
+- `TitleEn` / `SummaryEn`（Text，可选）：多语言字段
+- `Layout`（Text/Select，可选）：布局类型
+- `CanonicalUrl`（URL/Text，可选）：SEO 规范链接
+
+正文写在页面内容中，脚本会把页面块转换为 Markdown/MDX。这样数据库字段只承担「元信息」，正文仍保持 Notion 原生编辑体验。
+
+---
+
+## 同步链路（Notion → MDX）
+
+同步脚本的职责是「稳定输出」，也就是把 Notion 的不确定性转换为可控文件：
+
+1. 拉取数据库页面
+2. 生成 frontmatter
+3. 读取页面内容并转换为 Markdown
+4. 下载图片并压缩，替换为本地路径
+5. 输出 `data/blog/*.mdx`
+
+核心流程（简化示例）：
+
+```typescript
+const pages = await notion.databases.query({ database_id: DATABASE_ID });
+
+for (const page of pages.results) {
+  const slug = normalizeSlug(page);
+  const frontmatter = buildFrontmatter(page);
+  const markdown = await notionToMd(page.id);
+  const body = await rewriteImages(markdown, slug);
+
+  await writeFile(`data/blog/${slug}.mdx`, `${frontmatter}${body}`);
+}
+```
+
+为了避免重复、删除和重命名问题，可以维护一个 `.notion-sync.json`，记录 pageId ↔ slug ↔ filePath 的映射，这样删除 Notion 页面时，本地内容也能被正确清理。
+
+---
+
+## 图片处理（稳定与体积）
+
+Notion 的图片链接有时效且可能失效，因此必须落盘：
+
+- 下载到 `public/static/images/notion/{slug}/`
+- 通过 `sharp` 转换成 `webp` 并压缩
+- 自动替换 MDX 图片链接
+
+这样能保证：
+
+- 图片长期可访问
+- 体积更小，加载更快
+- 不依赖 Notion CDN
+
+此外，图片本地化还能让你在 CDN 或静态托管平台上统一做缓存与加速。
+
+---
+
+## 构建与渲染（Contentlayer + Next.js）
+
+内容层由 Contentlayer 管理：
+
+- `data/blog/**/*.{md,mdx}` 作为数据源
+- 自动生成 `allBlogs` / `Blog` 类型
+- 计算 `slug / path / readingTime / toc` 等字段
+
+渲染层在 Next.js 中完成：
+
+- 列表页：`allBlogs` + `sortPosts`
+- 详情页：`MDXLayoutRenderer`
+- 标签页：读取 `tag-data.json`
+
+这样内容、路由、SEO 都可在构建时一次完成，避免运行时拼装带来的延迟与复杂度。
+
+---
+
+## 自动化（GitHub Actions + Vercel）
+
+自动同步的关键是「定时 + 有变更才提交」：
+
+```yaml
+on:
+  schedule:
+    - cron: "0 2 * * *" # UTC 02:00
+```
+
+流程：
+
+1. 定时执行 `yarn sync:blog`
+2. 如果内容变化，自动 commit & push
+3. Vercel 触发新构建
+
+这条链路保证了：只要 Notion 更新，就能按计划自动上线。即使 Notion 服务短暂不可用，也只影响本次同步，不会影响线上访问。
+
+### 更具体的 Action 配置要点
+
+- **仅在默认分支触发**：`schedule` 只会在默认分支运行（通常是 `main`），这点常被忽略。
+- **使用 Repository Secrets**：`NOTION_TOKEN`、`NOTION_DATABASE_ID` 放在 GitHub Secrets，避免泄漏。
+- **仅在有变更时提交**：用 `git status --porcelain` 检测变更，避免无意义的 commit。
+- **固定 Node 版本**：用 `actions/setup-node` 固定 `node-version`，保证脚本可复现。
+- **依赖缓存**：启用 `cache: 'yarn'`，缩短同步耗时。
+
+一个精简版示例：
+
+```yaml
+name: Notion Sync
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+      - run: corepack enable
+      - run: yarn install --immutable
+      - run: yarn sync:blog
+        env:
+          NOTION_TOKEN: $ secrets.NOTION_TOKEN
+          NOTION_DATABASE_ID: $ secrets.NOTION_DATABASE_ID
+      - run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git config
+user.name
+ "notion-sync-bot"
+            git config
+user.email
+ "
+notion-sync-bot@users.noreply.github.com
+"
+            git add -A data/blog .notion-sync.json public/static/images/notion
+            git commit -m "chore: sync notion posts"
+            git push
+          fi
+```
+
+这段配置覆盖了「定时同步 + 手动触发 + 有变更才提交」的完整闭环，足够稳定地驱动 Vercel 自动部署。
+
+---
+
+## 失败兜底与安全策略
+
+- **Notion API 失败**：同步脚本应直接失败，避免写入半成品。
+- **缺字段容错**：`Date` 为空时回落到 `created_time`。
+- **Slug 冲突处理**：冲突时追加短 ID 后缀。
+- **密钥安全**：Token 和 DB ID 仅放 GitHub Secrets。
+- **内容可追溯**：同步后的 MDX 进入 Git 管理。
+
+这类兜底设计的意义是：就算 Notion 变了字段结构、内容误删或网络抖动，也不会造成线上不可用。
+
+---
+
+## 取舍与扩展
+
+**优点**
+
+- 编辑体验好（Notion）
+- 构建稳定、可离线复现
+- 不依赖运行时 API
+
+**代价**
+
+- 内容更新有时延（由 cron 决定）
+- 图片同步需要额外存储
+
+**可扩展方向**
+
+- 增加全文搜索（本地索引）
+- 多语言正文分库
+- Notion → 其他格式（RSS / Newsletter）
+
+---
+
+## 小结
+
+把 Notion 作为信息源的关键不是「直接渲染 Notion」，而是建立一个可靠的同步链路，让内容成为构建阶段的输入。这样既能保留 Notion 的编辑体验，又能获得静态站点的性能与可控性。
+
+如果你正在搭建个人博客或团队知识库，这套方式是「工程成本可控、长期维护稳定」的选择。

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-25T08:16:55.561Z",
+  "updatedAt": "2025-12-26T03:20:55.052Z",
   "pages": {
     "2d42bc6e-bcde-8015-9c56-e7ac8b54dfa8": {
       "slug": "frontend-learning-roadmap",
@@ -36,6 +36,10 @@
     "2d42bc6e-bcde-80ae-b190-c6c5e93503be": {
       "slug": "browser-loading-process",
       "filePath": "data/blog/browser-loading-process.mdx"
+    },
+    "2d42bc6e-bcde-80e0-9a23-ef86f0acd520": {
+      "slug": "notion-as-cms-system-implementation",
+      "filePath": "data/blog/notion-as-cms-system-implementation.mdx"
     }
   }
 }
