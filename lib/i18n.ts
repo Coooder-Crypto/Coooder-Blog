@@ -34,7 +34,6 @@ export const translations: Record<Language, Translations> = {
     // Navigation
     'nav.blog': 'Blog',
     'nav.projects': 'Projects',
-    'nav.3droom': '3D Room',
     'nav.about': 'About',
 
     // Homepage
@@ -120,7 +119,6 @@ export const translations: Record<Language, Translations> = {
     // Navigation
     'nav.blog': '博客',
     'nav.projects': '项目',
-    'nav.3droom': '3D 房间',
     'nav.about': '关于',
 
     // Homepage

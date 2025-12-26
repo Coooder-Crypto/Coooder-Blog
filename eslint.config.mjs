@@ -14,7 +14,7 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['tailwind.config.js', 'app/3d-room/**/*'],
+    ignores: ['tailwind.config.js'],
   },
   js.configs.recommended,
   ...compat.extends(
