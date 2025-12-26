@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { CoreContent } from 'pliny/utils/contentlayer';
 import type { Blog, Authors } from 'contentlayer/generated';
 
-import { BlogTags, BlogMeta, BlogNav, TableOfContents, Reactions } from '@/components/blog';
+import { BlogTags, BlogMeta, BlogNav, TableOfContents } from '@/components/blog';
 import { PageTitle, SectionContainer, ScrollTopAndComment } from '@/components/ui';
 
 interface LayoutProps {
@@ -15,7 +15,7 @@ interface LayoutProps {
 
 export default function PostLayout(props: LayoutProps) {
   const { content, next, prev, children } = props;
-  const { slug, toc, date, title, tags, readingTime, type } = content;
+  const { toc, date, title, tags, readingTime } = content;
 
   return (
     <SectionContainer>
@@ -31,7 +31,7 @@ export default function PostLayout(props: LayoutProps) {
               <dl>
                 <div>
                   <dt className="sr-only">Published on</dt>
-                  <BlogMeta date={date} slug={slug} readingTime={readingTime} />
+                  <BlogMeta date={date} readingTime={readingTime} />
                 </div>
               </dl>
             </div>
@@ -48,7 +48,6 @@ export default function PostLayout(props: LayoutProps) {
           <div className="hidden lg:col-span-4 lg:block xl:col-span-3">
             <div className="space-y-4 divide-y divide-gray-200 dark:divide-gray-700 lg:sticky lg:top-16">
               <TableOfContents toc={toc} />
-              <Reactions className="pt-6" />
             </div>
           </div>
         </main>

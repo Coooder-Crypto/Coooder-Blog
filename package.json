@@ -12,7 +12,6 @@
     "sync:blog": "node scripts/notion-sync.mjs"
   },
   "dependencies": {
-    "@ashthornton/asscroll": "^2.0.11",
     "@emotion/is-prop-valid": "^1.4.0",
     "@headlessui/react": "2.2.0",
     "@notionhq/client": "^2.2.15",
@@ -27,7 +26,6 @@
     "framer-motion": "^12.23.12",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.2",
-    "gsap": "^3.13.0",
     "hast-util-from-html-isomorphic": "^2.0.0",
     "image-size": "1.2.0",
     "lodash": "^4.17.21",
@@ -55,8 +53,6 @@
     "remark-math": "^6.0.0",
     "sharp": "^0.33.5",
     "tailwindcss": "^3.4.17",
-    "three": "^0.179.1",
-    "three-orbitcontrols-ts": "^0.1.2",
     "typed.js": "^2.1.0",
     "unist-util-visit": "^5.0.0"
   },
