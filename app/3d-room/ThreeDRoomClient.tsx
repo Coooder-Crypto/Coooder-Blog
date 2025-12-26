@@ -1,40 +1,69 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Experience from './components/Experience/Experience';
 import './styles.css';
+
+type ExperienceInstance = InstanceType<typeof import('./components/Experience/Experience').default>;
 
 export default function ThreeDRoomClient() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const experienceRef = useRef<Experience | null>(null);
+  const experienceRef = useRef<ExperienceInstance | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (canvasRef.current && !experienceRef.current) {
+    let isActive = true;
+    let resourcesReadyHandler: (() => void) | null = null;
+    let controlsReadyHandler: (() => void) | null = null;
+
+    const initExperience = async () => {
+      if (!canvasRef.current || experienceRef.current) return;
+
       try {
+        const { default: Experience } = await import('./components/Experience/Experience');
+
+        if (!isActive || !canvasRef.current) return;
+
         experienceRef.current = new Experience(canvasRef.current);
 
-        // Listen for resources loaded to hide loading screen quickly
         if (experienceRef.current.resources) {
-          experienceRef.current.resources.on('ready', () => {
-            setIsLoading(false);
-          });
+          resourcesReadyHandler = () => {
+            if (isActive) {
+              setIsLoading(false);
+            }
+          };
+          experienceRef.current.resources.on('ready', resourcesReadyHandler);
+        } else {
+          setIsLoading(false);
         }
 
-        // Listen for preloader completion to ensure controls are enabled
         if (experienceRef.current.preloader) {
-          experienceRef.current.preloader.on('enablecontrols', () => {
+          controlsReadyHandler = () => {
             // Controls enabled
-          });
+          };
+          experienceRef.current.preloader.on('enablecontrols', controlsReadyHandler);
         }
       } catch (error) {
         console.error('Error initializing Experience:', error);
-        setIsLoading(false);
+        if (isActive) {
+          setIsLoading(false);
+        }
       }
-    }
+    };
+
+    initExperience();
 
     return () => {
+      isActive = false;
+
       if (experienceRef.current) {
+        if (experienceRef.current.resources && resourcesReadyHandler) {
+          experienceRef.current.resources.off('ready', resourcesReadyHandler);
+        }
+
+        if (experienceRef.current.preloader && controlsReadyHandler) {
+          experienceRef.current.preloader.off('enablecontrols', controlsReadyHandler);
+        }
+
         // Cleanup if needed
         experienceRef.current = null;
       }
