@@ -18,8 +18,6 @@ if (!NOTION_TOKEN || !DATABASE_ID) {
 const CONTENT_DIR = path.join(process.cwd(), 'data', 'blog');
 const IMAGE_ROOT = path.join(process.cwd(), 'public', 'static', 'images', 'notion');
 const MANIFEST_PATH = path.join(process.cwd(), '.notion-sync.json');
-const LEGACY_MANIFEST_PATH = path.join(process.cwd(), 'data', '.notion-sync.json');
-let legacyManifestUsed = false;
 
 const INCLUDE_DRAFTS = ['1', 'true'].includes((process.env.NOTION_INCLUDE_DRAFTS || '').toLowerCase());
 const IMAGE_QUALITY = Number.parseInt(process.env.NOTION_IMAGE_QUALITY || '75', 10);
@@ -44,11 +42,6 @@ const n2m = new NotionToMarkdown({ notionClient: notion });
 const readManifest = async () => {
   if (existsSync(MANIFEST_PATH)) {
     const raw = await readFile(MANIFEST_PATH, 'utf8');
-    return JSON.parse(raw);
-  }
-  if (existsSync(LEGACY_MANIFEST_PATH)) {
-    legacyManifestUsed = true;
-    const raw = await readFile(LEGACY_MANIFEST_PATH, 'utf8');
     return JSON.parse(raw);
   }
   return { pages: {} };
@@ -333,9 +326,6 @@ const main = async () => {
   }
 
   await writeManifest(nextManifest);
-  if (legacyManifestUsed) {
-    await rm(LEGACY_MANIFEST_PATH, { force: true });
-  }
   console.log(`Notion sync complete: ${Object.keys(nextManifest.pages).length} posts`);
 };
 
