@@ -1,0 +1,336 @@
+---
+title: 'Claw Code 源码解析（二）：从 CLI 入口到运行时主循环'
+titleEn: 'Claw Code Source Analysis (2): From the CLI Entry to the Runtime Loop'
+summary: '拆解 Claw Code 一次命令从参数解析、命令分发、LiveCli 装配，到 Session、Config、Permission、Sandbox 与 ConversationRuntime 驱动完整 agent turn 的链路。'
+summaryEn: 'Breaks down how a command travels through parsing, LiveCli assembly, session/config/permission/sandbox setup, and ConversationRuntime to complete a full agent turn.'
+date: '2026-04-10'
+lastmod: '2026-04-12'
+tags: ['claw-code', 'source-code', 'rust', 'agent-runtime', 'cli']
+draft: false
+---
+
+这是这组 Claw Code 源码解析的第二篇。
+
+上一篇主要解决仓库定位和 crate 边界，这一篇开始进入真正的主执行链。问题也很明确：**一次命令，是怎么进入完整 agent turn 的？**
+
+如果你在做 agent CLI，这条链路特别值得看，因为它展示了一个比较干净的分层：
+
+- CLI 负责解析和装配
+- runtime 负责主循环
+- api 负责模型协议
+- tools 负责能力执行
+
+这套边界如果没有切清楚，系统很快就会长成一个“能跑，但没人敢改”的大文件。
+
+---
+
+## 先抓住主链路
+
+把整条执行链压缩一下，大概就是这样：
+
+1. 用户输入命令或 prompt
+2. CLI 解析参数，得到 `CliAction`
+3. `LiveCli` 组装 runtime client 和 tool executor
+4. runtime 组装 session、config、permission、system prompt
+5. `api` crate 向 provider 发起流式请求
+6. 返回 text delta / tool use / usage 等事件
+7. `CliToolExecutor` 调用工具
+8. 工具结果回注到 `ConversationRuntime`
+9. CLI 渲染输出并持久化 session
+
+这九步里，真正关键的不是顺序，而是：**每一层只做自己应该做的事。**
+
+---
+
+## 顶层入口：`main()` 和 `run()`
+
+从入口看，这个 CLI 并没有把所有逻辑塞进一个 REPL 循环里，而是先把参数解析成统一动作，再分发执行路径。
+
+可以把它理解成：
+
+- `main()` 负责错误兜底和进程退出
+- `run()` 负责把原始参数转成 `CliAction`
+
+这种写法的好处很实际：
+
+- 新命令更容易加
+- 不同模式的入口边界更清楚
+- CLI 层可以保持“调度器”角色，而不是业务黑盒
+
+对于长期演进的 agent CLI，这种边界非常重要。因为 once-shot prompt、REPL、管理命令、技能命令，最终往往都需要走到同一个运行时骨架上。
+
+---
+
+## `CliAction`：命令面的统一建模
+
+我很喜欢这个项目把命令解析结果收束成 `CliAction` 这一步，因为它强迫系统先回答：**命令面到底有哪些类型？**
+
+从整体设计看，大致可以归成三类：
+
+### 1. 一次性执行命令
+
+这类命令更像：
+
+- `prompt`
+- `run`
+- 某些 one-shot 模式
+
+特点是：给一个输入，跑完一轮或一组任务就返回。
+
+### 2. 交互式 REPL
+
+REPL 模式下，session 会持续存在，用户可以逐轮输入，runtime 也会长期保留上下文和状态。
+
+### 3. 管理与元数据命令
+
+比如技能列举、帮助、配置、诊断、某些非对话命令。它们并不一定进入完整 agent loop，但仍然共享 CLI 的基础设施。
+
+这一步的意义是：命令系统不再是“解析字符串后直接 if/else”，而是一次性完成行为建模。
+
+---
+
+## `LiveCli`：装配层的核心对象
+
+进入执行前，真正关键的不是“马上发模型请求”，而是先完成装配。
+
+`LiveCli` 的角色可以理解成一个 **assembly layer**。它会把几类对象接起来：
+
+- runtime client
+- tool executor
+- 配置与权限策略
+- 输出渲染相关逻辑
+
+这一步看似平常，实际上非常关键。因为它说明：
+
+- CLI 不是 runtime
+- runtime 也不是 tool registry
+- provider 客户端不是 CLI 的内部细节
+
+只有把这些依赖在装配层接起来，下面的运行时抽象才会干净。
+
+---
+
+## one-shot prompt 和 REPL 的差别
+
+这两个模式表面看只是交互方式不同，但系统层面的要求差异其实很大。
+
+### one-shot prompt
+
+- 生命周期短
+- 更像“一次任务”
+- 输出后即可结束
+
+### REPL
+
+- 生命周期长
+- session 连续
+- 更依赖上下文管理、权限策略、压缩和恢复
+
+这也是为什么一个看起来“只是命令行”的系统，会自然长出 session、compaction、usage tracking 这些能力。因为一旦进入 REPL 或长任务，它就已经不是普通脚本了。
+
+---
+
+## 真正的核心：`ConversationRuntime<C, T>`
+
+如果说 CLI 是表层入口，那 `ConversationRuntime<C, T>` 就是运行时心脏。
+
+它最值得注意的地方不是某个具体方法，而是它依赖的两个抽象边界：
+
+- `ApiClient`
+- `ToolExecutor`
+
+这说明运行时不关心两件事的具体实现：
+
+1. 你到底怎么和模型服务通信
+2. 你到底怎么执行工具
+
+运行时只要求：
+
+- 能拿到结构化流式响应
+- 能执行模型请求的工具调用
+
+这就是一个非常典型的 runtime 设计：让外部世界都通过 trait 接进来，自己负责协调 turn 循环。
+
+---
+
+## `Session`：对话状态不是文本日志，而是结构化对象
+
+如果只把 runtime 想成一个 loop，很容易低估它真正处理的数据形态。
+
+Claw Code 里的 `Session` 更像一个持久化的结构化 transcript，而不是简单字符串历史。消息里不仅有：
+
+- user text
+- assistant text
+
+还有：
+
+- tool use
+- tool result
+- compaction 元数据
+- fork 来源
+
+这会直接影响运行时设计。因为只要 session 是结构化对象，runtime 就能更自然地完成：
+
+- 工具调用回注
+- 历史回放
+- 持久化恢复
+- 后续 compaction
+
+也就是说，session 从一开始就不是“显示给用户看的聊天记录”，而是执行链路的一部分。
+
+---
+
+## `ConversationRuntime` 在协调什么
+
+从职责看，它至少在管理下面这些状态：
+
+- `session`
+- `permission_policy`
+- `system_prompt`
+- `usage_tracker`
+- `hook_runner`
+- compaction threshold
+- session tracer
+
+这意味着它不是“包一层 API 调用”的轻量对象，而是真正在协调一次 assistant turn 的完整生命周期。
+
+一轮执行里，运行时大概要做这些事：
+
+1. 组装系统提示和上下文
+2. 调用模型，接收流式事件
+3. 如果模型请求 tool use，就转给 tool executor
+4. 把 tool result 写回会话
+5. 继续 loop，直到这一轮完成
+6. 跟踪 usage、trace、权限和 compaction
+
+所以这里的主循环，已经是标准意义上的 **agent loop** 了，而不是简单的“问一次答一次”。
+
+---
+
+## `Config`：配置来源是显式建模的，不是临时拼接
+
+另一个很重要但很容易被忽略的点，是配置合并。
+
+这类 runtime 一旦进入真实使用场景，配置来源通常会越来越多：
+
+- 默认值
+- 项目配置
+- 用户配置
+- 环境变量
+- CLI 参数
+
+如果没有明确的优先级和合并规则，系统行为会越来越难预测。
+
+从 `runtime` 的结构可以看出来，Claw Code 并没有把配置当成“顺手读一下”，而是把配置发现和合并作为正式职责。
+
+这很关键，因为很多 agent 问题最后不是模型问题，而是：
+
+- 某个开关到底从哪来的
+- 当前会话到底吃到了哪组配置
+- 不同入口模式下配置为什么不一致
+
+这些都属于 runtime 该解决的问题。
+
+---
+
+## Permission 和 Sandbox：不是附属功能，而是运行时一等公民
+
+如果你只看“模型能不能调用工具”，会觉得权限和沙箱像外围能力；但真正到了 coding agent 场景，它们其实是主线功能。
+
+原因很简单：一旦模型能读文件、改文件、跑命令、访问外部系统，系统最重要的问题之一就变成了：
+
+- 什么能做
+- 什么不能做
+- 在什么条件下能做
+- 失败后如何解释和恢复
+
+所以 Claw Code 把 `permissions`、`permission_enforcer`、`sandbox` 这些模块放在 runtime 核心附近，是非常合理的。
+
+这说明它不是事后补安全，而是从一开始就把“可控执行”当成 agent runtime 的基础要求。
+
+---
+
+## Prompt、Hook、Usage、Compaction 为什么也都在 runtime
+
+继续往下看 runtime 的模块面，会发现它还包了：
+
+- prompt
+- hooks
+- usage
+- compaction
+
+这也很值得注意。因为这意味着 runtime 管理的不是单一循环，而是一整套围绕 turn 发生的系统行为：
+
+- prompt 如何被构建
+- hooks 在什么节点触发
+- usage 如何累计和暴露
+- compaction 在什么条件下触发
+
+这比“发请求 -> 打印输出”复杂得多，但也更接近真实 agent 系统的样子。
+
+如果把这些都丢到外围，运行时很快就会失去统一协调能力。
+
+---
+
+## 为什么工具注入做在 CLI 装配层，而不是 runtime 内部
+
+这条边界也很聪明。
+
+如果 runtime 自己直接构造工具列表，会出现两个问题：
+
+- runtime 对外部能力面知道得太多
+- CLI、REPL、测试、插件扩展都不容易替换注入
+
+现在的做法是：
+
+- runtime 只面向 `ToolExecutor`
+- CLI 在装配阶段决定注入什么工具能力
+
+这样一来，工具面既可以被：
+
+- 权限策略裁剪
+- 命令行参数限制
+- 插件和 MCP 动态扩展
+- 测试桩替换
+
+又不会把 runtime 变成工具注册中心。
+
+---
+
+## 这一层最值得学的，不是代码技巧，而是边界感
+
+很多 agent 项目在早期都能跑，但一旦加上：
+
+- REPL
+- tool use
+- session persistence
+- permissions
+- plugins
+- telemetry
+
+很快就会因为边界没切好而失控。
+
+Claw Code 这条执行链里最有价值的地方，不是某个 API 写法，而是它坚持了一个很清楚的分层：
+
+- CLI 处理人类入口
+- runtime 处理主循环
+- api 处理 provider 协议
+- tools 处理执行能力
+
+只要这层分工还在，后续功能再长，系统也比较不容易塌。
+
+---
+
+## 小结
+
+- `CliAction` 把命令面先统一建模，再分发到不同执行路径
+- `LiveCli` 是装配层，负责把 runtime client、tool executor、权限和输出接起来
+- `ConversationRuntime` 才是真正的 agent loop 主体
+- runtime 通过 `ApiClient` 和 `ToolExecutor` trait 隔离外部世界
+- one-shot prompt 和 REPL 共用同一套运行时骨架，只是在生命周期上不同
+- `Session` 是结构化 transcript，决定了工具调用和持久化方式
+- `Config`、`Permission`、`Sandbox`、`Prompt`、`Usage`、`Compaction` 都是 runtime 一等职责
+
+下一篇开始看最容易混淆、也最能体现系统边界感的一层：工具、技能和扩展系统。
+
+[Claw Code 源码解析（三）：Tool、Skill、Slash Command 与扩展系统](/blog/claw-code-tools-skills-slash-commands)

@@ -3,7 +3,8 @@ const siteMetadata = {
   author: 'Coooder',
   fullName: 'Coooder',
   headerTitle: "Coooder's Blog",
-  description: 'My desire to practice my skills and share my acquired knowledge fuels my endeavors.',
+  description:
+    'Fullstack engineer focused on AI agents, developer tools, and practical product engineering.',
   language: 'en-us',
   theme: 'system',
   siteUrl: 'https://coooder.dev',

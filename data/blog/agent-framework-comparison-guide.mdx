@@ -1,0 +1,595 @@
+---
+title: '主流 Agent 开发框架怎么选：逐个对比与选型建议'
+titleEn: 'How to Choose an Agent Framework: A Practical Comparison of the Mainstream Options'
+summary: '系统比较 OpenAI Agents SDK、LangChain/LangGraph、CrewAI、Google ADK、Microsoft Agent Framework、AutoGen、Semantic Kernel、LlamaIndex、PydanticAI、Mastra 等主流 Agent 开发框架，分析它们的定位、优劣与适用场景。'
+summaryEn: 'Compares mainstream agent frameworks including OpenAI Agents SDK, LangChain/LangGraph, CrewAI, Google ADK, Microsoft Agent Framework, AutoGen, Semantic Kernel, LlamaIndex, PydanticAI, and Mastra, with guidance on tradeoffs and fit.'
+date: '2026-04-12'
+lastmod: '2026-04-12'
+tags: ['ai', 'agents', 'frameworks', 'architecture', 'fullstack']
+draft: false
+---
+
+上一篇我写了《别逢 AI 就上 Agent》，重点在讨论：**什么时候根本不该用 Agent**。但如果你已经确认任务确实需要动态决策、工具调用和多步执行，下一步更现实的问题就是：**框架怎么选？**
+
+这是一个比“哪个模型更强”更容易选错的问题。因为今天的 Agent 框架已经不再只是一个简单 SDK，而是逐渐分化成几类不同产品：
+
+- 有些更像 **模型厂商官方 SDK**
+- 有些更像 **低层 orchestration runtime**
+- 有些更像 **多 Agent 协作框架**
+- 有些更像 **企业级中间件**
+- 有些则更像 **面向全栈开发者的一体化平台**
+
+如果不先看清它们的设计目标，只看 GitHub star 或者社交媒体热度，最后很容易出现两种结果：
+
+- 选了一个功能很多、但自己根本不需要的框架
+- 或者选了一个写 Demo 很顺、上线后却很难维护的框架
+
+这篇文章我会把当前最主流、最常被拿来做生产选型讨论的几类 Agent 框架放在一起对比。这里的“主流”指的是：**文档活跃、社区讨论度高、并且在 2025 到 2026 年的官方路线中仍然处在活跃演进状态**。我刻意排除了纯可视化 builder、纯 observability 产品，以及只做模型封装而不真正承担 agent orchestration 的工具。
+
+注：这篇对比基于我在 **2026 年 4 月** 查阅的各家官方文档和产品路线整理，框架迭代很快，具体 API 和版本状态以官方文档为准。
+
+---
+
+## 先说结论：我会把这些框架分成 6 类
+
+先不要急着逐个看 API。大多数选型错误，不是输在细节，而是输在对框架本质的误判。
+
+### 1. 官方 SDK 型
+
+- **OpenAI Agents SDK**
+
+特点是：离模型能力最近，工具调用、handoff、guardrails、tracing 这些基础件都比较直接，适合快速做可运行的 agent 产品。
+
+### 2. 通用 orchestration 型
+
+- **LangChain / LangGraph / Deep Agents**
+- **Google ADK**
+
+特点是：更强调 agent loop、状态、工作流、长任务和运行时控制，适合把 agent 当成一个长期演进的系统来建设。
+
+### 3. 多 Agent 协作优先型
+
+- **CrewAI**
+- **AutoGen**
+
+特点是：更容易表达角色分工、协作、会话式多 agent，但如果任务本身不复杂，也更容易过度设计。
+
+### 4. 企业中间件型
+
+- **Microsoft Agent Framework**
+- **Semantic Kernel**
+
+特点是：更重视类型、安全、状态、插件、中间件和系统集成，对 .NET / Microsoft 体系团队尤其友好。
+
+### 5. 检索与知识工作流优先型
+
+- **LlamaIndex**
+
+特点是：当任务核心不是“自主执行”，而是“检索、组合、判断知识”，它往往比纯 agent 框架更顺手。
+
+### 6. 开发者体验与类型安全优先型
+
+- **PydanticAI**
+- **Mastra**
+
+特点是：更强调工程体验。PydanticAI 偏 Python 类型系统与结构化输出，Mastra 偏 TypeScript 全栈开发与内置平台能力。
+
+---
+
+## 一张表先看整体差异
+
+| 框架 | 主语言 | 主要定位 | 强项 | 主要短板 | 最适合谁 |
+| --- | --- | --- | --- | --- | --- |
+| OpenAI Agents SDK | Python / JavaScript | 官方轻量 SDK | 工具调用、handoff、guardrails、tracing 直达 | 更偏 OpenAI 生态，框架层抽象较薄 | OpenAI-first 团队 |
+| LangChain / LangGraph / Deep Agents | Python / JavaScript | 分层式 agent 生态 | 生态最大、可定制性强、运行时能力成熟 | 概念多，学习成本高 | 想长期演进 agent 系统的团队 |
+| CrewAI | Python | 多 Agent 团队协作 + Flows | 角色化表达直观，适合业务自动化 | 容易把简单任务搞成多 Agent 戏剧 | 强调协作分工的自动化场景 |
+| Google ADK | Python / TypeScript / Go / Java | Build / Evaluate / Deploy 一体化 | 多语言、评估、开发工具、Gemini 生态 | 新框架，生态沉淀仍在形成 | Google / Gemini 偏好的团队 |
+| Microsoft Agent Framework | .NET / Python | 微软新一代统一 Agent 框架 | 工作流、类型安全、状态、中间件、MCP | 仍在 public preview | 微软栈与企业应用团队 |
+| AutoGen | Python | 会话式单 / 多 Agent 框架 | Multi-agent 研究与原型能力强 | 官方路线已转向 Agent Framework | 研究、多 Agent 实验、存量项目 |
+| Semantic Kernel | C# / Python / Java | 企业级 AI 中间件 | 插件、连接器、过滤器、可观测性 | 新项目里不一定是第一选择 | 已在微软生态里沉淀较深的团队 |
+| LlamaIndex | Python / TypeScript | 检索与知识工作流 | RAG、查询引擎、知识工具接入自然 | 纯执行型 orchestration 不是它的主场 | 知识库、研究、文档型产品 |
+| PydanticAI | Python | 类型安全的 agent 开发 | 结构化输出、依赖注入、模型无关 | 大型工作流编排能力相对轻 | Python 服务型应用 |
+| Mastra | TypeScript | 全栈一体化 agent 框架 | TS DX、workflows、memory、MCP、evals | 生态规模小于 LangChain | TypeScript / Next.js 团队 |
+
+这张表最重要的结论只有一个：**这些框架解决的不是同一个问题。**
+
+如果你把它们都当成“做 Agent 的库”，很容易错过真正关键的区别：有的在帮你接近模型能力，有的在帮你控制复杂流程，有的在帮你把 AI 系统嵌进现有工程体系。
+
+---
+
+## 1. OpenAI Agents SDK：最接近“官方最小可用方案”的框架
+
+OpenAI 对 Agents SDK 的定位很明确：它是一个 **lightweight framework**，帮助你更容易构建单 agent 或 agent network，并内置了 agent loop、guardrails 和 tracing 这些生产必需品。
+
+对我来说，它最大的价值不在于“功能最多”，而在于两点：
+
+- 它离 OpenAI 的模型能力和工具能力最近
+- 它把最常见的 agent 基础件做进了默认体验里
+
+如果你用 OpenAI 做 agent，最常见的需求大概就是这些：
+
+- 定义一个 agent
+- 绑定工具
+- 允许工具调用循环执行
+- 必要时 handoff 到另一个 agent
+- 在线上把运行过程 trace 出来
+
+Agents SDK 基本就是围绕这条路径设计的，所以它很适合做：
+
+- 面向外部用户的 agent 产品
+- 工具调用比较明确的任务型 agent
+- 希望快速上线、同时保留一定工程控制力的团队
+
+它的主要优点：
+
+- **心智负担小**：单 agent 起步很顺
+- **生产基础件齐**：guardrails、tracing、handoff 都是第一层概念
+- **官方路径清晰**：和 OpenAI 的工具、评估、优化产品协同自然
+
+它的主要短板：
+
+- 如果你想做非常复杂的图式编排，它没有 LangGraph 那么“底层可塑”
+- 如果你要强模型无关、强供应商切换，它不是第一选择
+- 它更像一套“官方 SDK”，而不是一个庞大的 agent 平台
+
+我会在什么情况下优先选它？
+
+- 你明确以 OpenAI 为核心模型提供方
+- 你要先把一个可靠的 agent 产品做出来
+- 你不想先花很多时间搭底层 orchestration
+
+---
+
+## 2. LangChain / LangGraph / Deep Agents：最完整，也最容易把人绕进去的一套生态
+
+今天再说 “LangChain 是一个框架” 已经不准确了。更准确的说法是：**LangChain 已经是一套分层生态。**
+
+这个生态里至少有三层你必须分清：
+
+- **LangChain**：高层 agent 抽象和模型 / 工具集成
+- **LangGraph**：低层 orchestration runtime，强调 stateful、durable execution、human-in-the-loop
+- **Deep Agents**：官方现在更推荐的新“agent harness”，自带 planning、subagent、filesystem、memory
+
+这三个名字如果不分开，你会很容易在选型时产生误解。
+
+### LangChain 本身适合什么
+
+LangChain 现在的定位更接近：**快速起步的高层 agent 框架**。它提供预构建 agent 架构和统一的模型 / 工具接口，让你几乎可以用很少代码起一个 agent。
+
+它适合：
+
+- 快速验证 agent 交互
+- 想保留一定灵活性，但不想一开始就写图式编排
+- 需要对接大量第三方模型和工具
+
+### LangGraph 适合什么
+
+LangGraph 的定位比 LangChain 更底层，也更明确：**它是一个 low-level orchestration framework 和 runtime**，专注在长任务、状态、持久执行、流式事件和人工介入。
+
+它适合：
+
+- 长流程、长状态、可恢复执行
+- 需要明确控制执行图和节点状态
+- 线上需要高可观测性和强流程控制的场景
+
+### Deep Agents 适合什么
+
+LangChain 官方现在会直接建议：如果你是从零开始做 agent，可以先看 **Deep Agents**。它本质上是一个“batteries-included”的 harness：
+
+- 内置 planning
+- 内置 filesystem 作为上下文管理手段
+- 支持 subagent spawning
+- 支持长期 memory
+
+这很适合复杂任务，例如：
+
+- 编码 agent
+- research agent
+- 长任务拆解与执行
+
+这套生态最大的优点：
+
+- **生态最大**：模型、工具、案例、社区资源都很多
+- **抽象层次完整**：从高层到低层都有
+- **生产运行时能力强**：尤其是 LangGraph 这一层
+
+最大的代价也很明显：
+
+- 术语和层次很多，新人容易迷路
+- 你需要自己判断到底用 LangChain、LangGraph 还是 Deep Agents
+- 某些能力虽然强，但不是“默认简单”
+
+我的判断是：**如果你需要一个能长期演进的 agent runtime，LangGraph 仍然是最值得认真看的方案之一。**
+
+---
+
+## 3. CrewAI：最擅长把“角色分工”写得很直观
+
+CrewAI 的世界观非常鲜明：它把复杂 AI 自动化拆成两件事：
+
+- **Flows**：结构化、事件驱动、有状态的流程骨架
+- **Crews**：一组协作的 autonomous agents
+
+这让它在表达“团队协作式自动化”时非常顺手。比如：
+
+- 研究员收集资料
+- 分析员提炼观点
+- 审校员检查输出
+- 最后交给发布流程
+
+你会发现，CrewAI 很适合那些天然带有“角色”叙事的业务场景。这也是它为什么很容易打动产品、运营和自动化团队。
+
+它的优点：
+
+- **多 Agent 心智模型直观**
+- **业务自动化表达很自然**
+- **Flows + Crews 的组合比较适合企业自动化**
+
+它的问题也同样明显：
+
+- 很容易把原本可以单 Agent 解决的问题，拆成多个角色互相传话
+- 角色化设计虽然好理解，但不一定是最稳定、最省 token 的工程解法
+- 如果你追求图级别的细粒度控制，CrewAI 不是最强的一档
+
+所以我对 CrewAI 的建议一直很一致：
+
+- 如果你的任务本来就带有明确职责拆分，CrewAI 很顺
+- 如果你的任务其实只是“一个 agent 调几次工具”，不要为了好看强行 multi-agent
+
+---
+
+## 4. Google ADK：把 Build、Evaluate、Deploy 放在同一个体系里
+
+Google 的 ADK 很有意思，因为它不是只在讲“怎么定义 agent”，而是在强调：**怎么把 agent 的完整生命周期做成软件工程。**
+
+ADK 的官方定位里，几个关键字很醒目：
+
+- build
+- manage
+- evaluate
+- deploy
+
+它的核心设计里，agent 不只是 LLM agent，还包括 workflow agent，例如：
+
+- `Sequential`
+- `Parallel`
+- `Loop`
+
+这意味着 ADK 不是单纯在讲“自主 agent”，而是在讲 **可控工作流 + 动态 agent** 的组合。这一点我非常认同，因为真实系统里往往两者都需要。
+
+它的优点：
+
+- **生命周期完整**：构建、调试、评估、部署一体化思路很清楚
+- **多语言支持在推进**：Python 之外，TypeScript、Go、Java 也在覆盖
+- **Google 生态协同强**：尤其是 Gemini、多模态、实时与云侧能力
+- **官方对 eval 比较重视**：这比很多“只会生成 demo”的框架务实
+
+它的主要短板：
+
+- 生态沉淀还不如 LangChain 系
+- 虽然号称 model-agnostic，但最佳体验显然还是更偏 Google 体系
+- 跨语言支持在快速发展，也意味着不同语言成熟度可能不完全一致
+
+如果你的项目本来就在 Google / Gemini / Vertex 生态里，ADK 会是非常值得优先试的框架。
+
+---
+
+## 5. Microsoft Agent Framework：微软新一代统一路线，值得重点关注
+
+到 2026 年再看微软这条线，一个非常重要的变化是：**Microsoft Agent Framework 已经明确成为 AutoGen 和 Semantic Kernel 的 direct successor。**
+
+这件事非常关键，因为它意味着微软不再让开发者在两套主要路线之间长期摇摆，而是在试图统一：
+
+- AutoGen 的简单 agent 抽象
+- Semantic Kernel 的企业能力
+- 再加上新的 graph-based workflows
+
+Agent Framework 官方强调的两块核心能力是：
+
+- **Agents**
+- **Workflows**
+
+除此之外，它还把这些能力放进了基础层：
+
+- model clients
+- agent session
+- context providers
+- middleware
+- MCP clients
+
+这说明它真正想做的，不只是“一个多 Agent 库”，而是一套 **面向企业系统的 agent application foundation**。
+
+它的优点：
+
+- **微软路线统一了**：对选型是好事
+- **企业能力强**：状态、类型、安全、中间件、长任务都考虑得比较全
+- **agent 和 workflow 分界清晰**
+- **对 MCP 和多模型支持比较务实**
+
+它当前的短板也必须直说：
+
+- 还在 **public preview**
+- 新框架意味着社区案例和第三方生态还在成长
+- 如果你现在已经深度使用 AutoGen / SK，迁移成本要评估
+
+但如果你问我：**微软体系里新的 greenfield 项目应该先看谁？**
+
+我的答案会是：先认真看 Agent Framework，而不是直接从 AutoGen 或 Semantic Kernel 起手。
+
+---
+
+## 6. AutoGen：仍然有价值，但今天更适合研究和存量项目
+
+AutoGen 仍然是讨论 multi-agent 时绕不过去的名字。它今天的结构已经比较清楚：
+
+- **AgentChat**：面向会话式单 / 多 agent 应用
+- **Core**：事件驱动的底层框架
+- **Studio**：无代码原型 UI
+
+这让 AutoGen 在以下场景仍然很好用：
+
+- 多 Agent 协作实验
+- 研究型原型
+- 对 conversation-based agent system 有明确需求
+
+它的优点：
+
+- **多 Agent 心智模型成熟**
+- **研究和原型阶段体验不错**
+- **Core 提供了更低层的可扩展空间**
+
+它今天最大的现实问题不是不好用，而是 **官方路线已经继续往前走了**。既然微软自己都明确说 Agent Framework 是它和 Semantic Kernel 的下一代统一方案，那么对于全新项目而言，AutoGen 更像：
+
+- 一个依然重要的历史基础
+- 一个适合理解 multi-agent 模式的工具
+- 一个需要评估未来迁移路线的选择
+
+如果你已经在用 AutoGen，可以继续用；但如果你现在要做一个新的企业长期项目，我不会把它放在第一顺位。
+
+---
+
+## 7. Semantic Kernel：更像企业 AI 中间件，而不只是 Agent 框架
+
+Semantic Kernel 和很多 agent 框架最大的不同，在于它从一开始就不只是为“agent”而生。它的核心是：**把模型能力、插件、连接器、内存、过滤器和企业系统整合进同一个中间层。**
+
+这决定了它的长处非常鲜明：
+
+- 插件机制清晰
+- 多语言支持成熟
+- 企业连接和治理能力比较强
+- 可观测性、hooks、filters 更偏“系统建设”
+
+如果你是在一个本来就很重系统集成的企业环境里，例如：
+
+- 需要把 AI 能力接进已有业务服务
+- 需要大量插件和函数调用
+- 需要治理、审计、策略控制
+
+Semantic Kernel 仍然很有价值。
+
+但如果你问的是“我现在要从零做一个现代 agent 系统，SK 是不是最自然的起点”，答案通常就没那么肯定。因为微软自己已经给出了新方向：**Agent Framework 是下一代统一路线**。
+
+所以我对 SK 的判断是：
+
+- 它仍然适合已有沉淀和企业集成型项目
+- 它不一定是现在新项目的第一优先
+- 你应该把它看成“企业 AI 中间件”，而不只是“一个 Agent 库”
+
+---
+
+## 8. LlamaIndex：当任务核心是“知识”而不是“自主执行”时，它非常强
+
+LlamaIndex 的切入点一直和其他框架不完全一样。它最擅长的不是把 agent 包装得多华丽，而是把：
+
+- 文档
+- 检索
+- 查询引擎
+- 知识路由
+- 结构化信息处理
+
+这些能力组织得很顺。
+
+官方现在对 agent 的表述也很务实：你既可以从头构建 agentic workflows，也可以直接用预构建的 `FunctionAgent` 和 `AgentWorkflow`。
+
+这说明 LlamaIndex 的 agent 能力是存在的，但它的真正优势仍然在 **knowledge-centric application**。
+
+它的优点：
+
+- **RAG / 检索 / 知识工作流体验强**
+- **知识工具能直接作为 agent 工具来用**
+- **在研究、文档、搜索型场景里很自然**
+
+它的短板：
+
+- 如果你的问题重点是复杂流程编排，而不是知识处理，它不是最强那档
+- 你如果只是想做“执行型 agent”，不一定需要它整套抽象
+
+一句话总结就是：**如果产品核心是“读很多资料，再做判断”，LlamaIndex 往往比纯 agent 框架更顺手。**
+
+---
+
+## 9. PydanticAI：非常适合 Python 工程师的“类型安全 Agent”
+
+PydanticAI 这两年之所以越来越受欢迎，我觉得不只是因为它背后是 Pydantic，而是因为它抓住了一个真实痛点：**很多 Python 工程师不缺模型调用能力，缺的是工程约束。**
+
+PydanticAI 的 agent 概念非常清楚：一个 agent 本质上是这些东西的容器：
+
+- instructions
+- tools
+- structured output type
+- dependency constraints
+- model
+- model settings
+
+这和很多“先有抽象、再找用途”的框架不一样。它更像是：
+
+- 用 Python 的类型系统和数据建模能力
+- 给 LLM 应用补上工程约束
+
+它的优点：
+
+- **结构化输出和类型约束非常自然**
+- **模型无关**
+- **依赖注入和测试体验不错**
+- **很适合服务型后端应用**
+
+它的短板：
+
+- 更擅长单 agent / typed agent 场景
+- 在复杂工作流图、长运行 orchestration 上没有 LangGraph 那么强
+- 如果你要做很重的 multi-agent network，可能需要自己补不少东西
+
+如果你是 Python 后端工程师，想做的是“可控、强类型、可测”的 agent 服务，PydanticAI 是非常值得优先尝试的。
+
+---
+
+## 10. Mastra：最像“为 TypeScript 全栈团队准备的 Agent 框架”
+
+Mastra 的定位非常鲜明：**all-in-one framework for building AI-powered applications and agents**。
+
+你会发现它关心的不只是 agent 本身，还包括：
+
+- workflows
+- tools
+- MCP
+- memory
+- RAG
+- evals
+- logging / tracing
+- 本地 playground 与平台化运行
+
+这使得 Mastra 对 TypeScript / Next.js 团队很有吸引力，因为它不是把 agent 当成一段孤立脚本，而是当成你应用基础设施的一部分。
+
+它的优点：
+
+- **TypeScript DX 很强**
+- **全栈整合顺手**
+- **workflow、memory、MCP、evals 都是第一层能力**
+- **本地开发和线上运行衔接自然**
+
+它的主要短板：
+
+- 生态规模和历史沉淀还不如 LangChain
+- 它更偏一套完整 worldview，如果你只想拿一小层抽象，未必最轻
+- 对 Python 团队来说，不是第一选择
+
+如果你的主技术栈是：
+
+- TypeScript
+- Next.js
+- Node.js
+- 面向产品交付而不是学术研究
+
+那 Mastra 会是一个非常值得认真试的选择。
+
+---
+
+## 怎么选：我会按 7 种典型场景给建议
+
+到这里你会发现，真正的问题已经不是“哪个框架最好”，而是“**哪种框架最贴近我的系统约束**”。
+
+### 1. 我是 OpenAI-first，想尽快做出可上线产品
+
+优先看：
+
+- **OpenAI Agents SDK**
+
+理由很简单：它最短路径、最少额外判断。
+
+### 2. 我想做复杂、长运行、可恢复、可插入人工审核的 agent 系统
+
+优先看：
+
+- **LangGraph**
+- **Google ADK**
+- **Microsoft Agent Framework**
+
+这里的共同关键词不是“多 Agent”，而是 **runtime control**。
+
+### 3. 我想做多角色协作型自动化
+
+优先看：
+
+- **CrewAI**
+- **AutoGen**
+
+但前提是你的任务真的需要角色拆分，而不是为了看起来高级。
+
+### 4. 我在微软生态里，系统集成和治理很重要
+
+优先看：
+
+- **Microsoft Agent Framework**
+- **Semantic Kernel**
+
+如果是新项目，先看 Agent Framework；如果是存量系统和插件沉淀重，SK 仍然有价值。
+
+### 5. 我做的是知识库、研究、文档问答、检索型产品
+
+优先看：
+
+- **LlamaIndex**
+- 再结合 **LangGraph** 或 **PydanticAI**
+
+因为很多这类问题，本质不是 agent orchestration，而是 knowledge orchestration。
+
+### 6. 我是 Python 后端工程师，重视类型和结构化输出
+
+优先看：
+
+- **PydanticAI**
+
+如果后面真的需要更复杂 orchestration，再叠加别的 runtime。
+
+### 7. 我是 TypeScript 全栈团队，希望 agent 就是我应用的一部分
+
+优先看：
+
+- **Mastra**
+- **OpenAI Agents SDK（JS）**
+- **LangChain / LangGraph（JS）**
+
+其中 Mastra 的一体化体验通常最像“产品团队会喜欢的选择”。
+
+---
+
+## 如果只能给一个总建议
+
+如果你现在要开始做 Agent，我不会建议你先背 10 套 API。我更建议先回答下面三个问题：
+
+1. 你要的是 **官方 SDK、低层 runtime，还是完整平台**？
+2. 你要解决的核心问题是 **工具调用、工作流控制、知识检索，还是多 Agent 协作**？
+3. 你的团队主栈到底是 **Python、TypeScript，还是 .NET / Java**？
+
+只要这三个问题回答清楚，很多选择会自然收敛：
+
+- OpenAI-first：`OpenAI Agents SDK`
+- 长流程控制：`LangGraph` / `Google ADK`
+- 微软企业体系：`Microsoft Agent Framework`
+- 知识工作流：`LlamaIndex`
+- Python 强类型：`PydanticAI`
+- TypeScript 产品团队：`Mastra`
+
+至于 CrewAI、AutoGen、Semantic Kernel，它们都不是“不好”，而是 **更适合特定问题和特定历史上下文**。
+
+真正成熟的选型，不是挑一个最火的框架，而是知道：
+
+- 哪个框架在解决你的核心问题
+- 哪个框架会额外引入你暂时不需要的复杂度
+- 哪个框架和你现有团队的工程习惯最匹配
+
+---
+
+## 小结
+
+- Agent 框架已经明显分层，不能再放在一起粗暴比较
+- OpenAI Agents SDK 适合官方能力优先、快速上线
+- LangChain 生态最完整，LangGraph 仍然是 orchestration 关键选项
+- CrewAI 和 AutoGen 更适合多 Agent 协作场景，但容易过度设计
+- Google ADK 和 Microsoft Agent Framework 都在把 agent 生命周期工程化
+- LlamaIndex 更适合知识工作流，PydanticAI 更适合 Python 强类型开发
+- Mastra 很适合 TypeScript 全栈团队做产品化 agent
+
+如果上一篇回答的是“**什么时候不该用 Agent**”，那么这篇回答的就是：**当你决定要做时，别先选最火的，先选最像你实际问题的。**
+
+下一篇我准备继续写：**一个可上线的 Agent，难点为什么根本不在 Prompt，而在状态、工具、评估和控制。**

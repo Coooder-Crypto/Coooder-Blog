@@ -46,9 +46,10 @@ export const translations: Record<Language, Translations> = {
     'home.quote':
       "The greatest danger in times of turbulence is not the turbulence; it is to act with your yesterday's logic.",
     'home.imName': "I'm",
-    'home.fullstackEngineer': 'a dedicated Fullstack Engineer',
+    'home.fullstackEngineer': 'a Fullstack Engineer focused on AI Agents',
     'home.siteTitle': "Coooder's Blog - Coding Adventure",
-    'home.siteDescription': 'My desire to practice my skills and share my acquired knowledge fuels my endeavors.',
+    'home.siteDescription':
+      'I build fullstack products with a focus on AI agents, developer tools, and practical engineering.',
 
     // Projects
     'projects.pageTitle': 'Projects',
@@ -70,22 +71,22 @@ export const translations: Record<Language, Translations> = {
 
     // About/Bio
     'bio.alias': "I'm aliased as",
-    'bio.atWeb3': 'at Web3.',
+    'bio.atWeb3': 'building products on the internet.',
     'bio.liveIn': 'I live in',
     'bio.bornIn': 'I was born in the beautiful',
     'bio.city': 'city.',
     'bio.firstLanguage': 'My first programming language I learned was',
-    'bio.loveWebDev': 'I love web development.',
-    'bio.focusing': "I'm focusing on building",
-    'bio.coolestSoftware': 'the Coolest software',
+    'bio.loveWebDev': 'I care about shipping useful software, not just polished demos.',
+    'bio.focusing': "I'm currently focused on building",
+    'bio.coolestSoftware': 'AI agent products and fullstack systems',
     'bio.workWith': 'I work mostly with',
-    'bio.technologies': 'technologies.',
+    'bio.technologies': 'across the frontend, backend, and LLM stack.',
     'bio.loveGaming': 'I love playing video game',
     'bio.favoriteGame': ', OW is my favorite one.',
-    'bio.description1': 'I started learning to code in 2020 when I started college.',
-    'bio.description2': 'I landed my first job as a Front-end Developer in 2021.',
-    'bio.description3': 'I have a passion for JavaScript/Typescript and website development.',
-    'bio.description4': 'I started this blog to practice my skill and share my knowledge.',
+    'bio.description1': 'I am a fullstack engineer based in Beijing.',
+    'bio.description2': 'My recent focus is on AI agents and developer tools.',
+    'bio.description3': 'I enjoy building practical products with JavaScript and TypeScript.',
+    'bio.description4': 'I write this blog to share what I build and learn.',
 
     // Links
     'links.myWritings': 'My writings',
@@ -130,9 +131,9 @@ export const translations: Record<Language, Translations> = {
     'home.happyReading': '愉快阅读',
     'home.quote': '在动荡时期，最大的危险不是动荡本身，而是用昨天的逻辑来面对最新的动荡。',
     'home.imName': '我是',
-    'home.fullstackEngineer': '一名专注的全栈工程师',
+    'home.fullstackEngineer': '一名专注于 AI Agent 方向的全栈工程师',
     'home.siteTitle': 'Coooder 的博客 - 编程冒险',
-    'home.siteDescription': '我渴望练习技能并分享所获得的知识，这是我努力的动力。',
+    'home.siteDescription': '我专注于构建 AI Agent、开发者工具和真正能落地的全栈产品。',
 
     // Projects
     'projects.pageTitle': '项目',
@@ -158,17 +159,17 @@ export const translations: Record<Language, Translations> = {
     'bio.bornIn': '我出生在美丽的',
     'bio.city': '市。',
     'bio.firstLanguage': '我学习的第一门编程语言是',
-    'bio.loveWebDev': '我热爱 Web 开发。',
-    'bio.focusing': '我专注于构建',
-    'bio.coolestSoftware': '最酷的软件',
+    'bio.loveWebDev': '我更关心把软件真正做出来。',
+    'bio.focusing': '我目前专注于构建',
+    'bio.coolestSoftware': 'AI Agent 产品与全栈系统',
     'bio.workWith': '我主要使用',
-    'bio.technologies': '技术栈工作。',
+    'bio.technologies': '完成前端、后端和 LLM 工程。',
     'bio.loveGaming': '我喜欢玩电子游戏',
     'bio.favoriteGame': '，守望先锋是我最喜欢的。',
-    'bio.description1': '我在 2020 年上大学时开始学习编程。',
-    'bio.description2': '我在 2021 年获得了第一份前端开发工作。',
-    'bio.description3': '我对 JavaScript/TypeScript 和网站开发充满热情。',
-    'bio.description4': '我创建这个博客来练习技能并分享知识。',
+    'bio.description1': '我是一名常驻北京的全栈工程师。',
+    'bio.description2': '最近主要关注 AI Agent 和开发者工具。',
+    'bio.description3': '我喜欢用 JavaScript 和 TypeScript 做实用产品。',
+    'bio.description4': '这个博客用来记录我的构建和思考。',
 
     // Links
     'links.myWritings': '我的文章',
