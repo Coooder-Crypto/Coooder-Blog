@@ -1,0 +1,345 @@
+---
+title: 'Claw Code 源码解析（一）：它为什么不是普通聊天 CLI，而是一个 Agent Runtime'
+titleEn: 'Claw Code Source Analysis (1): Why It Is Not Just a Chat CLI but an Agent Runtime'
+summary: '从仓库定位、Rust workspace 拆分、Python 参考层和 parity 验证体系入手，分析 Claw Code 为什么更接近一个 coding agent runtime，而不是简单的聊天命令行工具。'
+summaryEn: 'Explains why Claw Code is closer to a coding agent runtime than a simple chat CLI by looking at repository boundaries, Rust workspace design, the Python reference layer, and parity validation.'
+date: '2026-04-11'
+lastmod: '2026-04-12'
+tags: ['claw-code', 'source-code', 'rust', 'agents', 'architecture']
+draft: false
+---
+
+第一次打开 Claw Code 这类仓库时，一个很容易犯的错误是：看到它能在终端里和模型对话，就默认把它归类成“聊天 CLI”。
+
+但只要你继续往下看仓库结构、Rust workspace 和文档边界，很快会发现这个判断太浅了。Claw Code 真正在做的事情，不是把模型塞进终端，而是把一套 **coding agent runtime** 逐步做完整。
+
+我把原来的源码讲义重新压成了 4 篇主文，这一篇先不进实现细节，只回答三个最基础的问题：
+
+1. 这个仓库到底是什么？
+2. 为什么主实现会被拆成这些 crate？
+3. 为什么在 Rust 主实现之外，它还保留了 Python 参考层和 parity 验证体系？
+
+如果你准备继续读后面几篇，顺序我建议这样排：
+
+1. [从 CLI 入口到运行时主循环](/blog/claw-code-cli-to-runtime)
+2. [Tool、Skill、Slash Command 与扩展系统](/blog/claw-code-tools-skills-slash-commands)
+3. [Agent 如何管理上下文与压缩历史](/blog/claw-code-context-management-compaction)
+
+---
+
+## 先看仓库定位：主实现是 Rust，不是顶层 Python
+
+读这类仓库，第一件事不是翻文件，而是看它怎么定义自己。
+
+从根目录文档可以先建立一个很重要的判断：
+
+- 仓库名是 `Claw Code`
+- 当前 canonical implementation 在 `rust/`
+- 顶层 `src/` 和 `tests/` 更偏 companion Python/reference workspace
+
+这意味着阅读时应该先把仓库拆成两层：
+
+1. **Rust 主实现层**
+2. **Python 参考 / 兼容 / 验证层**
+
+如果一开始没把这件事想清楚，就会在顶层目录里迷路，以为 Python 和 Rust 是两套并行主线。实际上不是。当前真正决定产品行为的，是 Rust 这一层。
+
+---
+
+## 为什么说它不是“普通聊天 CLI”
+
+一个普通聊天 CLI 大致会长这样：
+
+- 解析命令行参数
+- 发一次模型请求
+- 把文本打印到终端
+
+如果项目复杂一点，最多再加一点会话历史或配置读取。
+
+但 Claw Code 明显不止于此。它关心的能力面包括：
+
+- tool use
+- session persistence
+- permission policy
+- sandbox
+- slash commands
+- plugins
+- MCP
+- worker / task / team / cron
+- parity harness
+
+这些能力加在一起，说明它试图解决的问题已经不是“怎么聊天”，而是：
+
+- 怎么让模型在终端里稳定工作
+- 怎么让模型执行工具而不是只输出文字
+- 怎么把权限、沙箱、恢复、扩展能力收进同一个 runtime
+- 怎么让系统更适合自动化代理而不是只适合人类用户
+
+所以更准确的描述应该是：
+
+- coding agent runtime
+- tool-enabled CLI harness
+- 面向执行的 agent substrate
+
+这也是为什么我觉得这个仓库有阅读价值。它不是 UI 壳，而是在认真搭 agent 系统的运行骨架。
+
+---
+
+## 读这种仓库，最重要的不是“文件很多”，而是“边界怎么切”
+
+源码阅读里常见的低效方式，是从一个目录一路往下翻。对 Claw Code 这种仓库，这样很快就会被细节拖进去。
+
+更有效的方法是先抓边界：
+
+- CLI 入口在什么地方
+- 运行时核心在哪里
+- 工具和命令是怎么分层的
+- provider 协议为什么独立
+- 插件和 MCP 为什么不是外挂脚本
+- 为什么还保留 parity 和 reference 层
+
+一旦这些边界建立起来，再去看具体实现，路径会清楚很多。
+
+---
+
+## 第一轮阅读，应该先看哪些文档
+
+在看 Rust 源码之前，其实更值得先看根目录的几份文档：
+
+- `README.md`
+- `USAGE.md`
+- `PARITY.md`
+- `ROADMAP.md`
+- `PHILOSOPHY.md`
+- `rust/README.md`
+
+它们一起回答了三件事：
+
+- 这个仓库当前的实现主线在哪里
+- 哪些能力已经落地，哪些还在迁移或演进
+- 设计优先级到底是什么
+
+从这些文档能比较明显地看出来，这个项目最优先的并不是“聊天体验”，而是：
+
+- 工具调用
+- 权限和沙箱
+- 会话恢复
+- 插件和 MCP
+- worker / task / team / cron 这类自动化能力
+- parity 与验证
+
+也就是说，作者从一开始就在把它按 agent runtime 而不是普通 CLI 的标准来建设。
+
+---
+
+## Rust workspace 为什么会拆成这些 crate
+
+这一步很关键。因为 crate 拆分方式，几乎直接暴露了作者的系统边界判断。
+
+当前主线里最值得关注的 crate 大概有这些：
+
+- `rusty-claude-cli`
+- `runtime`
+- `tools`
+- `commands`
+- `api`
+- `plugins`
+- `telemetry`
+- `mock-anthropic-service`
+- `compat-harness`
+
+如果只从名字看，其实已经能读出一个很清楚的架构意图。
+
+### `rusty-claude-cli`
+
+它负责的是入口、参数解析、REPL、输出渲染、命令调度。换句话说，这是 **人类入口层**，不是系统核心逻辑层。
+
+### `runtime`
+
+这是整套系统的心脏。会话状态、配置、权限、沙箱、conversation loop、hooks、compaction 等核心能力都在这里。
+
+### `tools`
+
+这里的重点不是“工具很多”，而是工具被正式建模成一组可注册、可筛选、可执行的能力面，而不是随便拼几个函数调用。
+
+### `commands`
+
+这个拆分非常说明问题。它意味着“给人类输入的命令面”和“给模型调用的工具面”不是一回事。
+
+### `api`
+
+它承担 provider 接入、流式响应、认证、prompt cache 等协议层工作。也就是说，模型通信没有直接写死在 CLI 或 runtime 里。
+
+### `plugins`
+
+插件不是散装脚本，而是带 manifest、hooks、lifecycle、tools、commands 的正式子系统。
+
+### `telemetry`
+
+日志和可观测性被单独抽成 crate，这很像一个平台项目，而不是随手写的本地工具。
+
+### `mock-anthropic-service` 与 `compat-harness`
+
+这两个 crate 的存在说明：项目从一开始就把“验证”和“迁移一致性”当成系统建设的一部分。
+
+它们不是边缘目录，而是作者在明确回答：如果未来这个 runtime 继续演进，如何保证关键行为没有悄悄偏掉。
+
+---
+
+## 为什么 `commands` 和 `tools` 要分开
+
+这是这个仓库里我最喜欢的一条边界。
+
+很多 AI CLI 工具会把“用户输入命令”和“模型调用能力”混成一套机制，最后结果就是：
+
+- 人类和模型共用一组入口
+- 权限边界不清
+- 功能扩展越来越乱
+
+Claw Code 没这么做。它显然在说：
+
+- **Command** 是人类控制面
+- **Tool** 是模型能力面
+
+这个拆分的价值非常高，因为两者的设计目标完全不同：
+
+- command 追求人类可读、可记忆、可操作
+- tool 追求 schema 化、可验证、可注入模型上下文
+
+如果你自己在做 agent CLI，这条边界很值得借鉴。
+
+---
+
+## 为什么 `runtime` 没有把所有事情都吞进去
+
+另一个很值得注意的点是：虽然 `runtime` 是核心，但它没有变成一个“无所不包的大黑盒”。
+
+这反而说明这套架构是克制的。
+
+`runtime` 的职责更像：
+
+- 维护会话和执行状态
+- 驱动 assistant turn 主循环
+- 协调权限、hooks、usage、compaction
+- 依赖 `ApiClient` 与 `ToolExecutor` 这种抽象边界
+
+而不是把：
+
+- provider 协议细节
+- 插件 manifest 管理
+- CLI 参数解析
+- telemetry 事件结构
+
+全都硬塞进去。
+
+这样做的好处是，系统可以继续长大，而不会从第二层就变得不可维护。
+
+---
+
+## 为什么顶层 Python 参考层和 parity 仍然值得保留
+
+到这里，其实就能顺着回答第三个问题了：既然主实现已经是 Rust，为什么顶层 `src/` 和 `tests/` 还在？
+
+如果只看表面，这很像历史包袱；但如果把整个仓库当成“迁移中的 agent runtime”来看，这层就很合理了。
+
+更准确的理解应该是：
+
+- Rust 是当前主实现
+- Python 参考层提供对照语境
+- parity harness 负责验证关键行为是否仍然对齐
+
+换句话说，这不是“旧代码还没删干净”，而是 **主实现 + 参考层 + 验证层** 的组合。
+
+---
+
+## Mock provider 和 parity harness，解决的是“你怎么证明它没跑偏”
+
+agent runtime 的难点，从来不只是“能不能跑出结果”，而是：
+
+- tool use 是否一致
+- 流式协议行为是否一致
+- 会话持久化和恢复是否一致
+- 权限与命令边界是否一致
+
+这些问题靠人工试几次，很难真正放心。
+
+所以 mock provider 和 parity harness 的价值，不是“让测试看起来更专业”，而是把原本难以稳定复现的外部依赖先变成可控对象，再把关键场景脚本化。
+
+这会带来几个非常现实的收益：
+
+- 请求和响应更容易复现
+- 流式场景更容易回归
+- 迁移重构时不容易丢掉基准
+- “差不多一样”能被转成可验证结果
+
+对于一个带有 tool use、streaming、session、permissions 的系统，这几乎是必要投入。
+
+---
+
+## `PARITY.md` 这类文档，读源码时非常有用
+
+我很喜欢这类仓库里有 `PARITY.md`，因为它不是在讲“未来想做什么”，而是在讲：
+
+- 现在和参考实现比，哪些已经对齐
+- 哪些还是近似实现
+- 哪些地方存在已知差异
+
+这会极大减少误读。
+
+否则你很容易把迁移中的折中方案误读成最终设计，或者把一个暂时存在的差异当成作者的明确架构判断。
+
+---
+
+## 读 Python 参考层的正确姿势
+
+比较稳妥的方式是：
+
+1. 先把 Rust 视为主线
+2. 再把 Python 当作参考、对照和迁移语境
+3. 只有在遇到行为差异、验证问题、历史选择时，才回头看参考层
+
+也就是说，不要让 Python 参考层替代 Rust 主线阅读；但也不要完全跳过它。
+
+它在这个仓库里最重要的价值，不是“继续承担主功能”，而是帮助你理解：
+
+- 某些能力原本怎么表达
+- Rust port 有哪些主动重构
+- 验证体系到底在守什么边界
+
+---
+
+## 第一轮阅读顺序，我会怎么建议
+
+如果你是第一次读这个仓库，我会建议这样走：
+
+1. 根目录 `README.md`
+2. 根目录 `USAGE.md`
+3. `rust/README.md`
+4. 根目录 `PARITY.md`
+5. 本文
+6. [从 CLI 入口到运行时主循环](/blog/claw-code-cli-to-runtime)
+7. [Tool、Skill、Slash Command 与扩展系统](/blog/claw-code-tools-skills-slash-commands)
+8. [Agent 如何管理上下文与压缩历史](/blog/claw-code-context-management-compaction)
+
+这样读的核心目的不是记住每个模块名字，而是先回答：
+
+- 这个系统到底想解决什么问题
+- 这些 crate 为什么会存在
+- 验证层为什么仍然被认真保留
+
+一旦这个问题想清楚，后面的实现细节才有意义。
+
+---
+
+## 小结
+
+- Claw Code 的主实现是 Rust，顶层 Python 更偏参考和验证层
+- 它不是普通聊天 CLI，而是在建设一个 coding agent runtime
+- Rust workspace 的 crate 拆分暴露了很清晰的系统边界
+- `commands`、`tools`、`api`、`plugins`、`telemetry` 被拆开，是为了长期可维护，而不是为了“目录好看”
+- Mock provider、parity harness 和 `PARITY.md` 说明验证体系是主架构的一部分
+- 读这个仓库，先看边界，再看实现，会比逐文件翻更有效
+
+下一篇开始进入真正的执行链路：
+
+[Claw Code 源码解析（二）：从 CLI 入口到运行时主循环](/blog/claw-code-cli-to-runtime)
