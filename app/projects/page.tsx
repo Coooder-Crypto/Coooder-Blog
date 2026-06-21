@@ -16,7 +16,7 @@ export default function Projects() {
     <div className="projects-container">
       {/* Simple Header like Blog Page */}
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
-        <div className="space-y-2 pb-8 pt-6 md:space-y-5">
+        <div className="space-y-2 pb-8 pt-6 md:space-y-5" data-gsap-reveal="up">
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
             {t('projects.pageTitle')}
           </h1>
@@ -29,14 +29,14 @@ export default function Projects() {
         {/* Work Projects */}
         <section className="py-24">
           <div className="container mx-auto px-4">
-            <div className="mb-16 text-center">
+            <div className="mb-16 text-center" data-gsap-reveal="up">
               <h2 className="mb-4 text-4xl font-bold text-gray-900 dark:text-gray-100">
                 {t('projects.workSectionTitle')}
               </h2>
               <div className="mx-auto h-1 w-24 rounded bg-gradient-to-r from-blue-500 to-purple-500"></div>
             </div>
 
-            <div className="grid gap-12 md:gap-24">
+            <div className="grid gap-12 md:gap-24" data-gsap-stagger>
               {workProjects.map((project, index) => (
                 <ParallaxProjectCard key={project.title.en} project={project} reverse={index % 2 !== 0} />
               ))}
@@ -47,14 +47,14 @@ export default function Projects() {
         {/* Side Projects */}
         <section className="bg-gray-50 py-24 dark:bg-gray-800">
           <div className="container mx-auto px-4">
-            <div className="mb-16 text-center">
+            <div className="mb-16 text-center" data-gsap-reveal="up">
               <h2 className="mb-4 text-4xl font-bold text-gray-900 dark:text-gray-100">
                 {t('projects.sideSectionTitle')}
               </h2>
               <div className="mx-auto h-1 w-24 rounded bg-gradient-to-r from-green-500 to-blue-500"></div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-gsap-stagger>
               {sideProjects.map((project, index) => (
                 <CompactProjectCard key={`${project.title.en}-${index}`} project={project} />
               ))}
@@ -91,11 +91,7 @@ function ParallaxProjectCard({ project, reverse = false }: { project: Project; r
       <div className={`flex flex-col gap-10 md:items-center ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'}`}>
         <div className="w-full md:w-3/5">
           <div className="relative overflow-hidden rounded-[32px]">
-            <img
-              src={imgSrc}
-              alt={localizedTitle}
-              className="h-80 w-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
+            <img src={imgSrc} alt={localizedTitle} className="h-80 w-full object-cover" data-gsap-parallax />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/15 to-slate-900/70" />
             <div className="absolute inset-x-0 bottom-0 flex flex-col gap-4 bg-gradient-to-t from-slate-900/95 via-slate-900/60 to-transparent p-6">
               {builtWith && builtWith.length > 0 && (
@@ -119,6 +115,7 @@ function ParallaxProjectCard({ project, reverse = false }: { project: Project; r
                     href={href}
                     aria-label={linkLabel}
                     className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white shadow-lg backdrop-blur transition duration-200 hover:bg-white/25"
+                    data-gsap-magnetic
                   >
                     <span>{t('projects.cta.learnMore')}</span>
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -223,6 +220,7 @@ function CompactProjectCard({ project }: { project: Project }) {
                   href={url}
                   aria-label={liveLabel}
                   className="inline-flex items-center gap-1 rounded-full border border-transparent px-3 py-1 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 dark:hover:border-sky-500/40 dark:hover:bg-sky-500/10"
+                  data-gsap-magnetic
                 >
                   <span>{t('projects.cta.live')}</span>
                   <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
@@ -235,6 +233,7 @@ function CompactProjectCard({ project }: { project: Project }) {
                   href={`https://github.com/${repo}`}
                   aria-label={t('projects.aria.linkTo').replace('{title}', localizedTitle)}
                   className="inline-flex items-center gap-1 rounded-full border border-transparent px-3 py-1 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 dark:hover:border-sky-500/40 dark:hover:bg-sky-500/10"
+                  data-gsap-magnetic
                 >
                   <span>{t('projects.cta.code')}</span>
                   <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
