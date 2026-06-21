@@ -26,6 +26,7 @@
     "framer-motion": "^12.23.12",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.2",
+    "gsap": "^3.15.0",
     "hast-util-from-html-isomorphic": "^2.0.0",
     "image-size": "1.2.0",
     "lodash": "^4.17.21",

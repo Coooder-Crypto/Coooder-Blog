@@ -5712,6 +5712,7 @@ __metadata:
     github-slugger: ^2.0.0
     globals: ^15.12.0
     gray-matter: ^4.0.2
+    gsap: ^3.15.0
     hast-util-from-html-isomorphic: ^2.0.0
     husky: ^9.0.0
     image-size: 1.2.0
@@ -7566,6 +7567,13 @@ __metadata:
     section-matter: ^1.0.0
     strip-bom-string: ^1.0.0
   checksum: 37717bd424344487d655392251ce8d8878a1275ee087003e61208fba3bfd59cbb73a85b2159abf742ae95e23db04964813fdc33ae18b074208428b2528205222
+  languageName: node
+  linkType: hard
+
+"gsap@npm:^3.15.0":
+  version: 3.15.0
+  resolution: "gsap@npm:3.15.0"
+  checksum: 168f849ef6eee7e0a3f315490edbd3a9e1cd7add03a768bb65953452dc12e6edbe7b24c9a0572e5ea9c911b5294582ad878ac2e4247848678de81854c5c53a27
   languageName: node
   linkType: hard
 

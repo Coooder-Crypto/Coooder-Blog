@@ -8,6 +8,7 @@ import Twemoji from './Twemoji';
 import BrandIcon from './BrandIcon';
 import PageTitle from './PageTitle';
 import TableWrapper from './TableWrapper';
+import GsapPageMotion from './GsapPageMotion';
 import components from './MDXComponents';
 import SectionContainer from './SectionContainer';
 import ScrollTopAndComment from './ScrollTopAndComment';
@@ -25,6 +26,7 @@ export {
   PageTitle,
   components,
   TableWrapper,
+  GsapPageMotion,
   SectionContainer,
   ScrollTopAndComment,
   TiltedGridBackground,
