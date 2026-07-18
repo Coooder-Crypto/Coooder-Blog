@@ -1,6 +1,5 @@
 'use client';
 
-import Snowfall from 'react-snowfall';
 import { formatDate } from 'pliny/utils/formatDate';
 
 import siteMetadata from '@/data/siteMetadata';
@@ -12,8 +11,10 @@ import {
   Greeting,
   TypedBios,
   BlogLinks,
+  SocialActivity,
   ShortDescription,
   SpotifyNowPlaying,
+  SnowfallBackground,
 } from '@/components/homepage';
 import { useLanguage } from '@/lib/i18n';
 import { getLocalizedBlogContent } from '@/lib/blogUtils';
@@ -36,6 +37,10 @@ function ProjectCard({ project }: { project: any }) {
           <img
             src={imgSrc}
             alt={localizedTitle}
+            width={1200}
+            height={675}
+            loading="lazy"
+            decoding="async"
             className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
@@ -72,6 +77,7 @@ function ProjectCard({ project }: { project: any }) {
               href={href}
               aria-label={linkLabel}
               className="text-primary inline-flex items-center hover:text-sky-600 dark:hover:text-sky-400"
+              data-gsap-magnetic
             >
               <span className="text-sm font-medium">
                 {repo ? t('projects.cta.viewCode') : t('projects.cta.visitProject')}
@@ -89,26 +95,19 @@ function ProjectCard({ project }: { project: any }) {
 
 export default function Home({ posts }) {
   const { t, language } = useLanguage();
+  const featuredProjects = projectsData.filter(({ type }) => type === 'featured');
   const workProjects = projectsData.filter(({ type }) => type === 'work');
 
   return (
     <div className="relative">
-      <Snowfall
-        snowflakeCount={60}
-        style={{
-          zIndex: -1,
-          width: '100vw',
-          height: '100vh',
-          position: 'fixed',
-        }}
-      />
+      <SnowfallBackground />
 
       {/* Introduce myself */}
-      <div className="mt-8 dark:divide-gray-700 md:mt-8">
+      <div className="mt-8 dark:divide-gray-700 md:mt-8" data-gsap-stagger>
         <Greeting />
         <div className="flex flex-col justify-between md:my-4 md:pb-8 xl:flex-row">
           <Avatar />
-          <div className="my-auto flex flex-col text-lg leading-8 text-gray-600 dark:text-gray-400">
+          <div className="my-auto flex flex-col text-lg leading-8 text-gray-600 dark:text-gray-400" data-gsap-stagger>
             <Heading />
             <TypedBios />
             <ShortDescription />
@@ -122,15 +121,33 @@ export default function Home({ posts }) {
         </div>
       </div>
 
+      <SocialActivity />
+
+      <section className="py-12" aria-labelledby="featured-projects-heading">
+        <div className="mb-8 text-center" data-gsap-reveal="up">
+          <h2 id="featured-projects-heading" className="mb-4 text-3xl font-bold text-gray-900 dark:text-gray-100">
+            {t('projects.featuredSectionTitle')}
+          </h2>
+          <div className="mx-auto h-1 w-16 rounded bg-gradient-to-r from-sky-500 to-violet-500"></div>
+          <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">{t('projects.featuredSectionSubtitle')}</p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3" data-gsap-stagger>
+          {featuredProjects.map((project) => (
+            <ProjectCard key={project.title.en} project={project} />
+          ))}
+        </div>
+      </section>
+
       {/* Professional Work */}
       <div className="py-12">
-        <div className="mb-8 text-center">
+        <div className="mb-8 text-center" data-gsap-reveal="up">
           <h2 className="mb-4 text-3xl font-bold text-gray-900 dark:text-gray-100">{t('projects.workSectionTitle')}</h2>
           <div className="mx-auto h-1 w-16 rounded bg-gradient-to-r from-blue-500 to-purple-500"></div>
           <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">{t('projects.workSectionSubtitle')}</p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2" data-gsap-stagger>
           {workProjects.map((project, index) => (
             <ProjectCard key={`${project.title.en}-${index}`} project={project} />
           ))}
@@ -140,6 +157,7 @@ export default function Home({ posts }) {
           <Link
             href="/projects"
             className="text-primary inline-flex items-center hover:text-sky-600 dark:hover:text-sky-400"
+            data-gsap-magnetic
           >
             <span className="font-medium">{t('projects.cta.viewAll')}</span>
             <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,14 +169,14 @@ export default function Home({ posts }) {
 
       {/* List all post */}
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
-        <div className="space-y-2 py-6 md:space-y-5">
+        <div className="space-y-2 py-6 md:space-y-5" data-gsap-reveal="up">
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-5xl md:leading-14">
             {t('home.recentPosts')}
           </h1>
           <p className="!mt-2 text-lg leading-7 text-gray-500 dark:text-gray-400">{t('home.siteDescription')}</p>
         </div>
 
-        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+        <ul className="divide-y divide-gray-200 dark:divide-gray-700" data-gsap-stagger>
           {!posts.length && t('home.noPosts')}
           {posts.slice(0, MAX_DISPLAY).map((post) => {
             const localizedPost = getLocalizedBlogContent(post, language);
@@ -214,6 +232,7 @@ export default function Home({ posts }) {
             href="/blog"
             className="text-primary hover:text-sky-600 dark:hover:text-sky-400"
             aria-label={t('home.allPosts')}
+            data-gsap-magnetic
           >
             {t('home.allPosts')} &rarr;
           </Link>

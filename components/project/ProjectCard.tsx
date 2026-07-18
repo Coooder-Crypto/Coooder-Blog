@@ -20,15 +20,21 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           imgSrc && 'h-full'
         } flex h-full flex-col overflow-hidden rounded-lg border border-transparent shadow-nextjs dark:shadow-nextjs-dark`}
       >
-        <Zoom>
-          <Image
-            alt={localizedTitle}
-            src={imgSrc}
-            className="object-cover object-center md:h-36 lg:h-60"
-            width={1088}
-            height={612}
-          />
-        </Zoom>
+        {imgSrc ? (
+          <Zoom>
+            <Image
+              alt={localizedTitle}
+              src={imgSrc}
+              className="object-cover object-center md:h-36 lg:h-60"
+              width={1088}
+              height={612}
+            />
+          </Zoom>
+        ) : (
+          <div className="flex min-h-36 items-end bg-gradient-to-br from-sky-600 via-indigo-600 to-violet-700 p-6 lg:min-h-60">
+            <p className="text-2xl font-bold text-white">{localizedTitle}</p>
+          </div>
+        )}
 
         <div className="p-6">
           <h2 className="mb-3 text-2xl font-bold leading-8 tracking-tight">

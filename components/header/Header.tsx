@@ -14,7 +14,7 @@ const Header = () => {
     'mx-auto w-full max-w-6xl supports-backdrop-blur fixed left-0 right-0 top-1 z-10 bg-white/75 py-2 backdrop-blur dark:bg-dark/75 md:rounded-2xl';
 
   return (
-    <header className={headerClass}>
+    <header className={headerClass} data-gsap-reveal="down">
       <div className="mx-auto flex max-w-4xl items-center justify-between px-3 xl:max-w-5xl xl:px-0">
         <Link href="/" aria-label={siteMetadata.headerTitle} className="flex items-center">
           <div className="animate-wave">
