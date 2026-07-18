@@ -4,11 +4,11 @@ export interface LocalizedText {
 }
 
 export interface Project {
-  type: 'work' | 'self';
+  type: 'featured' | 'work' | 'self';
   title: LocalizedText;
   description?: LocalizedText;
   contribution?: LocalizedText;
-  imgSrc: string;
+  imgSrc?: string;
   url?: string;
   repo?: string | null;
   builtWith: string[];

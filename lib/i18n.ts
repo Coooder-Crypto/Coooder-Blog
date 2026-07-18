@@ -51,12 +51,24 @@ export const translations: Record<Language, Translations> = {
     'home.siteDescription':
       'I build fullstack products with a focus on AI agents, developer tools, and practical engineering.',
 
+    // Activity
+    'activity.title': 'Latest Activity',
+    'activity.subtitle': 'Fresh work and short-form notes from GitHub and X.',
+    'activity.empty': 'Social activity has not been synced yet.',
+    'activity.githubSubtitle': 'Repositories and public development events',
+    'activity.xSubtitle': 'Recent original posts',
+    'activity.recentGithubEvents': 'Recent events',
+    'activity.xUnavailable': 'X posts are not available yet.',
+    'activity.updatedAt': 'Updated',
+
     // Projects
     'projects.pageTitle': 'Projects',
     'projects.pageDescription':
       'A curated collection of my work and creative endeavors, from professional solutions to experimental side projects',
     'projects.workSectionTitle': 'Professional Work',
     'projects.workSectionSubtitle': 'Selected projects from my professional experience',
+    'projects.featuredSectionTitle': 'Featured Builds',
+    'projects.featuredSectionSubtitle': 'Selected independent products across agents, data systems, and collaboration.',
     'projects.sideSectionTitle': 'Side Projects',
     'projects.previewComingSoon': 'Preview coming soon',
     'projects.builtWith': 'Built with:',
@@ -135,11 +147,23 @@ export const translations: Record<Language, Translations> = {
     'home.siteTitle': 'Coooder 的博客 - 编程冒险',
     'home.siteDescription': '我专注于构建 AI Agent、开发者工具和真正能落地的全栈产品。',
 
+    // Activity
+    'activity.title': '最新动态',
+    'activity.subtitle': '来自 GitHub 和 X 的近期开发与短内容更新。',
+    'activity.empty': '社交动态还没有同步。',
+    'activity.githubSubtitle': '仓库和公开开发事件',
+    'activity.xSubtitle': '近期原创帖子',
+    'activity.recentGithubEvents': '最近事件',
+    'activity.xUnavailable': 'X 帖子暂不可用。',
+    'activity.updatedAt': '更新于',
+
     // Projects
     'projects.pageTitle': '项目',
     'projects.pageDescription': '从专业解决方案到实验性副项目，我的精选作品集。',
     'projects.workSectionTitle': '专业项目',
     'projects.workSectionSubtitle': '来自我职业经历的精选项目',
+    'projects.featuredSectionTitle': '精选作品',
+    'projects.featuredSectionSubtitle': '聚焦 Agent、数据系统与协作体验的独立产品。',
     'projects.sideSectionTitle': '个人项目',
     'projects.previewComingSoon': '预览即将上线',
     'projects.builtWith': '技术栈：',

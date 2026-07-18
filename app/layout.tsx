@@ -10,7 +10,6 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import siteMetadata from '@/data/siteMetadata';
 import { GsapPageMotion, SectionContainer, TiltedGridBackground } from '@/components/ui';
-import GlobalPreloader from '@/components/ui/GlobalPreloader';
 import LanguageProvider from '@/components/providers/LanguageProvider';
 
 const FONT_OUTFIT = Outfit({
@@ -70,15 +69,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <body className="bg-white pl-[calc(100vw-100%)] text-black antialiased">
         <LanguageProvider>
-          <GlobalPreloader>
-            <TiltedGridBackground className="inset-x-0 top-0 z-[-1] h-[60vh]" />
-            <GsapPageMotion />
-            <SectionContainer>
-              <Header />
-              <main className="mb-auto mt-20">{children}</main>
-              <Footer />
-            </SectionContainer>
-          </GlobalPreloader>
+          <TiltedGridBackground className="inset-x-0 top-0 z-[-1] h-[60vh]" />
+          <GsapPageMotion />
+          <SectionContainer>
+            <Header />
+            <main className="mb-auto mt-20">{children}</main>
+            <Footer />
+          </SectionContainer>
         </LanguageProvider>
       </body>
     </html>

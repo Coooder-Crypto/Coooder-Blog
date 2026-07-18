@@ -34,7 +34,7 @@ const Image = (props: ImageProps) => {
         style={{ objectFit: 'cover', ...style }}
         loading={loading}
         priority={loading === 'eager'}
-        quality={100}
+        quality={80}
         onLoad={onLoad}
         {...rest}
       />

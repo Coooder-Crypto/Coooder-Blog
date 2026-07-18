@@ -9,6 +9,7 @@ import { useLanguage } from '@/lib/i18n';
 
 export default function Projects() {
   const { t } = useLanguage();
+  const featuredProjects = projectsData.filter(({ type }) => type === 'featured');
   const workProjects = projectsData.filter(({ type }) => type === 'work');
   const sideProjects = projectsData.filter(({ type }) => type === 'self');
 
@@ -26,6 +27,24 @@ export default function Projects() {
 
       {/* Projects Grid with Parallax Cards */}
       <div className="relative">
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="mb-12 text-center" data-gsap-reveal="up">
+              <h2 className="mb-4 text-4xl font-bold text-gray-900 dark:text-gray-100">
+                {t('projects.featuredSectionTitle')}
+              </h2>
+              <div className="mx-auto h-1 w-24 rounded bg-gradient-to-r from-sky-500 to-violet-500"></div>
+              <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">{t('projects.featuredSectionSubtitle')}</p>
+            </div>
+
+            <div className="grid gap-12 md:gap-16" data-gsap-stagger>
+              {featuredProjects.map((project, index) => (
+                <ParallaxProjectCard key={project.title.en} project={project} reverse={index % 2 !== 0} />
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Work Projects */}
         <section className="py-24">
           <div className="container mx-auto px-4">
@@ -91,7 +110,22 @@ function ParallaxProjectCard({ project, reverse = false }: { project: Project; r
       <div className={`flex flex-col gap-10 md:items-center ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'}`}>
         <div className="w-full md:w-3/5">
           <div className="relative overflow-hidden rounded-[32px]">
-            <img src={imgSrc} alt={localizedTitle} className="h-80 w-full object-cover" data-gsap-parallax />
+            {imgSrc ? (
+              <img
+                src={imgSrc}
+                alt={localizedTitle}
+                width={1200}
+                height={675}
+                loading="lazy"
+                decoding="async"
+                className="h-80 w-full object-cover"
+                data-gsap-parallax
+              />
+            ) : (
+              <div className="flex h-80 items-end bg-gradient-to-br from-sky-600 via-indigo-600 to-violet-700 p-8">
+                <p className="max-w-sm text-3xl font-bold tracking-tight text-white">{localizedTitle}</p>
+              </div>
+            )}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/15 to-slate-900/70" />
             <div className="absolute inset-x-0 bottom-0 flex flex-col gap-4 bg-gradient-to-t from-slate-900/95 via-slate-900/60 to-transparent p-6">
               {builtWith && builtWith.length > 0 && (
@@ -166,6 +200,10 @@ function CompactProjectCard({ project }: { project: Project }) {
             <img
               src={imgSrc}
               alt={localizedTitle}
+              width={1200}
+              height={675}
+              loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (

@@ -108,6 +108,35 @@ NOTION_PROP_CANONICAL_URL=CanonicalUrl
 - `yarn build` — production build / 生产构建
 - `yarn lint` — lint / 代码检查
 - `yarn sync:blog` — Notion → MDX sync / 同步
+- `yarn sync:social` — GitHub/X → static activity data / 同步社交动态
+
+---
+
+## Social Activity Sync / 社交动态同步
+
+The homepage can render recent GitHub repositories/events and recent original X posts from `data/socialActivity.ts`.
+Run the sync locally or through the `Social Activity Sync` GitHub Actions workflow.
+
+Required for GitHub:
+
+- `GITHUB_USERNAME`
+
+Optional for GitHub:
+
+- `GITHUB_TOKEN` — raises API rate limits; GitHub Actions can use `secrets.GITHUB_TOKEN`
+- `GITHUB_REPO_LIMIT` — default `4`
+- `GITHUB_EVENT_LIMIT` — default `5`
+
+Required for X posts:
+
+- `X_USERNAME`
+- `X_BEARER_TOKEN`
+
+Optional for X posts:
+
+- `X_POST_LIMIT` — default `4`
+
+The X token is only used by the sync script and should be configured as a GitHub Actions secret, never exposed to the browser.
 
 ---
 

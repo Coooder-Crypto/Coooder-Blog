@@ -18,6 +18,8 @@ export default function GsapPageMotion() {
     let media: { add: (...args: unknown[]) => void; revert: () => void } | undefined;
 
     async function mountAnimations() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
       const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([import('gsap'), import('gsap/ScrollTrigger')]);
 
       if (disposed) return;
