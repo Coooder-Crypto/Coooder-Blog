@@ -1,10 +1,22 @@
 const socialActivity = {
-  "generatedAt": "2026-07-27T06:49:28.371Z",
+  "generatedAt": "2026-07-28T06:09:14.166Z",
   "github": {
     "status": "ok",
     "username": "Coooder-Crypto",
     "profileUrl": "https://github.com/Coooder-Crypto",
     "repos": [
+      {
+        "name": "Coooder-Blog",
+        "fullName": "Coooder-Crypto/Coooder-Blog",
+        "description": "An open-source personal blog built with Next.js + MDX + Contentlayer. Content is authored in Notion, synced to local MDX files, and statically built for Vercel.",
+        "url": "https://github.com/Coooder-Crypto/Coooder-Blog",
+        "language": "TypeScript",
+        "stars": 1,
+        "forks": 0,
+        "isFork": false,
+        "updatedAt": "2026-07-27T06:51:22Z",
+        "pushedAt": "2026-07-27T06:50:36Z"
+      },
       {
         "name": "vital-agent-sync-amber",
         "fullName": "Coooder-Crypto/vital-agent-sync-amber",
@@ -40,18 +52,6 @@ const socialActivity = {
         "isFork": false,
         "updatedAt": "2026-07-24T11:41:31Z",
         "pushedAt": "2026-07-24T11:40:42Z"
-      },
-      {
-        "name": "Coooder-Blog",
-        "fullName": "Coooder-Crypto/Coooder-Blog",
-        "description": "An open-source personal blog built with Next.js + MDX + Contentlayer. Content is authored in Notion, synced to local MDX files, and statically built for Vercel.",
-        "url": "https://github.com/Coooder-Crypto/Coooder-Blog",
-        "language": "TypeScript",
-        "stars": 1,
-        "forks": 0,
-        "isFork": false,
-        "updatedAt": "2026-07-23T06:17:46Z",
-        "pushedAt": "2026-07-26T06:21:13Z"
       },
       {
         "name": "Coooder-Crypto",
