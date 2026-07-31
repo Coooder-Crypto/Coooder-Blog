@@ -15,7 +15,7 @@ const siteMetadata = {
   github: 'https://github.com/Coooder-Crypto',
   facebook: 'https://www.facebook.com/coooder.dev',
   linkedin: 'https://www.linkedin.com/in/coooder',
-  twitter: 'https://twitter.com/coooder',
+  twitter: 'https://x.com/Coooder_Crypto',
   youtube: 'https://youtube.com',
   locale: 'en-US',
   stickyNav: false,
