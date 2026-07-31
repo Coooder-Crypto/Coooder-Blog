@@ -1,5 +1,5 @@
 const socialActivity = {
-  "generatedAt": "2026-07-30T06:06:40.641Z",
+  "generatedAt": "2026-07-31T06:29:39.203Z",
   "github": {
     "status": "ok",
     "username": "Coooder-Crypto",
@@ -14,8 +14,8 @@ const socialActivity = {
         "stars": 1,
         "forks": 0,
         "isFork": false,
-        "updatedAt": "2026-07-29T06:15:57Z",
-        "pushedAt": "2026-07-29T06:15:29Z"
+        "updatedAt": "2026-07-30T06:08:37Z",
+        "pushedAt": "2026-07-30T06:07:48Z"
       },
       {
         "name": "vital-agent-sync-amber",
@@ -67,6 +67,13 @@ const socialActivity = {
       }
     ],
     "events": [
+      {
+        "type": "star",
+        "title": "Starred repository",
+        "repo": "wfnuser/cowiki",
+        "url": "https://github.com/wfnuser/cowiki",
+        "createdAt": "2026-07-30T14:39:06Z"
+      },
       {
         "type": "push",
         "title": "Pushed 1 commits",
@@ -143,13 +150,6 @@ const socialActivity = {
         "repo": "Coooder-Crypto/vital-agent-sync",
         "url": "https://github.com/Coooder-Crypto/vital-agent-sync",
         "createdAt": "2026-07-24T11:36:41Z"
-      },
-      {
-        "type": "pull_request",
-        "title": "Merged pull request",
-        "repo": "Coooder-Crypto/vital-agent-sync",
-        "url": "https://github.com/Coooder-Crypto/vital-agent-sync",
-        "createdAt": "2026-07-24T11:36:39Z"
       }
     ],
     "error": null
