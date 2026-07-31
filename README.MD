@@ -36,10 +36,10 @@ Live site: <https://coooder-blog.vercel.app/>
 
 **Content pipeline / 内容链路**
 
-1) Write in Notion Database  
-2) Sync script pulls data → converts to MDX → writes to `data/blog/*.mdx`  
-3) Contentlayer generates typed data  
-4) Next.js builds & exports static site
+1. Write in Notion Database
+2. Sync script pulls data → converts to MDX → writes to `data/blog/*.mdx`
+3. Contentlayer generates typed data
+4. Next.js builds & exports static site
 
 Notion handles editing experience; the site builds from local MDX for stability and reproducibility.
 
@@ -58,18 +58,21 @@ yarn dev
 
 ## Notion Schema (Default) / 字段约定（默认）
 
-| Field | Type | Description |
-| --- | --- | --- |
-| Title | Title | Article title / 标题 |
-| Slug | Text | URL slug (optional) / URL 片段 |
-| Date | Date | Publish date / 发布时间 |
-| Tags | Multi-select | Tags / 标签 |
-| Summary | Text | Summary / 摘要 |
-| Draft | Checkbox | Draft flag / 草稿 |
-| TitleEn | Text | English title (optional) |
-| SummaryEn | Text | English summary (optional) |
-| Layout | Text/Select | Layout (optional) |
-| CanonicalUrl | URL/Text | Canonical URL (optional) |
+| Field         | Type         | Description                                                   |
+| ------------- | ------------ | ------------------------------------------------------------- |
+| Title         | Title        | Article title / 标题                                          |
+| Slug          | Text         | URL slug (optional) / URL 片段                                |
+| Date          | Date         | Publish date / 发布时间                                       |
+| Tags          | Multi-select | Tags / 标签                                                   |
+| Summary       | Text         | Summary / 摘要                                                |
+| Draft         | Checkbox     | Draft flag / 草稿                                             |
+| TitleEn       | Text         | English title (optional)                                      |
+| SummaryEn     | Text         | English summary (optional)                                    |
+| Layout        | Text/Select  | Layout (optional)                                             |
+| CanonicalUrl  | URL/Text     | Canonical URL (optional)                                      |
+| XPostUrl      | URL/Text     | Canonical X post or thread URL (optional)                     |
+| SocialSummary | Text         | X-native summary shown next to the discussion link (optional) |
+| Series        | Text/Select  | Editorial series, such as `agent-engineering` (optional)      |
 
 If your fields differ, override with env vars.
 
@@ -98,7 +101,22 @@ NOTION_PROP_SUMMARY_EN=SummaryEn
 NOTION_PROP_DRAFT=Draft
 NOTION_PROP_LAYOUT=Layout
 NOTION_PROP_CANONICAL_URL=CanonicalUrl
+NOTION_PROP_X_POST_URL=XPostUrl
+NOTION_PROP_SOCIAL_SUMMARY=SocialSummary
+NOTION_PROP_SERIES=Series
 ```
+
+## Blog and X publishing / 博客与 X 联动
+
+The blog is the canonical source for long-form writing; X is used for distribution and discussion. Add the following optional MDX frontmatter to connect the two:
+
+```yaml
+xPostUrl: https://x.com/Coooder_Crypto/status/1234567890
+socialSummary: A short X-native framing of the article.
+series: agent-engineering
+```
+
+The article page will show a discussion link. When the same post appears in the synced X feed, the homepage also directs readers to the full article.
 
 ---
 
@@ -156,9 +174,9 @@ Note: scheduled workflows only run on the default branch.
 
 Recommended: Vercel
 
-1) Connect repo  
-2) Build: `yarn build`  
-3) Output: `out`
+1. Connect repo
+2. Build: `yarn build`
+3. Output: `out`
 
 No Notion env vars needed in Vercel (sync happens in GitHub Actions).
 

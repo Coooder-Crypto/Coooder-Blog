@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { CoreContent } from 'pliny/utils/contentlayer';
 import type { Blog, Authors } from 'contentlayer/generated';
 
-import { BlogTags, BlogMeta, BlogNav, TableOfContents } from '@/components/blog';
+import { BlogTags, BlogMeta, BlogNav, TableOfContents, XDiscussion } from '@/components/blog';
 import { PageTitle, SectionContainer, ScrollTopAndComment } from '@/components/ui';
 
 interface LayoutProps {
@@ -15,7 +15,7 @@ interface LayoutProps {
 
 export default function PostLayout(props: LayoutProps) {
   const { content, next, prev, children } = props;
-  const { toc, date, title, tags, readingTime } = content;
+  const { toc, date, title, tags, readingTime, xPostUrl, socialSummary } = content;
 
   return (
     <SectionContainer>
@@ -42,7 +42,10 @@ export default function PostLayout(props: LayoutProps) {
         {/*START: Content*/}
         <main className="grid grid-cols-1 gap-12 pt-8 lg:grid-cols-12 lg:pt-10">
           <div className="divide-y divide-gray-200 dark:divide-gray-700 lg:col-span-8 xl:col-span-9">
-            <div className="prose max-w-none dark:prose-dark lg:prose-lg lg:pb-8">{children}</div>
+            <div className="prose max-w-none dark:prose-dark lg:prose-lg lg:pb-8">
+              {children}
+              <XDiscussion xPostUrl={xPostUrl} socialSummary={socialSummary} />
+            </div>
           </div>
 
           <div className="hidden lg:col-span-4 lg:block xl:col-span-3">

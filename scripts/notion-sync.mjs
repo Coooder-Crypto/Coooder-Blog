@@ -34,6 +34,9 @@ const PROPS = {
   draft: process.env.NOTION_PROP_DRAFT || 'Draft',
   layout: process.env.NOTION_PROP_LAYOUT || 'Layout',
   canonicalUrl: process.env.NOTION_PROP_CANONICAL_URL || 'CanonicalUrl',
+  xPostUrl: process.env.NOTION_PROP_X_POST_URL || 'XPostUrl',
+  socialSummary: process.env.NOTION_PROP_SOCIAL_SUMMARY || 'SocialSummary',
+  series: process.env.NOTION_PROP_SERIES || 'Series',
 };
 
 const notion = new Client({ auth: NOTION_TOKEN });
@@ -219,6 +222,9 @@ const buildFrontmatter = (data) => {
     data.draft ? 'draft: true' : 'draft: false',
     data.layout ? `layout: ${formatYamlString(data.layout)}` : null,
     data.canonicalUrl ? `canonicalUrl: ${formatYamlString(data.canonicalUrl)}` : null,
+    data.xPostUrl ? `xPostUrl: ${formatYamlString(data.xPostUrl)}` : null,
+    data.socialSummary ? `socialSummary: ${formatYamlString(data.socialSummary)}` : null,
+    data.series ? `series: ${formatYamlString(data.series)}` : null,
     '---',
   ].filter(Boolean);
 
@@ -266,6 +272,9 @@ const main = async () => {
     const summaryEn = getText(props[PROPS.summaryEn]);
     const layout = getText(props[PROPS.layout]);
     const canonicalUrl = getText(props[PROPS.canonicalUrl]);
+    const xPostUrl = getText(props[PROPS.xPostUrl]);
+    const socialSummary = getText(props[PROPS.socialSummary]);
+    const series = getText(props[PROPS.series]);
     const draft = getDraft(props[PROPS.draft]);
 
     if (draft && !INCLUDE_DRAFTS) {
@@ -291,6 +300,9 @@ const main = async () => {
       draft,
       layout,
       canonicalUrl,
+      xPostUrl,
+      socialSummary,
+      series,
     });
 
     const outputPath = path.join(CONTENT_DIR, `${slug}.mdx`);
