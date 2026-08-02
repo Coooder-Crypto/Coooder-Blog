@@ -2,6 +2,7 @@ import type { Authors } from 'contentlayer/generated';
 import { Mail, Github, Twitter } from 'lucide-react';
 
 import { Link, Image, Twemoji } from '@/components/ui';
+import AboutIntro from '@/components/about/AboutIntro';
 import CareerTimeline from '@/components/about/CareerTimeline';
 
 interface Props {
@@ -46,6 +47,7 @@ export default function AuthorLayout({ children, content }: Props) {
           </div>
 
           <div className="prose max-w-none pb-8 dark:prose-dark xl:col-span-2">
+            <AboutIntro />
             {children}
             <CareerTimeline />
           </div>

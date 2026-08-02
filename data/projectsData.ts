@@ -11,6 +11,14 @@ const projectsData: Project[] = [
       en: 'A local-first Apple Health connector that brings user-authorized HealthKit summaries to MCP-compatible agents.',
       zh: '面向 MCP Agent 的本地优先 Apple Health 连接器，让用户授权的 HealthKit 摘要安全进入 Agent 工作流。',
     },
+    problem: {
+      en: 'Personal health context is useful to an agent, but it should never require giving up control of sensitive data.',
+      zh: '个人健康数据能帮助 Agent 做出更好的判断，但不应以失去敏感数据控制权为代价。',
+    },
+    outcome: {
+      en: 'A local-first bridge that keeps data under user control while making authorized summaries available to MCP-compatible agents.',
+      zh: '以本地优先的方式连接数据与 Agent：用户保有控制权，授权后的摘要才进入 MCP 工作流。',
+    },
     contribution: {
       en: 'iOS, encrypted direct sync, local SQLite, MCP runtime, CLI, and privacy-first onboarding.',
       zh: '涵盖 iOS、加密直连同步、本地 SQLite、MCP runtime、CLI 与隐私优先的配对流程。',
@@ -29,6 +37,14 @@ const projectsData: Project[] = [
       en: 'An evidence-backed AI industry graph for exploring companies, models, infrastructure, metrics, and research relationships.',
       zh: '一个带证据溯源的 AI 产业图谱，用于探索公司、模型、基础设施、指标与研究关系。',
     },
+    problem: {
+      en: 'AI industry research is fragmented across announcements, benchmarks, companies, and infrastructure data.',
+      zh: 'AI 行业研究分散在公告、基准测试、公司与基础设施数据之间，难以形成完整判断。',
+    },
+    outcome: {
+      en: 'An explorable map that connects research claims to evidence instead of leaving them as isolated notes.',
+      zh: '将研究观点与证据连接成可探索的图谱，而不是停留在彼此孤立的笔记里。',
+    },
     contribution: {
       en: 'Built the graph exploration, evidence review workflow, research timeline, API layer, and PostgreSQL-backed data path.',
       zh: '构建图谱浏览、证据审核流、研究时间线、API 层及 PostgreSQL 数据路径。',
@@ -46,6 +62,14 @@ const projectsData: Project[] = [
     description: {
       en: 'An offline-first collaborative writing app with structured editing, automatic sync, self-hosted collaboration, and AI assistance.',
       zh: '一款离线优先的协作文档应用，包含结构化编辑、自动同步、自托管协作与 AI 辅助。',
+    },
+    problem: {
+      en: 'Writing tools often make collaboration depend on a stable connection and a centrally hosted workspace.',
+      zh: '许多写作工具让协作依赖稳定网络与中心化工作区，离线与数据控制往往被牺牲。',
+    },
+    outcome: {
+      en: 'A collaborative editor that treats offline work, synchronization, and self-hosting as first-class capabilities.',
+      zh: '一套将离线工作、同步与自托管都视为一等能力的协作文档体验。',
     },
     contribution: {
       en: 'Designed the offline sync queue, IndexedDB persistence, Yjs collaboration, editor experience, and full-stack integration.',

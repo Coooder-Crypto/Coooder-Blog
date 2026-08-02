@@ -50,6 +50,17 @@ export const translations: Record<Language, Translations> = {
     'home.siteTitle': "Coooder's Blog - Coding Adventure",
     'home.siteDescription':
       'I build fullstack products with a focus on AI agents, developer tools, and practical engineering.',
+    'home.heroEyebrow': 'Fullstack engineer · Beijing',
+    'home.heroTitle': 'Building practical systems for an agent-native future.',
+    'home.heroDescription':
+      'I turn complex workflows into tools with clear context, repeatable execution, and evidence people can trust.',
+    'home.heroPrimaryCta': 'Explore projects',
+    'home.heroSecondaryCta': 'Read the blog',
+    'home.heroX': 'Short notes on X',
+    'home.selectedWork': 'Selected work',
+    'home.selectedWorkDescription': 'Three projects that show how I approach agents, data, and collaborative software.',
+    'home.latestWriting': 'Latest writing',
+    'home.latestWritingDescription': 'Notes from building, testing, and learning in public.',
 
     // Activity
     'activity.title': 'Latest Activity',
@@ -82,6 +93,10 @@ export const translations: Record<Language, Translations> = {
     'projects.cta.viewAll': 'View All Projects',
     'projects.moreTech': '+{count} more',
     'projects.aria.linkTo': 'Link to {title}',
+    'projects.problem': 'Problem',
+    'projects.outcome': 'Outcome',
+    'projects.contribution': 'What I built',
+    'projects.caseStudy': 'Case study',
 
     // About/Bio
     'bio.alias': "I'm aliased as",
@@ -148,6 +163,16 @@ export const translations: Record<Language, Translations> = {
     'home.fullstackEngineer': '一名专注于 AI Agent 方向的全栈工程师',
     'home.siteTitle': 'Coooder 的博客 - 编程冒险',
     'home.siteDescription': '我专注于构建 AI Agent、开发者工具和真正能落地的全栈产品。',
+    'home.heroEyebrow': '全栈工程师 · 北京',
+    'home.heroTitle': '为 Agent 原生时代构建真正可用的系统。',
+    'home.heroDescription': '我将复杂工作流转化为上下文清晰、执行可重复、结果可验证的工具与产品。',
+    'home.heroPrimaryCta': '查看项目',
+    'home.heroSecondaryCta': '阅读博客',
+    'home.heroX': '在 X 阅读短内容',
+    'home.selectedWork': '代表项目',
+    'home.selectedWorkDescription': '三个项目，呈现我如何处理 Agent、数据与协作软件的问题。',
+    'home.latestWriting': '最新文章',
+    'home.latestWritingDescription': '公开记录构建、验证与学习过程中的思考。',
 
     // Activity
     'activity.title': '最新动态',
@@ -179,6 +204,10 @@ export const translations: Record<Language, Translations> = {
     'projects.cta.viewAll': '查看所有项目',
     'projects.moreTech': '+{count} 项更多',
     'projects.aria.linkTo': '链接到 {title}',
+    'projects.problem': '问题',
+    'projects.outcome': '产出',
+    'projects.contribution': '我构建了什么',
+    'projects.caseStudy': '案例',
 
     // About/Bio
     'bio.alias': '我的别名是',

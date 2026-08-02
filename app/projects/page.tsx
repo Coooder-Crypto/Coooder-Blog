@@ -96,10 +96,13 @@ export default function Projects() {
 
 function ParallaxProjectCard({ project, reverse = false }: { project: Project; reverse?: boolean }) {
   const { t, language } = useLanguage();
-  const { title, description, imgSrc, url, repo, builtWith, contribution } = project;
+  const { title, description, imgSrc, url, repo, builtWith, contribution, problem, outcome } = project;
   const localizedTitle = (title && (title[language] ?? title.en)) || '';
   const localizedDescription = description ? (description[language] ?? description.en) : undefined;
   const localizedContribution = contribution ? (contribution[language] ?? contribution.en) : undefined;
+  const localizedProblem = problem ? (problem[language] ?? problem.en) : undefined;
+  const localizedOutcome = outcome ? (outcome[language] ?? outcome.en) : undefined;
+  const hasContribution = localizedContribution && localizedContribution !== 'xxx';
   const href = repo ? `https://github.com/${repo}` : url;
   const linkLabel = t('projects.aria.linkTo').replace('{title}', localizedTitle);
 
@@ -169,15 +172,26 @@ function ParallaxProjectCard({ project, reverse = false }: { project: Project; r
             {localizedDescription && (
               <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-300">{localizedDescription}</p>
             )}
-            {localizedContribution && (
-              <div className="rounded-3xl border border-gray-100/70 bg-gradient-to-br from-white/90 via-white/70 to-slate-50/60 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),inset_0_-25px_40px_-30px_rgba(15,23,42,0.2)] dark:border-slate-800/70 dark:bg-gradient-to-br dark:from-slate-900/80 dark:via-slate-900/60 dark:to-slate-900/40 dark:shadow-[inset_0_1px_0_rgba(15,23,42,0.8),inset_0_-25px_45px_-35px_rgba(15,23,42,0.9)]">
-                <p className="text-base leading-relaxed text-gray-700 dark:text-gray-200">{localizedContribution}</p>
+            {(localizedProblem || localizedOutcome || hasContribution) && (
+              <div className="space-y-4 rounded-3xl border border-gray-100/70 bg-gradient-to-br from-white/90 via-white/70 to-slate-50/60 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),inset_0_-25px_40px_-30px_rgba(15,23,42,0.2)] dark:border-slate-800/70 dark:bg-gradient-to-br dark:from-slate-900/80 dark:via-slate-900/60 dark:to-slate-900/40 dark:shadow-[inset_0_1px_0_rgba(15,23,42,0.8),inset_0_-25px_45px_-35px_rgba(15,23,42,0.9)]">
+                {localizedProblem && <CaseDetail label={t('projects.problem')} value={localizedProblem} />}
+                {localizedOutcome && <CaseDetail label={t('projects.outcome')} value={localizedOutcome} />}
+                {hasContribution && <CaseDetail label={t('projects.contribution')} value={localizedContribution} />}
               </div>
             )}
           </div>
         </div>
       </div>
     </article>
+  );
+}
+
+function CaseDetail({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">{label}</p>
+      <p className="mt-1.5 text-base leading-relaxed text-gray-700 dark:text-gray-200">{value}</p>
+    </div>
   );
 }
 
@@ -190,6 +204,7 @@ function CompactProjectCard({ project }: { project: Project }) {
   const localizedTitle = (title && (title[language] ?? title.en)) || '';
   const localizedDescription = description ? (description[language] ?? description.en) : undefined;
   const localizedContribution = contribution ? (contribution[language] ?? contribution.en) : undefined;
+  const hasContribution = localizedContribution && localizedContribution !== 'xxx';
   const liveLabel = t('projects.aria.linkTo').replace('{title}', localizedTitle);
 
   return (
@@ -226,7 +241,7 @@ function CompactProjectCard({ project }: { project: Project }) {
           </p>
         )}
 
-        {localizedContribution && (
+        {hasContribution && (
           <div className="rounded-2xl border border-slate-100/70 bg-gradient-to-br from-white via-white/70 to-slate-50/60 p-4 text-sm leading-relaxed text-slate-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),inset_0_-20px_35px_-30px_rgba(15,23,42,0.22)] dark:border-slate-700/60 dark:bg-gradient-to-br dark:from-slate-900/80 dark:via-slate-900/60 dark:to-slate-900/40 dark:text-slate-200 dark:shadow-[inset_0_1px_0_rgba(15,23,42,0.8),inset_0_-20px_35px_-30px_rgba(15,23,42,0.85)]">
             <p>{localizedContribution}</p>
           </div>
