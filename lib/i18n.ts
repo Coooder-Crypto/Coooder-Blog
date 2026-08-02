@@ -51,6 +51,7 @@ export const translations: Record<Language, Translations> = {
     'home.siteDescription':
       'I build fullstack products with a focus on AI agents, developer tools, and practical engineering.',
     'home.heroEyebrow': 'Fullstack engineer · Beijing',
+    'home.heroName': 'Hi, I’m Coooder.',
     'home.heroTitle': 'Building practical systems for an agent-native future.',
     'home.heroDescription':
       'I turn complex workflows into tools with clear context, repeatable execution, and evidence people can trust.',
@@ -164,6 +165,7 @@ export const translations: Record<Language, Translations> = {
     'home.siteTitle': 'Coooder 的博客 - 编程冒险',
     'home.siteDescription': '我专注于构建 AI Agent、开发者工具和真正能落地的全栈产品。',
     'home.heroEyebrow': '全栈工程师 · 北京',
+    'home.heroName': '你好，我是 Coooder。',
     'home.heroTitle': '为 Agent 原生时代构建真正可用的系统。',
     'home.heroDescription': '我将复杂工作流转化为上下文清晰、执行可重复、结果可验证的工具与产品。',
     'home.heroPrimaryCta': '查看项目',
