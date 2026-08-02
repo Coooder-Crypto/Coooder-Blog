@@ -78,7 +78,6 @@ function createTagCount(allBlogs) {
   writeFileSync('./app/tag-data.json', JSON.stringify(tagCount));
 }
 
-
 export const Blog = defineDocumentType(() => ({
   name: 'Blog',
   filePathPattern: 'blog/**/*.mdx',
@@ -97,6 +96,9 @@ export const Blog = defineDocumentType(() => ({
     layout: { type: 'string' },
     bibliography: { type: 'string' },
     canonicalUrl: { type: 'string' },
+    xPostUrl: { type: 'string' },
+    socialSummary: { type: 'string' },
+    series: { type: 'string' },
   },
   computedFields: {
     ...computedFields,

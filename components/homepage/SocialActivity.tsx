@@ -41,11 +41,17 @@ type XPost = {
   };
 };
 
+type LinkedArticle = {
+  slug: string;
+  title: string;
+  xPostUrl?: string;
+};
+
 const githubRepos = (socialActivity.github?.repos || []) as unknown as ReadonlyArray<GitHubRepo>;
 const githubEvents = (socialActivity.github?.events || []) as unknown as ReadonlyArray<GitHubEvent>;
 const xPosts = (socialActivity.x?.posts || []) as unknown as ReadonlyArray<XPost>;
 
-const SocialActivity = () => {
+const SocialActivity = ({ articles = [] }: { articles?: ReadonlyArray<LinkedArticle> }) => {
   const { t, language } = useLanguage();
   const hasGitHub = githubRepos.length > 0 || githubEvents.length > 0;
   const hasX = xPosts.length > 0;
@@ -114,7 +120,9 @@ const SocialActivity = () => {
                       <GitBranch className="h-3.5 w-3.5" />
                       {repo.forks}
                     </span>
-                    {repo.updatedAt && <span>{formatRelativeDate(repo.updatedAt, language, socialActivity.generatedAt)}</span>}
+                    {repo.updatedAt && (
+                      <span>{formatRelativeDate(repo.updatedAt, language, socialActivity.generatedAt)}</span>
+                    )}
                   </div>
                 </Link>
               ))}
@@ -171,24 +179,39 @@ const SocialActivity = () => {
 
           {xPosts.length > 0 ? (
             <div className="space-y-3">
-              {xPosts.slice(0, 4).map((post) => (
-                <Link
-                  key={post.id}
-                  href={post.url}
-                  className="block rounded-lg border border-gray-100 bg-gray-50 p-4 transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white hover:shadow-md dark:border-gray-800 dark:bg-gray-800/70 dark:hover:border-sky-500/40 dark:hover:bg-gray-800"
-                >
-                  <p className="line-clamp-4 whitespace-pre-line text-sm leading-6 text-gray-700 dark:text-gray-200">
-                    {post.text}
-                  </p>
-                  <div className="mt-3 flex items-center justify-between gap-3 text-xs text-gray-500 dark:text-gray-400">
-                    <span>{post.createdAt && formatRelativeDate(post.createdAt, language, socialActivity.generatedAt)}</span>
-                    <span className="inline-flex items-center gap-1">
-                      <MessageCircle className="h-3.5 w-3.5" />
-                      {(post.metrics?.replies || 0) + (post.metrics?.quotes || 0)}
-                    </span>
+              {xPosts.slice(0, 4).map((post) => {
+                const linkedArticle = articles.find((article) => getXPostId(article.xPostUrl) === getXPostId(post.url));
+
+                return (
+                  <div
+                    key={post.id}
+                    className="rounded-lg border border-gray-100 bg-gray-50 p-4 transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white hover:shadow-md dark:border-gray-800 dark:bg-gray-800/70 dark:hover:border-sky-500/40 dark:hover:bg-gray-800"
+                  >
+                    <Link href={post.url} className="block">
+                      <p className="line-clamp-4 whitespace-pre-line text-sm leading-6 text-gray-700 dark:text-gray-200">
+                        {post.text}
+                      </p>
+                      <div className="mt-3 flex items-center justify-between gap-3 text-xs text-gray-500 dark:text-gray-400">
+                        <span>
+                          {post.createdAt && formatRelativeDate(post.createdAt, language, socialActivity.generatedAt)}
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <MessageCircle className="h-3.5 w-3.5" />
+                          {(post.metrics?.replies || 0) + (post.metrics?.quotes || 0)}
+                        </span>
+                      </div>
+                    </Link>
+                    {linkedArticle && (
+                      <Link
+                        href={`/blog/${linkedArticle.slug}`}
+                        className="mt-3 inline-flex text-sm font-semibold text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-100"
+                      >
+                        {language === 'zh' ? '阅读完整文章' : 'Read the full article'} &rarr;
+                      </Link>
+                    )}
                   </div>
-                </Link>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <p className="rounded-lg bg-gray-50 p-4 text-sm leading-6 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
@@ -239,6 +262,10 @@ function formatDateTime(value: string, language: 'en' | 'zh') {
     day: 'numeric',
     year: 'numeric',
   }).format(new Date(value));
+}
+
+function getXPostId(url?: string) {
+  return url?.match(/\/status\/(\d+)/)?.[1];
 }
 
 export default SocialActivity;

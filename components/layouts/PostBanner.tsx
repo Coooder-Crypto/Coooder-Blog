@@ -3,6 +3,7 @@ import Bleed from 'pliny/ui/Bleed';
 import { CoreContent } from 'pliny/utils/contentlayer';
 import type { Blog } from 'contentlayer/generated';
 
+import { XDiscussion } from '@/components/blog';
 import { Image, Link, PageTitle, SectionContainer, ScrollTopAndComment } from '@/components/ui';
 
 interface LayoutProps {
@@ -13,7 +14,7 @@ interface LayoutProps {
 }
 
 export default function PostMinimal({ content, next, prev, children }: LayoutProps) {
-  const { slug, title, images } = content;
+  const { slug, title, images, xPostUrl, socialSummary } = content;
   const displayImage = images && images.length > 0 ? images[0] : 'https://picsum.photos/seed/picsum/800/400';
 
   return (
@@ -33,7 +34,10 @@ export default function PostMinimal({ content, next, prev, children }: LayoutPro
               <PageTitle>{title}</PageTitle>
             </div>
           </div>
-          <div className="prose max-w-none py-4 dark:prose-invert">{children}</div>
+          <div className="prose max-w-none py-4 dark:prose-invert">
+            {children}
+            <XDiscussion xPostUrl={xPostUrl} socialSummary={socialSummary} />
+          </div>
           <footer>
             <div className="flex flex-col text-sm font-medium sm:flex-row sm:justify-between sm:text-base">
               {prev && prev.path && (
