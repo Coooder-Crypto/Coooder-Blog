@@ -121,11 +121,7 @@ export default function Home({ posts }) {
         </div>
       </div>
 
-      <SocialActivity
-        articles={posts
-          .filter((post) => post.xPostUrl)
-          .map((post) => ({ slug: post.slug, title: post.title, xPostUrl: post.xPostUrl }))}
-      />
+      <SocialActivity />
 
       <section className="py-12" aria-labelledby="featured-projects-heading">
         <div className="mb-8 text-center" data-gsap-reveal="up">

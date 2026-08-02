@@ -1,6 +1,6 @@
 'use client';
 
-import { GitBranch, MessageCircle, Star } from 'lucide-react';
+import { GitBranch, Star } from 'lucide-react';
 
 import socialActivity from '@/data/socialActivity';
 import { Link } from '@/components/ui';
@@ -8,6 +8,7 @@ import { useLanguage } from '@/lib/i18n';
 
 import GitHub from 'public/static/icons/github.svg';
 import X from 'public/static/icons/x.svg';
+import XTimeline from './XTimeline';
 
 type GitHubRepo = {
   name: string;
@@ -28,33 +29,13 @@ type GitHubEvent = {
   createdAt?: string | null;
 };
 
-type XPost = {
-  id: string;
-  text: string;
-  url: string;
-  createdAt?: string | null;
-  metrics?: {
-    likes?: number;
-    reposts?: number;
-    replies?: number;
-    quotes?: number;
-  };
-};
-
-type LinkedArticle = {
-  slug: string;
-  title: string;
-  xPostUrl?: string;
-};
-
 const githubRepos = (socialActivity.github?.repos || []) as unknown as ReadonlyArray<GitHubRepo>;
 const githubEvents = (socialActivity.github?.events || []) as unknown as ReadonlyArray<GitHubEvent>;
-const xPosts = (socialActivity.x?.posts || []) as unknown as ReadonlyArray<XPost>;
 
-const SocialActivity = ({ articles = [] }: { articles?: ReadonlyArray<LinkedArticle> }) => {
+const SocialActivity = () => {
   const { t, language } = useLanguage();
   const hasGitHub = githubRepos.length > 0 || githubEvents.length > 0;
-  const hasX = xPosts.length > 0;
+  const hasX = Boolean(socialActivity.x?.profileUrl && socialActivity.x?.username);
 
   if (!hasGitHub && !hasX) {
     return (
@@ -177,42 +158,12 @@ const SocialActivity = ({ articles = [] }: { articles?: ReadonlyArray<LinkedArti
             )}
           </div>
 
-          {xPosts.length > 0 ? (
-            <div className="space-y-3">
-              {xPosts.slice(0, 4).map((post) => {
-                const linkedArticle = articles.find((article) => getXPostId(article.xPostUrl) === getXPostId(post.url));
-
-                return (
-                  <div
-                    key={post.id}
-                    className="rounded-lg border border-gray-100 bg-gray-50 p-4 transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white hover:shadow-md dark:border-gray-800 dark:bg-gray-800/70 dark:hover:border-sky-500/40 dark:hover:bg-gray-800"
-                  >
-                    <Link href={post.url} className="block">
-                      <p className="line-clamp-4 whitespace-pre-line text-sm leading-6 text-gray-700 dark:text-gray-200">
-                        {post.text}
-                      </p>
-                      <div className="mt-3 flex items-center justify-between gap-3 text-xs text-gray-500 dark:text-gray-400">
-                        <span>
-                          {post.createdAt && formatRelativeDate(post.createdAt, language, socialActivity.generatedAt)}
-                        </span>
-                        <span className="inline-flex items-center gap-1">
-                          <MessageCircle className="h-3.5 w-3.5" />
-                          {(post.metrics?.replies || 0) + (post.metrics?.quotes || 0)}
-                        </span>
-                      </div>
-                    </Link>
-                    {linkedArticle && (
-                      <Link
-                        href={`/blog/${linkedArticle.slug}`}
-                        className="mt-3 inline-flex text-sm font-semibold text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-100"
-                      >
-                        {language === 'zh' ? '阅读完整文章' : 'Read the full article'} &rarr;
-                      </Link>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+          {hasX && socialActivity.x?.profileUrl && socialActivity.x?.username ? (
+            <XTimeline
+              profileUrl={socialActivity.x.profileUrl}
+              loadingLabel={t('activity.xLoading')}
+              fallbackLabel={t('activity.xFallback')}
+            />
           ) : (
             <p className="rounded-lg bg-gray-50 p-4 text-sm leading-6 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
               {socialActivity.x?.error || t('activity.xUnavailable')}
@@ -262,10 +213,6 @@ function formatDateTime(value: string, language: 'en' | 'zh') {
     day: 'numeric',
     year: 'numeric',
   }).format(new Date(value));
-}
-
-function getXPostId(url?: string) {
-  return url?.match(/\/status\/(\d+)/)?.[1];
 }
 
 export default SocialActivity;
