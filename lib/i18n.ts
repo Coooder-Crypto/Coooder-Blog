@@ -53,12 +53,14 @@ export const translations: Record<Language, Translations> = {
 
     // Activity
     'activity.title': 'Latest Activity',
-    'activity.subtitle': 'Fresh work and short-form notes from GitHub and X.',
+    'activity.subtitle': 'Fresh work from GitHub and live notes from X.',
     'activity.empty': 'Social activity has not been synced yet.',
     'activity.githubSubtitle': 'Repositories and public development events',
-    'activity.xSubtitle': 'Recent original posts',
+    'activity.xSubtitle': 'Live posts from X',
     'activity.recentGithubEvents': 'Recent events',
     'activity.xUnavailable': 'X posts are not available yet.',
+    'activity.xLoading': 'Loading X posts…',
+    'activity.xFallback': 'View posts on X',
     'activity.updatedAt': 'Updated',
 
     // Projects
@@ -149,12 +151,14 @@ export const translations: Record<Language, Translations> = {
 
     // Activity
     'activity.title': '最新动态',
-    'activity.subtitle': '来自 GitHub 和 X 的近期开发与短内容更新。',
+    'activity.subtitle': '来自 GitHub 的近期开发与来自 X 的实时短内容。',
     'activity.empty': '社交动态还没有同步。',
     'activity.githubSubtitle': '仓库和公开开发事件',
-    'activity.xSubtitle': '近期原创帖子',
+    'activity.xSubtitle': '来自 X 的实时动态',
     'activity.recentGithubEvents': '最近事件',
     'activity.xUnavailable': 'X 帖子暂不可用。',
+    'activity.xLoading': '正在加载 X 动态…',
+    'activity.xFallback': '前往 X 查看动态',
     'activity.updatedAt': '更新于',
 
     // Projects
