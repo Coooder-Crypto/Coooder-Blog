@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { createElement } from 'react';
 
 const Button = ({
   children,
@@ -12,9 +13,10 @@ const Button = ({
 
   [key: string]: any;
 }) => {
-  return (
-    <Component
-      className={clsx([
+  return createElement(
+    Component,
+    {
+      className: clsx([
         'border border-transparent',
         'bg-gray-200 hover:opacity-80 dark:bg-primary-600',
         '!text-black hover:!text-black dark:!text-white dark:hover:!text-white',
@@ -24,11 +26,10 @@ const Button = ({
         'inline rounded-lg px-4 py-2 shadow',
         'inline-flex items-center gap-1 no-underline',
         className,
-      ])}
-      {...rest}
-    >
-      {children}
-    </Component>
+      ]),
+      ...rest,
+    },
+    children
   );
 };
 

@@ -1,12 +1,12 @@
 'use client';
 
-import { ArrowUpRight, BookOpen, Github, Sparkles } from 'lucide-react';
+import { ArrowUpRight, BookOpen, Cuboid, Github, Sparkles } from 'lucide-react';
 import { formatDate } from 'pliny/utils/formatDate';
 
 import siteMetadata from '@/data/siteMetadata';
 import projectsData from '@/data/projectsData';
 import { Link, Tag } from '@/components/ui';
-import { SnowfallBackground } from '@/components/homepage';
+import { Avatar, SnowfallBackground } from '@/components/homepage';
 import { useLanguage } from '@/lib/i18n';
 import { getLocalizedBlogContent } from '@/lib/blogUtils';
 import type { Project } from '@/types/data';
@@ -90,48 +90,64 @@ export default function Home({ posts }: { posts: any[] }) {
 
       <section className="relative overflow-hidden py-16 sm:py-24" aria-labelledby="home-heading">
         <div className="absolute inset-x-0 top-0 -z-10 h-80 bg-[radial-gradient(circle_at_70%_20%,rgba(14,165,233,0.16),transparent_42%),radial-gradient(circle_at_15%_80%,rgba(139,92,246,0.12),transparent_36%)]" />
-        <div className="max-w-3xl">
-          <p className="mb-5 text-sm font-semibold uppercase tracking-[0.22em] text-sky-700 dark:text-sky-300">
-            {t('home.heroEyebrow')}
-          </p>
-          <h1
-            id="home-heading"
-            className="max-w-3xl text-4xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-6xl sm:leading-[1.08]"
-          >
-            {t('home.heroTitle')}
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300">
-            {t('home.heroDescription')}
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link
-              href="/projects"
-              className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-700 dark:bg-white dark:text-slate-950 dark:hover:bg-sky-200"
-              data-gsap-magnetic
-            >
-              {t('home.heroPrimaryCta')} <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-sky-300 hover:text-sky-700 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:border-sky-500 dark:hover:text-sky-300"
-              data-gsap-magnetic
-            >
-              <BookOpen className="h-4 w-4" aria-hidden="true" /> {t('home.heroSecondaryCta')}
-            </Link>
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(260px,340px)_minmax(0,1fr)] lg:gap-14">
+          <div className="mx-auto w-full max-w-[340px] rounded-[2rem] border border-white/70 bg-white/55 p-2 shadow-[0_30px_90px_-45px_rgba(15,23,42,0.55)] backdrop-blur dark:border-slate-700/70 dark:bg-slate-900/45">
+            <Avatar />
           </div>
-          <div className="mt-8 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-500 dark:text-slate-400">
-            <Link
-              href={siteMetadata.github}
-              className="inline-flex items-center gap-2 hover:text-sky-600 dark:hover:text-sky-300"
+          <div className="max-w-3xl">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.22em] text-sky-700 dark:text-sky-300">
+              {t('home.heroEyebrow')}
+            </p>
+            <h1
+              id="home-heading"
+              className="text-4xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-6xl sm:leading-[1.08]"
             >
-              <Github className="h-4 w-4" /> GitHub
-            </Link>
-            <Link
-              href={siteMetadata.twitter}
-              className="inline-flex items-center gap-2 hover:text-sky-600 dark:hover:text-sky-300"
-            >
-              𝕏 {t('home.heroX')}
-            </Link>
+              {t('home.heroName')}
+            </h1>
+            <p className="mt-5 text-xl font-medium leading-8 text-slate-800 dark:text-slate-100 sm:text-2xl">
+              {t('home.heroTitle')}
+            </p>
+            <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300">
+              {t('home.heroDescription')}
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Link
+                href="/resume"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_35px_-16px_rgba(8,145,178,0.85)] transition hover:-translate-y-0.5 hover:from-cyan-400 hover:to-violet-500"
+                data-gsap-magnetic
+              >
+                <Cuboid className="h-4 w-4" aria-hidden="true" />{' '}
+                {language === 'zh' ? '进入 3D 简历' : 'Enter 3D Resume'}
+              </Link>
+              <Link
+                href="/projects"
+                className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-700 dark:bg-white dark:text-slate-950 dark:hover:bg-sky-200"
+                data-gsap-magnetic
+              >
+                {t('home.heroPrimaryCta')} <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-sky-300 hover:text-sky-700 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:border-sky-500 dark:hover:text-sky-300"
+                data-gsap-magnetic
+              >
+                <BookOpen className="h-4 w-4" aria-hidden="true" /> {t('home.heroSecondaryCta')}
+              </Link>
+            </div>
+            <div className="mt-7 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-500 dark:text-slate-400">
+              <Link
+                href={siteMetadata.github}
+                className="inline-flex items-center gap-2 hover:text-sky-600 dark:hover:text-sky-300"
+              >
+                <Github className="h-4 w-4" /> GitHub
+              </Link>
+              <Link
+                href={siteMetadata.twitter}
+                className="inline-flex items-center gap-2 hover:text-sky-600 dark:hover:text-sky-300"
+              >
+                𝕏 {t('home.heroX')}
+              </Link>
+            </div>
           </div>
         </div>
       </section>
