@@ -35,6 +35,7 @@ export const translations: Record<Language, Translations> = {
     'nav.blog': 'Blog',
     'nav.projects': 'Projects',
     'nav.about': 'About',
+    'nav.resume': '3D Resume',
 
     // Homepage
     'home.greeting': 'Hi! I am',
@@ -151,6 +152,7 @@ export const translations: Record<Language, Translations> = {
     'nav.blog': '博客',
     'nav.projects': '项目',
     'nav.about': '关于',
+    'nav.resume': '3D 简历',
 
     // Homepage
     'home.greeting': '你好！我是',

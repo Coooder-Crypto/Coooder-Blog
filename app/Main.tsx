@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowUpRight, BookOpen, Github, Sparkles } from 'lucide-react';
+import { ArrowUpRight, BookOpen, Cuboid, Github, Sparkles } from 'lucide-react';
 import { formatDate } from 'pliny/utils/formatDate';
 
 import siteMetadata from '@/data/siteMetadata';
@@ -111,6 +111,14 @@ export default function Home({ posts }: { posts: any[] }) {
               {t('home.heroDescription')}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Link
+                href="/resume"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_35px_-16px_rgba(8,145,178,0.85)] transition hover:-translate-y-0.5 hover:from-cyan-400 hover:to-violet-500"
+                data-gsap-magnetic
+              >
+                <Cuboid className="h-4 w-4" aria-hidden="true" />{' '}
+                {language === 'zh' ? '进入 3D 简历' : 'Enter 3D Resume'}
+              </Link>
               <Link
                 href="/projects"
                 className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-700 dark:bg-white dark:text-slate-950 dark:hover:bg-sky-200"
