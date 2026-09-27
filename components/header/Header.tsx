@@ -5,6 +5,7 @@ import siteMetadata from '@/data/siteMetadata';
 import headerNavLinks from '@/data/headerNavLinks';
 import Link from '@/components/ui/Link';
 import LanguageSwitch from '@/components/ui/LanguageSwitch';
+import MobileNav from '@/components/header/MobileNav';
 import Logo from 'public/static/images/logo.svg';
 import { useLanguage } from '@/lib/i18n';
 
@@ -26,7 +27,7 @@ const Header = () => {
           </div>
         </Link>
         <div className="flex items-center gap-3 text-base leading-5">
-          <div className="hidden sm:block">
+          <nav className="hidden sm:block" aria-label={t('nav.primary')}>
             {headerNavLinks
               .filter((link) => link.href !== '/')
               .map((link) => (
@@ -41,8 +42,9 @@ const Header = () => {
                   <span>{t(link.key)}</span>
                 </Link>
               ))}
-          </div>
+          </nav>
           <LanguageSwitch />
+          <MobileNav />
           <div
             role="separator"
             data-orientation="vertical"

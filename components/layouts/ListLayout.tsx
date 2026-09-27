@@ -78,7 +78,18 @@ export default function ListLayout({
     postsPerPage ??
     (initialDisplayPosts.length || (pagination ? Math.ceil(posts.length / pagination.totalPages) : posts.length));
   const filteredBlogPosts = posts.filter((post) => {
-    const searchContent = post.title + post.summary + post.tags?.join(' ');
+    const localizedPost = getLocalizedBlogContent(post, language);
+    const searchContent = [
+      localizedPost.title,
+      localizedPost.summary,
+      post.title,
+      post.titleEn,
+      post.summary,
+      post.summaryEn,
+      post.tags?.join(' '),
+    ]
+      .filter(Boolean)
+      .join(' ');
     return searchContent.toLowerCase().includes(searchValue.toLowerCase());
   });
 

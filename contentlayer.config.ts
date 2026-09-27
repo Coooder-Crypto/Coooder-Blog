@@ -28,6 +28,11 @@ import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js';
 const root = process.cwd();
 const isProduction = process.env.NODE_ENV === 'production';
 
+const toAbsoluteUrl = (value: string) =>
+  value.startsWith('http')
+    ? value
+    : `${siteMetadata.siteUrl}${value.startsWith('/') ? value : `/${value}`}`;
+
 // heroicon mini link
 const icon = fromHtmlIsomorphic(
   `
@@ -104,16 +109,20 @@ export const Blog = defineDocumentType(() => ({
     ...computedFields,
     structuredData: {
       type: 'json',
-      resolve: (doc) => ({
-        '@context': 'https://schema.org',
-        '@type': 'BlogPosting',
-        headline: doc.title,
-        datePublished: doc.date,
-        dateModified: doc.lastmod || doc.date,
-        description: doc.summary,
-        image: doc.images ? doc.images[0] : siteMetadata.socialBanner,
-        url: `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`,
-      }),
+      resolve: (doc) => {
+        const image = Array.isArray(doc.images) ? doc.images[0] : doc.images;
+
+        return {
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: doc.title,
+          datePublished: doc.date,
+          dateModified: doc.lastmod || doc.date,
+          description: doc.summary,
+          image: toAbsoluteUrl(image || siteMetadata.socialBanner),
+          url: `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`,
+        };
+      },
     },
   },
 }));

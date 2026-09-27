@@ -5,10 +5,12 @@ import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'bo
 import { Fragment, useState, useEffect, useRef } from 'react';
 import Link from '../ui/Link';
 import headerNavLinks from '@/data/headerNavLinks';
+import { useLanguage } from '@/lib/i18n';
 
 const MobileNav = () => {
+  const { t } = useLanguage();
   const [navShow, setNavShow] = useState(false);
-  const navRef = useRef(null);
+  const navRef = useRef<HTMLElement | null>(null);
 
   const onToggleNav = () => {
     setNavShow((status) => {
@@ -22,13 +24,17 @@ const MobileNav = () => {
     });
   };
 
-  useEffect(() => {
-    return clearAllBodyScrollLocks;
-  });
+  useEffect(() => clearAllBodyScrollLocks, []);
 
   return (
     <>
-      <button data-umami-event="mobile-nav-toggle" aria-label="Toggle Menu" onClick={onToggleNav} className="sm:hidden">
+      <button
+        data-umami-event="mobile-nav-toggle"
+        aria-label={t('nav.openMenu')}
+        aria-expanded={navShow}
+        onClick={onToggleNav}
+        className="sm:hidden"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
@@ -70,6 +76,7 @@ const MobileNav = () => {
             <Dialog.Panel className="fixed left-0 top-0 z-70 h-full w-full transform bg-gray-200 opacity-95 transition-transform duration-300 ease-in-out dark:bg-dark dark:opacity-[0.98]">
               <nav
                 ref={navRef}
+                aria-label={t('nav.primary')}
                 className="mt-8 flex h-full basis-0 flex-col items-start overflow-y-auto pl-12 pt-2 text-left"
               >
                 {headerNavLinks.map((link) => (
@@ -79,14 +86,14 @@ const MobileNav = () => {
                     className="mb-4 py-2 pr-4 text-2xl font-bold tracking-widest text-gray-900 outline outline-0 hover:text-primary-500 dark:text-gray-100 dark:hover:text-primary-400"
                     onClick={onToggleNav}
                   >
-                    {link.title}
+                    {t(link.key)}
                   </Link>
                 ))}
               </nav>
 
               <button
                 className="fixed right-4 top-7 z-80 h-16 w-16 p-4 text-gray-900 hover:text-primary-500 dark:text-gray-100 dark:hover:text-primary-400"
-                aria-label="Toggle Menu"
+                aria-label={t('nav.closeMenu')}
                 onClick={onToggleNav}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">

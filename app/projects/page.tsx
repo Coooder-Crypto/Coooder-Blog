@@ -1,7 +1,5 @@
 'use client';
 
-import { genPageMetadata } from 'app/seo';
-
 import projectsData from '@/data/projectsData';
 import type { Project } from '@/types/data';
 import { Link } from '@/components/ui';
