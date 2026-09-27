@@ -31,10 +31,15 @@ const PopularTags = () => {
           // Check if this tag is currently selected
           const isActive = pathname === href;
 
-          const className = `${slug} ${isActive ? 'active' : ''} inline-flex items-center space-x-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-200 hover:shadow-md cursor-pointer`;
+          const className = `studio-tag-filter ${isActive ? 'active' : ''}`;
 
           return (
-            <button key={slug} onClick={(e) => handleTagClick(e, href, isActive)} className={className}>
+            <button
+              key={slug}
+              onClick={(e) => handleTagClick(e, href, isActive)}
+              className={className}
+              aria-pressed={isActive}
+            >
               <BrandIcon type={iconType} className="h-4 w-4" />
               <span>{title}</span>
             </button>

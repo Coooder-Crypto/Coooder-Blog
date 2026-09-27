@@ -1,59 +1,36 @@
 'use client';
 
-import clsx from 'clsx';
-import siteMetadata from '@/data/siteMetadata';
-import headerNavLinks from '@/data/headerNavLinks';
+import { usePathname } from 'next/navigation';
 import Link from '@/components/ui/Link';
 import LanguageSwitch from '@/components/ui/LanguageSwitch';
 import MobileNav from '@/components/header/MobileNav';
-import Logo from 'public/static/images/logo.svg';
+import headerNavLinks from '@/data/headerNavLinks';
 import { useLanguage } from '@/lib/i18n';
 
-const Header = () => {
-  const { t } = useLanguage();
-  const headerClass =
-    'mx-auto w-full max-w-6xl supports-backdrop-blur fixed left-0 right-0 top-1 z-10 bg-white/75 py-2 backdrop-blur dark:bg-dark/75 md:rounded-2xl';
-
+export default function Header() {
+  const { language, t } = useLanguage();
+  const pathname = usePathname();
   return (
-    <header className={headerClass} data-gsap-reveal="down">
-      <div className="mx-auto flex max-w-4xl items-center justify-between px-3 xl:max-w-5xl xl:px-0">
-        <Link href="/" aria-label={siteMetadata.headerTitle} className="flex items-center">
-          <div className="animate-wave">
-            <Logo className="fill-dark dark:fill-white" />
-          </div>
-          <div className="group ml-2 text-xl font-bold transition duration-300">
-            Coooder.Blog
-            <span className="block h-0.5 max-w-0 bg-black transition-all duration-500 group-hover:max-w-[85%] dark:bg-white"></span>
-          </div>
-        </Link>
-        <div className="flex items-center gap-3 text-base leading-5">
-          <nav className="hidden sm:block" aria-label={t('nav.primary')}>
-            {headerNavLinks
-              .filter((link) => link.href !== '/')
-              .map((link) => (
-                <Link
-                  key={link.title}
-                  href={link.href}
-                  className={clsx(
-                    'mx-1 rounded px-2 py-1 font-medium text-gray-900 dark:text-gray-100 sm:px-3 sm:py-2',
-                    'hover:bg-gray-200 dark:hover:bg-primary-600'
-                  )}
-                >
-                  <span>{t(link.key)}</span>
-                </Link>
-              ))}
-          </nav>
-          <LanguageSwitch />
-          <MobileNav />
-          <div
-            role="separator"
-            data-orientation="vertical"
-            className="hidden h-4 w-px shrink-0 bg-gray-200 dark:bg-gray-600 md:block"
-          />
-        </div>
+    <header className="studio-header">
+      <Link href="/" className="studio-wordmark" aria-label={language === 'zh' ? 'Coooder 首页' : 'Coooder home'}>
+        coooder<span aria-hidden="true">✳︎</span>
+      </Link>
+      <span className="header-caption">{language === 'zh' ? '构建者的个人手记' : 'A BUILDER’S FIELD NOTES'}</span>
+      <div className="header-controls">
+        <nav className="desktop-navigation" aria-label={t('nav.primary')}>
+          {headerNavLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={pathname === link.href || pathname.startsWith(link.href + '/') ? 'page' : undefined}
+            >
+              {t(link.key)}
+            </Link>
+          ))}
+        </nav>
+        <LanguageSwitch />
+        <MobileNav />
       </div>
     </header>
   );
-};
-
-export default Header;
+}

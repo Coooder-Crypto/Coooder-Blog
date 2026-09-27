@@ -119,43 +119,50 @@ export default function ListLayout({
 
   return (
     <>
-      <div className="divide-y divide-gray-200 dark:divide-gray-700">
-        <div className="space-y-2 pb-8 pt-6 md:space-y-5" data-gsap-reveal="up">
-          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+      <div className="blog-index">
+        <header className="editorial-page-heading">
+          <p className="eyebrow">{language === 'zh' ? '实践 / 思考 / 记录' : 'EXPERIMENTS / IDEAS / OBSERVATIONS'}</p>
+          <h1>
             {title}
+            <span className="rust-dot">.</span>
           </h1>
-          <div className="space-y-4">
-            <div className="relative max-w-lg">
-              <label>
-                <span className="sr-only">{t('blog.searchArticles')}</span>
-                <input
-                  aria-label={t('blog.searchArticles')}
-                  type="text"
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  placeholder={t('blog.searchArticles')}
-                  className="block w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-900 dark:bg-gray-800 dark:text-gray-100"
-                />
-              </label>
-              <svg
-                className="absolute right-3 top-3 h-5 w-5 text-gray-400 dark:text-gray-300"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
-            <PopularTags />
+          <p>
+            {language === 'zh'
+              ? '关于 Agent、开发工具与软件工程。一边构建，一边记录。'
+              : 'On agents, developer tools, and the craft of software. Notes from doing the work.'}
+          </p>
+        </header>
+        <div className="blog-toolbar">
+          <div className="relative max-w-[420px]">
+            <label>
+              <span className="sr-only">{t('blog.searchArticles')}</span>
+              <input
+                aria-label={t('blog.searchArticles')}
+                type="text"
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder={t('blog.searchArticles')}
+                className="blog-search"
+              />
+            </label>
+            <svg
+              className="absolute right-3 top-3 h-5 w-5 text-gray-400 dark:text-gray-300"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
           </div>
+          <PopularTags />
         </div>
-        <ul data-gsap-stagger>
-          {!filteredBlogPosts.length && t('blog.noPostsFound')}
+        <ul className="blog-posts">
+          {!filteredBlogPosts.length && <li role="status">{t('blog.noPostsFound')}</li>}
           {displayPosts.map((post) => {
             const localizedPost = getLocalizedBlogContent(post, language);
             const { path, date, tags } = post;
@@ -166,7 +173,7 @@ export default function ListLayout({
                   <dl>
                     <dt className="sr-only">{t('common.publishedOn')}</dt>
                     <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                      <time dateTime={date}>{formatDate(date, siteMetadata.locale)}</time>
+                      <time dateTime={date}>{formatDate(date, language === 'zh' ? 'zh-CN' : 'en-US')}</time>
                     </dd>
                   </dl>
                   <div className="space-y-3 xl:col-span-3">

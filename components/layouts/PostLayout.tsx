@@ -21,7 +21,7 @@ export default function PostLayout(props: LayoutProps) {
     <SectionContainer>
       <ScrollTopAndComment />
 
-      <article>
+      <article className="reading-page">
         {/*START: Header*/}
         <header>
           <div className="dark:border-gray space-y-1 border-b border-gray-200 pb-10">
@@ -40,7 +40,7 @@ export default function PostLayout(props: LayoutProps) {
         {/*END: Header*/}
 
         {/*START: Content*/}
-        <main className="grid grid-cols-1 gap-12 pt-8 lg:grid-cols-12 lg:pt-10">
+        <div className="grid grid-cols-1 gap-12 pt-8 lg:grid-cols-12 lg:pt-10">
           <div className="divide-y divide-gray-200 dark:divide-gray-700 lg:col-span-8 xl:col-span-9">
             <div className="prose max-w-none dark:prose-dark lg:prose-lg lg:pb-8">
               {children}
@@ -53,7 +53,7 @@ export default function PostLayout(props: LayoutProps) {
               <TableOfContents toc={toc} />
             </div>
           </div>
-        </main>
+        </div>
         {/*END: Content*/}
 
         {/*START: Footer*/}

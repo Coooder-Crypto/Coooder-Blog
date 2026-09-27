@@ -1,7 +1,6 @@
 import type { Authors } from 'contentlayer/generated';
-import { Mail, Github, Twitter } from 'lucide-react';
-
-import { Link, Image, Twemoji } from '@/components/ui';
+import { Mail, Github, ArrowUpRight } from 'lucide-react';
+import { Link, Image } from '@/components/ui';
 import AboutIntro from '@/components/about/AboutIntro';
 import CareerTimeline from '@/components/about/CareerTimeline';
 import AboutHeader from '@/components/about/AboutHeader';
@@ -12,41 +11,39 @@ interface Props {
 }
 
 export default function AuthorLayout({ children, content }: Props) {
-  const { name, avatar, occupation, company, email, twitter, linkedin, github } = content;
-
+  const { name, avatar, email, twitter, github } = content;
   return (
-    <>
-      <div className="about divide-y divide-gray-200 dark:divide-gray-700">
-        <AboutHeader />
-
-        <div className="items-start space-y-2 xl:grid xl:grid-cols-3 xl:gap-x-8 xl:space-y-0">
-          <div className="flex flex-col items-center space-x-2 pt-8 sm:pt-28">
-            <Image src={avatar || ''} alt="avatar" width={192} height={192} className="h-48 w-48 rounded-full" />
-
-            <h3 className="pb-2 pt-4 text-2xl font-bold leading-8 tracking-tight">{name}</h3>
-            <div className="text-gray-500 dark:text-gray-400">{occupation}</div>
-            <div className="text-gray-500 dark:text-gray-400">{company}</div>
-
-            <div className="mt-2 flex gap-3">
+    <div className="about">
+      <AboutHeader />
+      <div className="about-layout">
+        <aside className="about-profile">
+          <Image src={avatar || '/static/images/avatar.png'} alt="Coooder" width={430} height={430} />
+          <h3>{name}</h3>
+          <p>ENGINEER / BUILDER / EXPLORER</p>
+          <div className="about-socials">
+            {email && (
               <Link href={`mailto:${email}`} aria-label="Email Coooder">
-                <Mail size={24} strokeWidth={1} />
+                <Mail size={20} />
               </Link>
-              <Link href={github || ''} target="_blank" aria-label="Coooder on GitHub">
-                <Github size={24} strokeWidth={1} />
+            )}
+            {github && (
+              <Link href={github} aria-label="Coooder on GitHub">
+                <Github size={20} />
               </Link>
-              <Link href={twitter || ''} target="_blank" aria-label="Coooder on X">
-                <Twitter size={24} strokeWidth={1} />
+            )}
+            {twitter && (
+              <Link href={twitter} aria-label="Coooder on X">
+                <ArrowUpRight size={20} />
               </Link>
-            </div>
+            )}
           </div>
-
-          <div className="prose max-w-none pb-8 dark:prose-dark xl:col-span-2">
-            <AboutIntro />
-            {children}
-            <CareerTimeline />
-          </div>
+        </aside>
+        <div className="about-content prose max-w-none">
+          <AboutIntro />
+          {children}
+          <CareerTimeline />
         </div>
       </div>
-    </>
+    </div>
   );
 }

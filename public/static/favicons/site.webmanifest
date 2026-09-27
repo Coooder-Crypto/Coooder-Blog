@@ -1,14 +1,14 @@
 {
-  "name": "",
-  "short_name": "",
+  "name": "Coooder — Field Notes",
+  "short_name": "Coooder",
   "icons": [
     {
-      "src": "/tennis-racquet.png",
-      "sizes": "96x96",
+      "src": "/static/favicons/tennis-racquet.png",
+      "sizes": "32x32",
       "type": "image/png"
     }
   ],
-  "theme_color": "#000000",
-  "background_color": "#000000",
+  "theme_color": "#ffe658",
+  "background_color": "#fff8e7",
   "display": "standalone"
 }

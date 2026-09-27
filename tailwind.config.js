@@ -76,9 +76,9 @@ module.exports = {
       },
       colors: {
         primary: {
-          400: '#7aa2f7',
-          500: '#7aa2f7',
-          600: '#7aa2f7',
+          400: '#a94d37',
+          500: '#98432f',
+          600: '#783422',
         },
         sky: colors.sky,
         gray: colors.neutral,

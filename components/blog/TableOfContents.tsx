@@ -5,6 +5,7 @@ import { clsx } from 'clsx';
 import { ChevronRight } from 'lucide-react';
 
 import { Link } from '@/components/ui';
+import { useLanguage } from '@/lib/i18n';
 
 type TocItem = {
   value: string;
@@ -18,6 +19,7 @@ interface TableOfContentsProps {
 }
 
 const TableOfContents = (props: TableOfContentsProps) => {
+  const { language } = useLanguage();
   const { toc, className } = props;
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -68,7 +70,7 @@ const TableOfContents = (props: TableOfContentsProps) => {
     <details className={clsx('space-y-4 [&_.chevron-right]:open:rotate-90', className)} open>
       <summary className="flex cursor-pointer items-center gap-1 marker:content-none">
         <ChevronRight size={20} strokeWidth={1.5} className="chevron-right rotate-0 transition-transform" />
-        <span className="text-lg font-medium">Table of Contents</span>
+        <span className="text-lg font-medium">{language === 'zh' ? '文章目录' : 'Table of Contents'}</span>
       </summary>
 
       <ul className="flex flex-col space-y-2">
@@ -76,7 +78,7 @@ const TableOfContents = (props: TableOfContentsProps) => {
           <li
             key={url}
             className={clsx('text-gray-500 dark:text-gray-400', {
-              'text-gray-200 dark:text-primary-600': activeId === url,
+              'text-primary-600 underline underline-offset-4': activeId === url,
             })}
             style={{ paddingLeft: (depth - 2) * 16 }}
           >

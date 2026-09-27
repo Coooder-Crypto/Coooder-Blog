@@ -1,24 +1,25 @@
 'use client';
 
-import BuildWith from '@/components/footer/BuildWith';
+import Link from '@/components/ui/Link';
+import siteMetadata from '@/data/siteMetadata';
 import { useLanguage } from '@/lib/i18n';
 
 export default function Footer() {
-  const { t } = useLanguage();
-  const currentYear = new Date().getFullYear();
+  const { language } = useLanguage();
   return (
-    <footer>
-      <div className="mb-8 mt-16 items-center justify-between space-y-4 md:mb-10 md:flex md:space-y-0">
-        <BuildWith />
-
-        <div className="my-2 flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
-          <div>
-            {t('footer.copyright')} {currentYear}
-          </div>
-          <span>{` • `}</span>
-          <span>{t('footer.blogTitle')}</span>
-        </div>
+    <footer className="studio-footer">
+      <div>
+        <Link className="footer-wordmark" href="/">
+          coooder<span aria-hidden="true">✳︎</span>
+        </Link>
+        <p>{language === 'zh' ? '认真构建，也保留一点好奇。' : 'Built with care. A little curiosity, always.'}</p>
       </div>
+      <div className="footer-links">
+        <Link href={siteMetadata.github}>GitHub ↗</Link>
+        <Link href={siteMetadata.twitter}>X ↗</Link>
+        <Link href="/about">{language === 'zh' ? '关于我' : 'About'} ↗</Link>
+      </div>
+      <span className="footer-copyright">© {new Date().getFullYear()} COOODER</span>
     </footer>
   );
 }

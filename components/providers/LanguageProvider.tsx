@@ -14,6 +14,10 @@ export default function LanguageProvider({ children }: LanguageProviderProps) {
     setLanguageState(getDefaultLanguage());
   }, []);
 
+  useEffect(() => {
+    document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
+  }, [language]);
+
   const setLanguage = (newLanguage: Language) => {
     setLanguageState(newLanguage);
     saveLanguage(newLanguage);

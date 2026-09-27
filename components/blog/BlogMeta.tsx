@@ -1,23 +1,19 @@
+'use client';
+
 import { formatDate } from 'pliny/utils/formatDate';
 
 import type { BlogMetaProps } from '@/types/index';
 
-import Twemoji from '@/components/ui/Twemoji';
+import { useLanguage } from '@/lib/i18n';
 
 const BlogMeta = ({ date, readingTime }: BlogMetaProps) => {
+  const { language } = useLanguage();
   return (
-    <dd className="flex-column flex gap-1 font-semibold text-gray-500 dark:text-gray-400">
-      <time dateTime={date} className="flex items-center">
-        <Twemoji emoji="calendar" />
-        <span className="ml-1 md:ml-2">{formatDate(date)}</span>
-      </time>
-
-      <span className="mx-2">{` • `}</span>
-
-      <div className="flex items-center">
-        <Twemoji emoji="hourglass-not-done" />
-        <span className="ml-1.5 md:ml-2">{Math.ceil(readingTime.minutes)} mins read</span>
-      </div>
+    <dd className="writing-meta">
+      <time dateTime={date}>{formatDate(date, language === 'zh' ? 'zh-CN' : 'en-US')}</time>
+      <span>
+        {Math.ceil(readingTime.minutes)} {language === 'zh' ? '分钟阅读' : 'MIN READ'}
+      </span>
     </dd>
   );
 };

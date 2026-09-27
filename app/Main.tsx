@@ -1,246 +1,162 @@
 'use client';
 
-import { ArrowUpRight, BookOpen, Cuboid, Github, Sparkles } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowDown, ArrowUpRight } from 'lucide-react';
+import type { Blog } from 'contentlayer/generated';
+import type { CoreContent } from 'pliny/utils/contentlayer';
 import { formatDate } from 'pliny/utils/formatDate';
-
-import siteMetadata from '@/data/siteMetadata';
+import Link from '@/components/ui/Link';
+import ProjectCase from '@/components/project/ProjectCase';
 import projectsData from '@/data/projectsData';
-import { Link, Tag } from '@/components/ui';
-import { Avatar, SnowfallBackground } from '@/components/homepage';
+import siteMetadata from '@/data/siteMetadata';
 import { useLanguage } from '@/lib/i18n';
 import { getLocalizedBlogContent } from '@/lib/blogUtils';
-import type { Project } from '@/types/data';
 
-const MAX_DISPLAY = 3;
-
-function FeaturedCaseCard({ project }: { project: Project }) {
-  const { language, t } = useLanguage();
-  const title = project.title[language] ?? project.title.en;
-  const description = project.description?.[language] ?? project.description?.en;
-  const problem = project.problem?.[language] ?? project.problem?.en;
-  const outcome = project.outcome?.[language] ?? project.outcome?.en;
-  const contribution = project.contribution?.[language] ?? project.contribution?.en;
-  const repositoryUrl = project.repo ? `https://github.com/${project.repo}` : undefined;
+export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
+  const { language } = useLanguage();
+  const zh = language === 'zh';
+  const featured = projectsData.filter((project) => project.type === 'featured').slice(0, 3);
+  const latest = posts.filter((post) => !post.draft).slice(0, 3);
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200/70 bg-white/85 p-6 shadow-[0_24px_65px_-45px_rgba(15,23,42,0.55)] backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-sky-300 hover:shadow-[0_32px_80px_-42px_rgba(14,116,144,0.45)] dark:border-slate-700/70 dark:bg-slate-900/65 dark:hover:border-sky-500/60">
-      <div className="mb-6 flex items-start justify-between gap-4">
-        <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700 dark:text-sky-300">
-            {t('projects.caseStudy')}
-          </p>
-          <h3 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">{title}</h3>
-        </div>
-        <Sparkles className="mt-1 h-5 w-5 shrink-0 text-sky-500" aria-hidden="true" />
+    <div className="field-home">
+      <div className="edition-line">
+        <span>{zh ? '一个开发者的持续探索' : 'AN INDEPENDENT CORNER OF THE INTERNET'}</span>
+        <span>
+          BEIJING, CN <span aria-hidden="true">↗</span>
+        </span>
       </div>
-
-      {description && <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">{description}</p>}
-
-      <div className="mt-6 space-y-4 border-t border-slate-100 pt-5 dark:border-slate-800">
-        {problem && <CaseDetail label={t('projects.problem')} value={problem} />}
-        {outcome && <CaseDetail label={t('projects.outcome')} value={outcome} />}
-        {contribution && <CaseDetail label={t('projects.contribution')} value={contribution} />}
-      </div>
-
-      <div className="mt-auto flex items-center justify-between gap-3 pt-6">
-        <div className="flex flex-wrap gap-1.5">
-          {project.builtWith.slice(0, 3).map((tech) => (
-            <span
-              key={tech}
-              className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300"
-            >
-              {tech}
+      <section className="studio-hero" aria-labelledby="home-heading">
+        <figure className="studio-portrait">
+          <Image
+            src="/static/images/studio/workshop-comic.webp"
+            alt={
+              zh
+                ? '鲜艳的美漫工作室：开发者与小机器人一起动手构建'
+                : 'A vibrant comic-book developer and robot building together in their workshop'
+            }
+            width={1254}
+            height={1254}
+            priority
+            sizes="(max-width: 760px) 100vw, 55vw"
+          />
+          <span className="comic-sticker" aria-hidden="true">
+            {zh ? '动手开造！' : 'LET’S BUILD!'}
+          </span>
+          <figcaption>
+            <span>FIG. 01 — {zh ? '一直在构建' : 'ALWAYS A WORK IN PROGRESS'}</span>
+            <span aria-hidden="true">✳︎</span>
+          </figcaption>
+        </figure>
+        <div className="studio-intro">
+          <p className="eyebrow">{zh ? '全栈工程师 / AGENT 探索者' : 'FULLSTACK ENGINEER / AGENT EXPLORER'}</p>
+          <h1 id="home-heading">
+            <span className="hero-greeting">{zh ? '嘿！我是' : 'HEY! I’M'}</span>
+            <br />
+            <span className="hero-name">
+              Coooder<span className="rust-dot">!</span>
             </span>
-          ))}
-        </div>
-        <div className="flex shrink-0 items-center gap-3 text-sm font-semibold text-sky-700 dark:text-sky-300">
-          {project.url && <ProjectLink href={project.url} label={t('projects.cta.live')} />}
-          {repositoryUrl && <ProjectLink href={repositoryUrl} label={t('projects.cta.code')} />}
-        </div>
-      </div>
-    </article>
-  );
-}
-
-function CaseDetail({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <h4 className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">{label}</h4>
-      <p className="mt-1.5 text-sm leading-6 text-slate-700 dark:text-slate-200">{value}</p>
-    </div>
-  );
-}
-
-function ProjectLink({ href, label }: { href: string; label: string }) {
-  return (
-    <Link href={href} className="inline-flex items-center gap-1 hover:text-sky-500" data-gsap-magnetic>
-      {label}
-      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-    </Link>
-  );
-}
-
-export default function Home({ posts }: { posts: any[] }) {
-  const { t, language } = useLanguage();
-  const featuredProjects = projectsData.filter(({ type }) => type === 'featured').slice(0, 3);
-
-  return (
-    <div className="relative pb-8">
-      <SnowfallBackground />
-
-      <section className="relative overflow-hidden py-16 sm:py-24" aria-labelledby="home-heading">
-        <div className="absolute inset-x-0 top-0 -z-10 h-80 bg-[radial-gradient(circle_at_70%_20%,rgba(14,165,233,0.16),transparent_42%),radial-gradient(circle_at_15%_80%,rgba(139,92,246,0.12),transparent_36%)]" />
-        <div className="grid items-center gap-10 lg:grid-cols-[minmax(260px,340px)_minmax(0,1fr)] lg:gap-14">
-          <div className="mx-auto w-full max-w-[340px] rounded-[2rem] border border-white/70 bg-white/55 p-2 shadow-[0_30px_90px_-45px_rgba(15,23,42,0.55)] backdrop-blur dark:border-slate-700/70 dark:bg-slate-900/45">
-            <Avatar />
+          </h1>
+          <p className="hero-statement">
+            {zh ? (
+              <>
+                <span className="block">把好奇心，</span>
+                <span className="block">做成真正有用的东西。</span>
+              </>
+            ) : (
+              'Turning curiosity into things that work.'
+            )}
+          </p>
+          <p className="hero-description">
+            {zh
+              ? '我构建 AI Agent、开发者工具与实用的软件系统。这里记录我的实验、踩坑，以及一路学到的东西。'
+              : 'I build AI agents, developer tools, and practical software. This is where I share the experiments, the loose ends, and what I learn along the way.'}
+          </p>
+          <div className="studio-actions">
+            <Link className="ink-button" href="/projects">
+              {zh ? '看看我的项目' : 'Explore my work'} <ArrowUpRight size={17} aria-hidden="true" />
+            </Link>
+            <Link className="text-link" href="/about">
+              {zh ? '更多关于我' : 'A little about me'} <ArrowUpRight size={16} aria-hidden="true" />
+            </Link>
           </div>
-          <div className="max-w-3xl">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.22em] text-sky-700 dark:text-sky-300">
-              {t('home.heroEyebrow')}
-            </p>
-            <h1
-              id="home-heading"
-              className="text-4xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-6xl sm:leading-[1.08]"
-            >
-              {t('home.heroName')}
-            </h1>
-            <p className="mt-5 text-xl font-medium leading-8 text-slate-800 dark:text-slate-100 sm:text-2xl">
-              {t('home.heroTitle')}
-            </p>
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300">
-              {t('home.heroDescription')}
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link
-                href="/resume"
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_35px_-16px_rgba(8,145,178,0.85)] transition hover:-translate-y-0.5 hover:from-cyan-400 hover:to-violet-500"
-                data-gsap-magnetic
-              >
-                <Cuboid className="h-4 w-4" aria-hidden="true" />{' '}
-                {language === 'zh' ? '进入 3D 简历' : 'Enter 3D Resume'}
-              </Link>
-              <Link
-                href="/projects"
-                className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-700 dark:bg-white dark:text-slate-950 dark:hover:bg-sky-200"
-                data-gsap-magnetic
-              >
-                {t('home.heroPrimaryCta')} <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-              <Link
-                href="/blog"
-                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-sky-300 hover:text-sky-700 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:border-sky-500 dark:hover:text-sky-300"
-                data-gsap-magnetic
-              >
-                <BookOpen className="h-4 w-4" aria-hidden="true" /> {t('home.heroSecondaryCta')}
-              </Link>
-            </div>
-            <div className="mt-7 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-500 dark:text-slate-400">
-              <Link
-                href={siteMetadata.github}
-                className="inline-flex items-center gap-2 hover:text-sky-600 dark:hover:text-sky-300"
-              >
-                <Github className="h-4 w-4" /> GitHub
-              </Link>
-              <Link
-                href={siteMetadata.twitter}
-                className="inline-flex items-center gap-2 hover:text-sky-600 dark:hover:text-sky-300"
-              >
-                𝕏 {t('home.heroX')}
-              </Link>
-            </div>
+          <div className="studio-note">
+            <span className="note-star" aria-hidden="true">
+              ✳︎
+            </span>
+            <p>{zh ? '保持好奇。认真构建。持续验证。' : 'Stay curious. Build thoughtfully. Keep testing.'}</p>
           </div>
         </div>
       </section>
+      <div className="interlude">
+        <span>{zh ? '动手构建 / 大胆试错 / 继续探索' : 'BUILD. BREAK. LEARN. REPEAT.'}</span>
+        <ArrowDown size={16} aria-hidden="true" />
+      </div>
 
-      <section className="py-12 sm:py-16" aria-labelledby="selected-work-heading">
-        <SectionHeading
-          eyebrow={t('home.selectedWork')}
-          title={t('projects.featuredSectionTitle')}
-          description={t('home.selectedWorkDescription')}
-        />
-        <div className="grid gap-5 lg:grid-cols-3" data-gsap-stagger>
-          {featuredProjects.map((project) => (
-            <FeaturedCaseCard key={project.title.en} project={project} />
-          ))}
-        </div>
-        <div className="mt-8">
-          <Link
-            href="/projects"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-sky-700 hover:text-sky-500 dark:text-sky-300"
-            data-gsap-magnetic
-          >
-            {t('projects.cta.viewAll')} <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+      <section className="editorial-section" aria-labelledby="work-heading">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">01 / {zh ? '构建' : 'THE WORKBENCH'}</p>
+            <h2 id="work-heading">{zh ? '一些认真做的东西' : 'Selected experiments'}</h2>
+          </div>
+          <Link href="/projects" className="text-link">
+            {zh ? '全部项目' : 'All projects'} <ArrowUpRight size={16} aria-hidden="true" />
           </Link>
         </div>
+        <div className="case-grid">
+          {featured.map((project, index) => (
+            <ProjectCase key={project.title.en} project={project} index={index} />
+          ))}
+        </div>
       </section>
 
-      <section
-        className="border-t border-slate-200 py-12 dark:border-slate-800 sm:py-16"
-        aria-labelledby="latest-writing-heading"
-      >
-        <SectionHeading
-          eyebrow={t('home.latestWriting')}
-          title={t('home.recentPosts')}
-          description={t('home.latestWritingDescription')}
-        />
-        <div className="grid gap-4 lg:grid-cols-3" data-gsap-stagger>
-          {posts.slice(0, MAX_DISPLAY).map((post) => {
-            const localizedPost = getLocalizedBlogContent(post, language);
-            const { title, summary } = localizedPost;
+      <section className="editorial-section writing-section" aria-labelledby="writing-heading">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">02 / {zh ? '记录' : 'FIELD NOTES'}</p>
+            <h2 id="writing-heading">{zh ? '从实践里写下来' : 'Notes from the process'}</h2>
+          </div>
+          <Link href="/blog" className="text-link">
+            {zh ? '所有文章' : 'All writing'} <ArrowUpRight size={16} aria-hidden="true" />
+          </Link>
+        </div>
+        <div className="writing-list">
+          {latest.map((post, index) => {
+            const { title, summary } = getLocalizedBlogContent(post, language);
             return (
-              <article
-                key={post.slug}
-                className="group flex min-h-64 flex-col rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-1 hover:border-sky-300 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/50 dark:hover:border-sky-500/60"
-              >
-                <time dateTime={post.date} className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
-                  {formatDate(post.date, siteMetadata.locale)}
-                </time>
-                <h3 className="mt-4 text-xl font-bold tracking-tight text-slate-950 dark:text-white">
-                  <Link href={`/blog/${post.slug}`} className="group-hover:text-sky-700 dark:group-hover:text-sky-300">
-                    {title}
-                  </Link>
-                </h3>
-                <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{summary}</p>
-                <div className="mt-auto flex items-center justify-between gap-3 pt-6">
-                  <div className="flex flex-wrap gap-1">
-                    {post.tags.slice(0, 2).map((tag: string) => (
-                      <Tag key={tag} text={tag} />
-                    ))}
+              <article className="writing-row" key={post.slug}>
+                <span className="writing-number" aria-hidden="true">
+                  0{index + 1}
+                </span>
+                <div>
+                  <div className="writing-meta">
+                    <time dateTime={post.date}>{formatDate(post.date, zh ? 'zh-CN' : 'en-US')}</time>
+                    <span>{post.tags?.[0]}</span>
                   </div>
-                  <Link
-                    href={`/blog/${post.slug}`}
-                    className="shrink-0 text-sm font-semibold text-sky-700 hover:text-sky-500 dark:text-sky-300"
-                  >
-                    {t('home.readMore')} →
-                  </Link>
+                  <h3>
+                    <Link href={`/blog/${post.slug}`}>{title}</Link>
+                  </h3>
+                  <p>{summary}</p>
                 </div>
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="round-arrow"
+                  aria-label={`${zh ? '阅读' : 'Read'}: ${title}`}
+                >
+                  <ArrowUpRight size={22} aria-hidden="true" />
+                </Link>
               </article>
             );
           })}
+          {!latest.length && <p className="empty-note">{zh ? '新的记录正在路上。' : 'New notes are on the way.'}</p>}
         </div>
-        {!posts.length && <p className="text-slate-500 dark:text-slate-400">{t('home.noPosts')}</p>}
-        {posts.length > MAX_DISPLAY && (
-          <div className="mt-8">
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-sky-700 hover:text-sky-500 dark:text-sky-300"
-              data-gsap-magnetic
-            >
-              {t('home.allPosts')} <ArrowUpRight className="h-4 w-4" />
-            </Link>
-          </div>
-        )}
       </section>
-    </div>
-  );
-}
-
-function SectionHeading({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
-  return (
-    <div className="mb-8 max-w-2xl" data-gsap-reveal="up">
-      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-700 dark:text-sky-300">{eyebrow}</p>
-      <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-4xl">{title}</h2>
-      <p className="mt-3 text-lg leading-8 text-slate-600 dark:text-slate-300">{description}</p>
+      <aside className="studio-signoff">
+        <p>{zh ? '好东西，值得一起琢磨。' : 'Good things start with a conversation.'}</p>
+        <Link href={siteMetadata.github} className="text-link">
+          GitHub <ArrowUpRight size={16} aria-hidden="true" />
+        </Link>
+      </aside>
     </div>
   );
 }
