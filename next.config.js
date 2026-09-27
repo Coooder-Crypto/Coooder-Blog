@@ -9,6 +9,7 @@ module.exports = withContentlayer({
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   images: {
     unoptimized: true, // Required for static export
+    qualities: [75, 80],
   },
   webpack: (config) => {
     config.module.rules.push({

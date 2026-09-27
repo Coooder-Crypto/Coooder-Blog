@@ -1,29 +1,18 @@
-'use client';
-
-import ListLayout from '@/components/layouts/ListLayout';
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer';
 import { allBlogs } from 'contentlayer/generated';
-import { useLanguage } from '@/lib/i18n';
+
+import { genPageMetadata } from 'app/seo';
+import BlogIndex from '@/components/blog/BlogIndex';
 
 const POSTS_PER_PAGE = 10;
 
-export default function BlogPage() {
-  const { t } = useLanguage();
-  const posts = allCoreContent(sortPosts(allBlogs));
-  const pageNumber = 1;
-  const initialDisplayPosts = posts.slice(POSTS_PER_PAGE * (pageNumber - 1), POSTS_PER_PAGE * pageNumber);
-  const pagination = {
-    currentPage: pageNumber,
-    totalPages: Math.ceil(posts.length / POSTS_PER_PAGE),
-  };
+export const metadata = genPageMetadata({
+  title: 'Blog',
+  description: 'Writing about AI agents, developer tools, fullstack systems, and practical software engineering.',
+});
 
-  return (
-    <ListLayout
-      posts={posts}
-      initialDisplayPosts={initialDisplayPosts}
-      pagination={pagination}
-      postsPerPage={POSTS_PER_PAGE}
-      title={t('blog.title')}
-    />
-  );
+export default function BlogPage() {
+  const posts = allCoreContent(sortPosts(allBlogs));
+
+  return <BlogIndex posts={posts} postsPerPage={POSTS_PER_PAGE} />;
 }
