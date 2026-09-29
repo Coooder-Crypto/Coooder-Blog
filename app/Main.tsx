@@ -7,6 +7,7 @@ import type { CoreContent } from 'pliny/utils/contentlayer';
 import { formatDate } from 'pliny/utils/formatDate';
 import Link from '@/components/ui/Link';
 import ProjectCase from '@/components/project/ProjectCase';
+import GamingShelf from '@/components/gaming/GamingShelf';
 import projectsData from '@/data/projectsData';
 import siteMetadata from '@/data/siteMetadata';
 import { useLanguage } from '@/lib/i18n';
@@ -151,6 +152,7 @@ export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
           {!latest.length && <p className="empty-note">{zh ? '新的记录正在路上。' : 'New notes are on the way.'}</p>}
         </div>
       </section>
+      <GamingShelf />
       <aside className="studio-signoff">
         <p>{zh ? '好东西，值得一起琢磨。' : 'Good things start with a conversation.'}</p>
         <Link href={siteMetadata.github} className="text-link">

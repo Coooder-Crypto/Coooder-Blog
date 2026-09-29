@@ -4,6 +4,7 @@ import { Link, Image } from '@/components/ui';
 import AboutIntro from '@/components/about/AboutIntro';
 import CareerTimeline from '@/components/about/CareerTimeline';
 import AboutHeader from '@/components/about/AboutHeader';
+import PlayerProfile from '@/components/gaming/PlayerProfile';
 
 interface Props {
   children: React.ReactNode;
@@ -44,6 +45,7 @@ export default function AuthorLayout({ children, content }: Props) {
           <CareerTimeline />
         </div>
       </div>
+      <PlayerProfile />
     </div>
   );
 }
