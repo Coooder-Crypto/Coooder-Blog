@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import StudioImage from '@/components/ui/StudioImage';
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import type { Blog } from 'contentlayer/generated';
 import type { CoreContent } from 'pliny/utils/contentlayer';
@@ -29,17 +29,15 @@ export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
       </div>
       <section className="studio-hero" aria-labelledby="home-heading">
         <figure className="studio-portrait">
-          <Image
-            src="/static/images/studio/workshop-comic.webp"
+          <StudioImage
+            artwork="workshop"
             alt={
               zh
                 ? '鲜艳的美漫工作室：开发者与小机器人一起动手构建'
                 : 'A vibrant comic-book developer and robot building together in their workshop'
             }
-            width={1254}
-            height={1254}
             priority
-            sizes="(max-width: 760px) 100vw, 55vw"
+            sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1440px) 52vw, 640px"
           />
           <span className="comic-sticker" aria-hidden="true">
             {zh ? '动手开造！' : 'LET’S BUILD!'}

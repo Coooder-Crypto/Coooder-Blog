@@ -29,9 +29,7 @@ const root = process.cwd();
 const isProduction = process.env.NODE_ENV === 'production';
 
 const toAbsoluteUrl = (value: string) =>
-  value.startsWith('http')
-    ? value
-    : `${siteMetadata.siteUrl}${value.startsWith('/') ? value : `/${value}`}`;
+  value.startsWith('http') ? value : `${siteMetadata.siteUrl}${value.startsWith('/') ? value : `/${value}`}`;
 
 // heroicon mini link
 const icon = fromHtmlIsomorphic(
@@ -90,6 +88,7 @@ export const Blog = defineDocumentType(() => ({
   fields: {
     title: { type: 'string', required: true },
     titleEn: { type: 'string' },
+    bodyLanguage: { type: 'enum', options: ['zh', 'en'], default: 'zh' },
     date: { type: 'date', required: true },
     tags: { type: 'list', of: { type: 'string' }, default: [] },
     lastmod: { type: 'date' },

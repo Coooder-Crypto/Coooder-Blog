@@ -1,12 +1,12 @@
 'use client';
 
-import Image from 'next/image';
+import StudioImage from '@/components/ui/StudioImage';
 import { ArrowUpRight } from 'lucide-react';
 import Link from '@/components/ui/Link';
 import type { Project } from '@/types/data';
 import { useLanguage } from '@/lib/i18n';
 
-const artwork: Record<string, string> = {
+const artwork: Record<string, 'health' | 'map' | 'notes'> = {
   'Vital Agent Sync': 'health',
   'AI Capital Map': 'map',
   ByteNote: 'notes',
@@ -27,12 +27,10 @@ export default function ProjectCase({
     <article className={`case-card ${detailed ? 'case-detailed' : ''}`}>
       {illustration && (
         <div className="case-art">
-          <Image
-            src={`/static/images/studio/${illustration}-comic.webp`}
+          <StudioImage
+            artwork={illustration}
             alt=""
-            width={1536}
-            height={1024}
-            sizes="(max-width: 760px) 100vw, 33vw"
+            sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1440px) 33vw, 400px"
           />
         </div>
       )}

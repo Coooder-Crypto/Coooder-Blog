@@ -1,16 +1,19 @@
 import { ReactNode } from 'react';
+import PostHeading from '@/components/blog/PostHeading';
+import BlogNav from '@/components/blog/BlogNav';
+import TableOfContents from '@/components/blog/TableOfContents';
 
 import { CoreContent } from 'pliny/utils/contentlayer';
 import type { Blog } from 'contentlayer/generated';
 
 import { BlogTags, BlogMeta, XDiscussion } from '@/components/blog';
-import { Link, PageTitle, SectionContainer, ScrollTopAndComment } from '@/components/ui';
+import { SectionContainer, ScrollTopAndComment } from '@/components/ui';
 
 interface LayoutProps {
   content: CoreContent<Blog>;
   children: ReactNode;
-  next?: { path: string; title: string };
-  prev?: { path: string; title: string };
+  next?: { path: string; title: string; titleEn?: string };
+  prev?: { path: string; title: string; titleEn?: string };
 }
 
 export default function PostLayout({ content, next, prev, children }: LayoutProps) {
@@ -20,12 +23,12 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
     <SectionContainer>
       <ScrollTopAndComment />
 
-      <article>
+      <article className="reading-page">
         <div>
           <header>
             <div className="dark:border-gray space-y-1 border-b border-gray-200 pb-10">
               <div className="space-y-6">
-                <PageTitle>{title}</PageTitle>
+                <PostHeading title={title} titleEn={content.titleEn} bodyLanguage={content.bodyLanguage} />
                 <BlogTags tags={tags} />
                 <dl>
                   <div>
@@ -36,40 +39,18 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
               </div>
             </div>
           </header>
+          <TableOfContents toc={content.toc} />
 
           <div className="grid-rows-[auto_1fr] divide-y divide-gray-200 pb-8 dark:divide-gray-700 xl:divide-y-0">
             <div className="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0">
               <div className="prose max-w-none pb-8 pt-10 dark:prose-dark">
-                {children}
+                <div lang={content.bodyLanguage === 'en' ? 'en' : 'zh-CN'}>{children}</div>
                 <XDiscussion xPostUrl={xPostUrl} socialSummary={socialSummary} />
               </div>
             </div>
 
             <footer>
-              <div className="flex flex-col text-sm font-medium sm:flex-row sm:justify-between sm:text-base">
-                {prev && (
-                  <div className="pt-4 xl:pt-8">
-                    <Link
-                      href={`/${prev.path}`}
-                      className="text-primary hover:text-sky-600 dark:hover:text-sky-400"
-                      aria-label={`Previous post: ${prev.title}`}
-                    >
-                      &larr; {prev.title}
-                    </Link>
-                  </div>
-                )}
-                {next && (
-                  <div className="pt-4 xl:pt-8">
-                    <Link
-                      href={`/${next.path}`}
-                      className="text-primary hover:text-sky-600 dark:hover:text-sky-400"
-                      aria-label={`Next post: ${next.title}`}
-                    >
-                      {next.title} &rarr;
-                    </Link>
-                  </div>
-                )}
-              </div>
+              <BlogNav prev={prev} next={next} />
             </footer>
           </div>
         </div>

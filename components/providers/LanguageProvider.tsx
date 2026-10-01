@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, ReactNode } from 'react';
+import { useState, useLayoutEffect, ReactNode } from 'react';
 import { LanguageContext, Language, getDefaultLanguage, getTranslation, saveLanguage } from '@/lib/i18n';
 
 interface LanguageProviderProps {
@@ -8,13 +8,14 @@ interface LanguageProviderProps {
 }
 
 export default function LanguageProvider({ children }: LanguageProviderProps) {
-  const [language, setLanguageState] = useState<Language>('en');
+  // Keep the static document and hydration snapshot consistent with the primary content language.
+  const [language, setLanguageState] = useState<Language>('zh');
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setLanguageState(getDefaultLanguage());
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
   }, [language]);
 

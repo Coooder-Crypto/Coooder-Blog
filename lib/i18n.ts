@@ -277,9 +277,11 @@ export const getTranslation =
 export const getDefaultLanguage = (): Language => {
   if (typeof window !== 'undefined') {
     // Check localStorage first
-    const stored = localStorage.getItem('language');
-    if (stored && (stored === 'en' || stored === 'zh')) {
-      return stored as Language;
+    try {
+      const stored = localStorage.getItem('language');
+      if (stored === 'en' || stored === 'zh') return stored;
+    } catch {
+      // Browser privacy settings may deny storage; detection must still work.
     }
 
     // Check browser language
@@ -295,6 +297,10 @@ export const getDefaultLanguage = (): Language => {
 // Save language preference
 export const saveLanguage = (language: Language) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('language', language);
+    try {
+      localStorage.setItem('language', language);
+    } catch {
+      // Switching still works in memory when persistence is unavailable.
+    }
   }
 };

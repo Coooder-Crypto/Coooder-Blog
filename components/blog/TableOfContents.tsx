@@ -20,18 +20,17 @@ interface TableOfContentsProps {
 
 const TableOfContents = (props: TableOfContentsProps) => {
   const { language } = useLanguage();
-  const { toc, className } = props;
+  const { toc = [], className } = props;
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
 
-  const getSelector = (url: string) => {
-    if (!url.startsWith('#')) return url;
-    const id = url.slice(1);
-    const escaped =
-      typeof CSS !== 'undefined' && typeof CSS.escape === 'function'
-        ? CSS.escape(id)
-        : id.replace(/(^-?\d)/, '\\3$1 ').replace(/ /g, '\\ ');
-    return `#${escaped}`;
-  };
+  useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    const update = () => setExpanded(desktop.matches);
+    update();
+    desktop.addEventListener('change', update);
+    return () => desktop.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
@@ -48,26 +47,24 @@ const TableOfContents = (props: TableOfContentsProps) => {
     });
 
     toc.forEach(({ url }) => {
-      const element = document.querySelector(getSelector(url));
+      const element = document.getElementById(decodeURIComponent(url.replace(/^#/, '')));
 
       if (element) {
         observer.observe(element);
       }
     });
 
-    return () => {
-      toc.forEach(({ url }) => {
-        const element = document.querySelector(getSelector(url));
-
-        if (element) {
-          observer.unobserve(element);
-        }
-      });
-    };
+    return () => observer.disconnect();
   }, [toc]);
 
+  if (!toc.length) return null;
+
   return (
-    <details className={clsx('space-y-4 [&_.chevron-right]:open:rotate-90', className)} open>
+    <details
+      className={clsx('article-toc space-y-4 [&_.chevron-right]:open:rotate-90', className)}
+      open={expanded}
+      onToggle={(event) => setExpanded(event.currentTarget.open)}
+    >
       <summary className="flex cursor-pointer items-center gap-1 marker:content-none">
         <ChevronRight size={20} strokeWidth={1.5} className="chevron-right rotate-0 transition-transform" />
         <span className="text-lg font-medium">{language === 'zh' ? '文章目录' : 'Table of Contents'}</span>
@@ -80,9 +77,11 @@ const TableOfContents = (props: TableOfContentsProps) => {
             className={clsx('text-gray-500 dark:text-gray-400', {
               'text-primary-600 underline underline-offset-4': activeId === url,
             })}
-            style={{ paddingLeft: (depth - 2) * 16 }}
+            style={{ paddingLeft: Math.max(0, depth - 2) * 16 }}
           >
-            <Link href={url}>{value}</Link>
+            <Link href={url} aria-current={activeId === url ? 'location' : undefined}>
+              {value}
+            </Link>
           </li>
         ))}
       </ul>

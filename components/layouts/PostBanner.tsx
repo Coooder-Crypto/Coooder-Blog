@@ -1,16 +1,19 @@
 import { ReactNode } from 'react';
+import PostHeading from '@/components/blog/PostHeading';
+import BlogNav from '@/components/blog/BlogNav';
+import TableOfContents from '@/components/blog/TableOfContents';
 import Bleed from 'pliny/ui/Bleed';
 import { CoreContent } from 'pliny/utils/contentlayer';
 import type { Blog } from 'contentlayer/generated';
 
 import { XDiscussion } from '@/components/blog';
-import { Image, Link, PageTitle, SectionContainer, ScrollTopAndComment } from '@/components/ui';
+import { Image, SectionContainer, ScrollTopAndComment } from '@/components/ui';
 
 interface LayoutProps {
   content: CoreContent<Blog>;
   children: ReactNode;
-  next?: { path: string; title: string };
-  prev?: { path: string; title: string };
+  next?: { path: string; title: string; titleEn?: string };
+  prev?: { path: string; title: string; titleEn?: string };
 }
 
 export default function PostMinimal({ content, next, prev, children }: LayoutProps) {
@@ -20,7 +23,7 @@ export default function PostMinimal({ content, next, prev, children }: LayoutPro
   return (
     <SectionContainer>
       <ScrollTopAndComment />
-      <article>
+      <article className="reading-page">
         <div>
           <div className="space-y-1 pb-10 text-center dark:border-gray-700">
             <div className="w-full">
@@ -31,38 +34,16 @@ export default function PostMinimal({ content, next, prev, children }: LayoutPro
               </Bleed>
             </div>
             <div className="relative pt-10">
-              <PageTitle>{title}</PageTitle>
+              <PostHeading title={title} titleEn={content.titleEn} bodyLanguage={content.bodyLanguage} />
             </div>
           </div>
+          <TableOfContents toc={content.toc} />
           <div className="prose max-w-none py-4 dark:prose-invert">
-            {children}
+            <div lang={content.bodyLanguage === 'en' ? 'en' : 'zh-CN'}>{children}</div>
             <XDiscussion xPostUrl={xPostUrl} socialSummary={socialSummary} />
           </div>
           <footer>
-            <div className="flex flex-col text-sm font-medium sm:flex-row sm:justify-between sm:text-base">
-              {prev && prev.path && (
-                <div className="pt-4 xl:pt-8">
-                  <Link
-                    href={`/${prev.path}`}
-                    className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-                    aria-label={`Previous post: ${prev.title}`}
-                  >
-                    &larr; {prev.title}
-                  </Link>
-                </div>
-              )}
-              {next && next.path && (
-                <div className="pt-4 xl:pt-8">
-                  <Link
-                    href={`/${next.path}`}
-                    className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-                    aria-label={`Next post: ${next.title}`}
-                  >
-                    {next.title} &rarr;
-                  </Link>
-                </div>
-              )}
-            </div>
+            <BlogNav prev={prev} next={next} />
           </footer>
         </div>
       </article>

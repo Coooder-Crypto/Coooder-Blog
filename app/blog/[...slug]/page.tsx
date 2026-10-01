@@ -61,7 +61,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string[]
       url: canonical,
       siteName: siteMetadata.title,
       images,
-      locale: 'en_US',
+      locale: post.bodyLanguage === 'en' ? 'en_US' : 'zh_CN',
       type: 'article',
     },
     twitter: {
@@ -82,8 +82,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string[
   const postIndex = sortedPosts.findIndex((item) => item.slug === slug);
   const prevPost = postIndex >= 0 ? sortedPosts[postIndex + 1] : undefined;
   const nextPost = postIndex > 0 ? sortedPosts[postIndex - 1] : undefined;
-  const prev = prevPost ? { path: prevPost.path, title: prevPost.title } : undefined;
-  const next = nextPost ? { path: nextPost.path, title: nextPost.title } : undefined;
+  const prev = prevPost ? { path: prevPost.path, title: prevPost.title, titleEn: prevPost.titleEn } : undefined;
+  const next = nextPost ? { path: nextPost.path, title: nextPost.title, titleEn: nextPost.titleEn } : undefined;
 
   const Layout = layouts[post.layout || defaultLayout];
 

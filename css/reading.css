@@ -1,0 +1,41 @@
+.article-language-note {
+  margin-top: 18px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--comic-blue);
+  background: #edf5ff;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.article-toc {
+  border: 1px solid var(--ink);
+  background: var(--paper-light);
+  padding: 14px 16px;
+}
+.article-toc summary {
+  min-height: 30px;
+}
+.article-toc summary:focus-visible {
+  outline: 2px solid var(--comic-blue);
+  outline-offset: 4px;
+}
+.article-toc ul {
+  max-height: min(55vh, 480px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 6px;
+}
+.article-toc a {
+  display: block;
+  padding: 6px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.reading-page :is(h2, h3, h4) {
+  scroll-margin-top: 24px;
+}
+@media (max-width: 1023px) {
+  .article-toc {
+    background: #fff7c7;
+  }
+}

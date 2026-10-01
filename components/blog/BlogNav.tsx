@@ -1,9 +1,12 @@
+'use client';
+
 import { Link } from '@/components/ui';
+import { useLanguage } from '@/lib/i18n';
 
 interface BlogNavProps {
-  next?: { path: string; title: string };
+  next?: { path: string; title: string; titleEn?: string };
   nextLabel?: string;
-  prev?: { path: string; title: string };
+  prev?: { path: string; title: string; titleEn?: string };
   prevLabel?: string;
 }
 
@@ -16,7 +19,13 @@ const NavLabel = ({ label }: { label?: string }) => {
 };
 
 const PostNav = (props: BlogNavProps) => {
-  const { next, nextLabel = 'Next post', prev, prevLabel = 'Previous post' } = props;
+  const { language } = useLanguage();
+  const {
+    next,
+    nextLabel = language === 'zh' ? '下一篇' : 'Next post',
+    prev,
+    prevLabel = language === 'zh' ? '上一篇' : 'Previous post',
+  } = props;
 
   if (!prev && !next) {
     return null;
@@ -29,7 +38,7 @@ const PostNav = (props: BlogNavProps) => {
           <NavLabel label={`←  ${prevLabel}`} />
 
           <Link href={`/${prev.path}`}>
-            <div data-umami-event="post-nav-prev">{prev.title}</div>
+            <div data-umami-event="post-nav-prev">{language === 'en' ? prev.titleEn || prev.title : prev.title}</div>
           </Link>
         </div>
       ) : (
@@ -40,7 +49,7 @@ const PostNav = (props: BlogNavProps) => {
           <NavLabel label={`${nextLabel}  →`} />
 
           <Link href={`/${next.path}`}>
-            <div data-umami-event="post-nav-next">{next.title}</div>
+            <div data-umami-event="post-nav-next">{language === 'en' ? next.titleEn || next.title : next.title}</div>
           </Link>
         </div>
       )}

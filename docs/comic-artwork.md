@@ -1,5 +1,22 @@
 # Comic art direction — revision 2
 
+## Social sharing banner — October 2026
+
+Mode: built-in image_gen; new composition using `workshop-comic.webp` as a character and style reference. Final asset: `public/static/images/studio/social-comic.jpg` (1200 × 630). The original artwork is preserved. JPEG encoding and resizing do not alter the creative composition.
+
+Prompt:
+
+```text
+Use case: ads-marketing
+Asset type: social sharing / Open Graph banner for Coooder's engineering blog, wide 1.905:1 landscape, intended final 1200x630.
+Input image 1: character and art style reference. Create a new horizontal composition matching it, not a website screenshot.
+Primary request: bold exuberant American comic-book title card. Left half features the same curly black-haired young adult developer with round glasses and red jacket alongside the friendly cyan robot at a retro electronics workbench. Right half a clear bright yellow field with subtle halftone dots and legible headline, heavy black ink outlines, cyan/magenta accents, hard graphic shadows.
+Text verbatim: large dominant italic cobalt headline "COOODER" (C O O O D E R, exactly three O's), below "AI AGENTS / DEV TOOLS" and "BUILD. BREAK. LEARN."
+Keep all lettering and faces 60 pixels equivalent inside outer edges. Crop-safe, readable as a small link preview. Preserve recognizable characters, saturated yellow red cyan blue palette, Ben-Day dots, 2D handmade ink illustration. No 3D, no fake browser chrome, no tiny body copy, no additional lettering, no watermark. Full-bleed rectangular design.
+```
+
+Responsive site illustrations are generated from the existing WebP masters with `yarn images:optimize`. Widths: 480, 768, and 1200 pixels, in `public/static/images/studio/responsive/`. Keep these outputs in the repository for static hosting; no image server or API is required.
+
 Mode: built-in image_gen, style-transfer edits of the original generated illustrations. Previous assets are preserved. Selected results are compressed to WebP without changing their composition.
 
 ## workshop
