@@ -5,7 +5,10 @@ import { genPageMetadata } from 'app/seo';
 
 import { Link, Tag } from '@/components/ui';
 
-export const metadata = genPageMetadata({ title: 'Tags', description: 'Things I blog about' });
+export const metadata = genPageMetadata({
+  title: '文章标签',
+  description: '按主题浏览 Coooder 的 AI Agent、源码解析与工程实践笔记。',
+});
 
 export default async function Page() {
   const tagCounts = tagData as Record<string, number>;

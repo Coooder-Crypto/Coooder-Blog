@@ -16,12 +16,12 @@ const projectsData: Project[] = [
       zh: '个人健康数据能帮助 Agent 做出更好的判断，但不应以失去敏感数据控制权为代价。',
     },
     outcome: {
-      en: 'A local-first bridge that keeps data under user control while making authorized summaries available to MCP-compatible agents.',
-      zh: '以本地优先的方式连接数据与 Agent：用户保有控制权，授权后的摘要才进入 MCP 工作流。',
+      en: 'A source-distributed Local Preview connecting authorized iPhone summaries to a local receiver, SQLite, and MCP queries.',
+      zh: '源码分发的 Local Preview：将 iPhone 授权摘要连接到本地接收器、SQLite 与 MCP 查询。',
     },
     contribution: {
-      en: 'iOS, encrypted direct sync, local SQLite, MCP runtime, CLI, and privacy-first onboarding.',
-      zh: '涵盖 iOS、加密直连同步、本地 SQLite、MCP runtime、CLI 与隐私优先的配对流程。',
+      en: 'SwiftUI client, encrypted direct sync, local SQLite, MCP tools, device revocation, and read auditing. Public implementation links are below.',
+      zh: 'SwiftUI 客户端、加密直连同步、本地 SQLite、MCP 工具、设备撤销与读取审计；下方附公开实现链接。',
     },
     imgSrc: '/static/images/projects/vital-agent-sync.webp',
     repo: 'Coooder-Crypto/vital-agent-sync',
@@ -42,8 +42,8 @@ const projectsData: Project[] = [
       zh: 'AI 行业研究分散在公告、基准测试、公司与基础设施数据之间，难以形成完整判断。',
     },
     outcome: {
-      en: 'An explorable map that connects research claims to evidence instead of leaving them as isolated notes.',
-      zh: '将研究观点与证据连接成可探索的图谱，而不是停留在彼此孤立的笔记里。',
+      en: 'An MVP with relationship filters, source inspection, and research candidate review. Preview data includes seed and inferred relationships.',
+      zh: '可按关系筛选、查看来源并审核研究候选的图谱 MVP；预览数据包含 seed 与推断关系。',
     },
     contribution: {
       en: 'Built the graph exploration, evidence review workflow, research timeline, API layer, and PostgreSQL-backed data path.',
@@ -68,8 +68,8 @@ const projectsData: Project[] = [
       zh: '许多写作工具让协作依赖稳定网络与中心化工作区，离线与数据控制往往被牺牲。',
     },
     outcome: {
-      en: 'A collaborative editor that treats offline work, synchronization, and self-hosting as first-class capabilities.',
-      zh: '一套将离线工作、同步与自托管都视为一等能力的协作文档体验。',
+      en: 'An editor with IndexedDB persistence, a reconnection sync queue, and a separately self-hostable Yjs collaboration service.',
+      zh: '具备 IndexedDB 持久化、联网恢复后的同步队列，以及可独立自建的 Yjs 协作服务。',
     },
     contribution: {
       en: 'Designed the offline sync queue, IndexedDB persistence, Yjs collaboration, editor experience, and full-stack integration.',
@@ -198,7 +198,7 @@ const projectsData: Project[] = [
       zh: '个人网站',
     },
     description: {
-      en: 'A Personal website built with Next.js and Tailwind CSS.',
+      en: 'A bilingual personal website for engineering notes, projects, and experiments, built with Next.js and MDX.',
       zh: '使用 Next.js 和 Tailwind CSS 构建的个人网站。',
     },
     contribution: {
@@ -216,7 +216,7 @@ const projectsData: Project[] = [
       zh: 'LXDAO 官方网站',
     },
     description: {
-      en: 'A Personal website built with Next.js and Tailwind CSS.',
+      en: 'The LXDAO community website, built with Next.js and Tailwind CSS.',
       zh: '使用 Next.js 和 Tailwind CSS 构建的 LXDAO 官方站点。',
     },
     contribution: {
@@ -234,7 +234,7 @@ const projectsData: Project[] = [
       zh: 'Openbuild 开发者社区',
     },
     description: {
-      en: 'A Personal website built with Next.js and Tailwind CSS.',
+      en: 'A developer community website, built with Next.js and Tailwind CSS.',
       zh: '使用 Next.js 和 Tailwind CSS 构建的开发者社区网站。',
     },
     contribution: {
@@ -252,7 +252,7 @@ const projectsData: Project[] = [
       zh: 'MM Capital',
     },
     description: {
-      en: 'A Personal website built with Next.js and Tailwind CSS.',
+      en: 'An investment firm website, built with Next.js and Tailwind CSS.',
       zh: '使用 Next.js 和 Tailwind CSS 构建的投资机构官网。',
     },
     contribution: {
@@ -260,7 +260,7 @@ const projectsData: Project[] = [
       zh: 'xxx',
     },
     imgSrc: '/static/images/projects/mmcapital.webp',
-    url: 'https://lxdao.io/',
+    // Public URL withheld until verified; the previous LXDAO link was unrelated.
     builtWith: ['Next.js', 'Tailwind', 'Typescript'],
   },
   {
@@ -270,7 +270,7 @@ const projectsData: Project[] = [
       zh: 'Circuit',
     },
     description: {
-      en: 'A Personal website built with Next.js and Tailwind CSS.',
+      en: 'A creative showcase website, built with Next.js and Tailwind CSS.',
       zh: '使用 Next.js 和 Tailwind CSS 构建的创意展示站点。',
     },
     contribution: {
@@ -278,7 +278,7 @@ const projectsData: Project[] = [
       zh: 'xxx',
     },
     imgSrc: '/static/images/projects/circuit.webp',
-    url: 'https://lxdao.io/',
+    // Public URL withheld until verified.
     builtWith: ['Next.js', 'Tailwind', 'Typescript'],
   },
   {
@@ -288,7 +288,7 @@ const projectsData: Project[] = [
       zh: 'ZK Asset Raffle',
     },
     description: {
-      en: 'A Personal website built with Next.js and Tailwind CSS.',
+      en: 'A zero-knowledge asset raffle website, built with Next.js and Tailwind CSS.',
       zh: '使用 Next.js 和 Tailwind CSS 构建的零知识资产抽奖平台。',
     },
     contribution: {
@@ -296,7 +296,7 @@ const projectsData: Project[] = [
       zh: 'xxx',
     },
     imgSrc: '/static/images/projects/zkassetraffle.webp',
-    url: 'https://lxdao.io/',
+    // Public URL withheld until verified.
     builtWith: ['Next.js', 'Tailwind', 'Typescript'],
   },
 ];

@@ -159,7 +159,7 @@ const socialActivity = {
     "username": "Coooder_Crypto",
     "profileUrl": "https://x.com/Coooder_Crypto",
     "posts": [],
-    "error": "X_BEARER_TOKEN is not configured."
+    "error": null
   }
 } as const;
 

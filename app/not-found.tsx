@@ -1,23 +1,34 @@
-import { Link } from '@/components/ui';
+'use client';
+
+import Link from '@/components/ui/Link';
+import { useLanguage } from '@/lib/i18n';
 
 export default function NotFound() {
+  const { language } = useLanguage();
+  const zh = language === 'zh';
   return (
-    <div className="flex flex-col items-start justify-start md:mt-24 md:flex-row md:items-center md:justify-center md:space-x-6">
-      <div className="space-x-2 pb-8 pt-6 md:space-y-5">
-        <h1 className="text-6xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 md:border-r-2 md:px-6 md:text-8xl md:leading-14">
-          404
-        </h1>
+    <section className="comic-not-found" aria-labelledby="lost-heading">
+      <div className="lost-panel" aria-hidden="true">
+        <span>404</span>
+        <p>{zh ? '这格漫画走丢了！' : 'PANEL NOT FOUND!'}</p>
       </div>
-      <div className="max-w-md">
-        <p className="mb-4 text-xl font-bold leading-normal md:text-2xl">Sorry we couldn't find this page.</p>
-        <p className="mb-8">But dont worry, you can find plenty of other things on our homepage.</p>
-        <Link
-          href="/"
-          className="focus:shadow-outline-blue inline rounded-lg border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium leading-5 text-white shadow transition-colors duration-150 hover:bg-blue-700 focus:outline-none dark:hover:bg-blue-500"
-        >
-          Back to homepage
-        </Link>
+      <div>
+        <p className="eyebrow">{zh ? '探索未结束 / 换一条路' : 'STILL EXPLORING / TRY ANOTHER ROUTE'}</p>
+        <h1 id="lost-heading">{zh ? '这里还没有故事。' : 'No story on this page.'}</h1>
+        <p>
+          {zh
+            ? '链接可能已移动，或者地址写错了。从首页重新出发，也可以去读点东西。'
+            : 'This link may have moved, or the address may be mistyped. Head home or pick up a new story.'}
+        </p>
+        <div className="studio-actions">
+          <Link href="/" className="ink-button">
+            {zh ? '返回首页' : 'Back home'} ↗
+          </Link>
+          <Link href="/blog" className="text-link">
+            {zh ? '去读文章' : 'Explore the blog'} ↗
+          </Link>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

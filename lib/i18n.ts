@@ -50,7 +50,7 @@ export const translations: Record<Language, Translations> = {
       "The greatest danger in times of turbulence is not the turbulence; it is to act with your yesterday's logic.",
     'home.imName': "I'm",
     'home.fullstackEngineer': 'a Fullstack Engineer focused on AI Agents',
-    'home.siteTitle': "Coooder's Blog - Coding Adventure",
+    'home.siteTitle': 'Coooder — AI Agents & Fullstack Engineering',
     'home.siteDescription':
       'I build fullstack products with a focus on AI agents, developer tools, and practical engineering.',
     'home.heroEyebrow': 'Fullstack engineer · Beijing',
@@ -168,7 +168,7 @@ export const translations: Record<Language, Translations> = {
     'home.quote': '在动荡时期，最大的危险不是动荡本身，而是用昨天的逻辑来面对最新的动荡。',
     'home.imName': '我是',
     'home.fullstackEngineer': '一名专注于 AI Agent 方向的全栈工程师',
-    'home.siteTitle': 'Coooder 的博客 - 编程冒险',
+    'home.siteTitle': 'Coooder — AI Agent 与全栈工程',
     'home.siteDescription': '我专注于构建 AI Agent、开发者工具和真正能落地的全栈产品。',
     'home.heroEyebrow': '全栈工程师 · 北京',
     'home.heroName': '你好，我是 Coooder。',

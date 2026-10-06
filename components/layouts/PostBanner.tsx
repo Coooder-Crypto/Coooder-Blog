@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import PostHeading from '@/components/blog/PostHeading';
+import SeriesNav from '@/components/blog/SeriesNav';
 import BlogNav from '@/components/blog/BlogNav';
 import TableOfContents from '@/components/blog/TableOfContents';
 import Bleed from 'pliny/ui/Bleed';
@@ -38,6 +39,7 @@ export default function PostMinimal({ content, next, prev, children }: LayoutPro
             </div>
           </div>
           <TableOfContents toc={content.toc} />
+          <SeriesNav slug={content.slug} />
           <div className="prose max-w-none py-4 dark:prose-invert">
             <div lang={content.bodyLanguage === 'en' ? 'en' : 'zh-CN'}>{children}</div>
             <XDiscussion xPostUrl={xPostUrl} socialSummary={socialSummary} />

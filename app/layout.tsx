@@ -2,6 +2,7 @@ import 'css/tailwind.css';
 import 'css/studio.css';
 import 'css/gaming.css';
 import 'css/reading.css';
+import 'css/identity.css';
 import 'css/twemoji.css';
 import 'react-medium-image-zoom/dist/styles.css';
 import 'remark-github-blockquote-alert/alert.css';
@@ -39,10 +40,10 @@ export const metadata: Metadata = {
         url: siteMetadata.socialBanner,
         width: 1200,
         height: 630,
-        alt: 'Coooder — AI agents and developer tools, in a comic-book workshop',
+        alt: 'Coooder 的漫画工作室：AI Agent、开发者工具与工程实践',
       },
     ],
-    locale: 'en_US',
+    locale: siteMetadata.openGraphLocale,
     type: 'website',
   },
   alternates: {
@@ -61,6 +62,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     title: siteMetadata.title,
+    description: siteMetadata.description,
     card: 'summary_large_image',
     images: [siteMetadata.socialBanner],
   },
@@ -69,8 +71,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang={siteMetadata.language} className={`${FONT_OUTFIT.variable} scroll-smooth`}>
-      <link rel="icon" type="image/png" sizes="32x32" href="/static/favicons/tennis-racquet.png" />
-      <link rel="icon" type="image/png" sizes="16x16" href="/static/favicons/tennis-racquet.png" />
+      <link rel="icon" type="image/png" sizes="32x32" href="/static/favicons/coooder-32.png" />
+      <link rel="icon" type="image/svg+xml" href="/static/favicons/coooder.svg" />
+      <link rel="apple-touch-icon" sizes="180x180" href="/static/favicons/coooder-180.png" />
       <link rel="manifest" href="/static/favicons/site.webmanifest" />
       <meta name="msapplication-TileColor" content="#ffe658" />
       <meta name="theme-color" content="#ffe658" />

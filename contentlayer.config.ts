@@ -115,6 +115,7 @@ export const Blog = defineDocumentType(() => ({
           '@context': 'https://schema.org',
           '@type': 'BlogPosting',
           headline: doc.title,
+          inLanguage: doc.bodyLanguage === 'en' ? 'en' : 'zh-CN',
           datePublished: doc.date,
           dateModified: doc.lastmod || doc.date,
           description: doc.summary,

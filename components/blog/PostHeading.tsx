@@ -15,12 +15,16 @@ export default function PostHeading({
   const { language } = useLanguage();
   return (
     <div className="post-heading">
-      <PageTitle>{language === 'en' ? titleEn || title : title}</PageTitle>
+      <PageTitle>
+        <span lang={language === 'en' && titleEn ? 'en' : bodyLanguage === 'en' ? 'en' : 'zh-CN'}>
+          {language === 'en' ? titleEn || title : title}
+        </span>
+      </PageTitle>
       {language !== bodyLanguage && (
         <p className="article-language-note">
           {language === 'en'
-            ? 'This article is written in Chinese. The language switch changes the interface and available titles, not the article body.'
-            : '本文正文为英文。语言切换仅影响界面和已有译名，不会自动翻译正文。'}
+            ? 'English title and summary · Article written in Chinese'
+            : '中英文导航与摘要 · 本文正文为英文'}
         </p>
       )}
     </div>

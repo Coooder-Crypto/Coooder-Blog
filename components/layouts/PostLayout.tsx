@@ -5,6 +5,7 @@ import type { Blog, Authors } from 'contentlayer/generated';
 import { BlogTags, BlogMeta, BlogNav, TableOfContents, XDiscussion } from '@/components/blog';
 import { SectionContainer, ScrollTopAndComment } from '@/components/ui';
 import PostHeading from '@/components/blog/PostHeading';
+import SeriesNav from '@/components/blog/SeriesNav';
 
 interface LayoutProps {
   content: CoreContent<Blog>;
@@ -39,6 +40,7 @@ export default function PostLayout(props: LayoutProps) {
           </div>
         </header>
         {/*END: Header*/}
+        <SeriesNav slug={content.slug} />
 
         {/*START: Content*/}
         <div className="grid grid-cols-1 gap-12 pt-8 lg:grid-cols-12 lg:pt-10">

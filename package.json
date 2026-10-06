@@ -10,13 +10,11 @@
     "serve": "next start",
     "prepare": "husky install",
     "lint": "next lint --fix --dir app --dir components --dir scripts",
-    "sync:blog": "node scripts/notion-sync.mjs",
-    "sync:social": "node scripts/social-sync.mjs"
+    "check:content": "node scripts/check-content.mjs"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "^1.4.0",
     "@headlessui/react": "2.2.0",
-    "@notionhq/client": "^2.2.15",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
     "autoprefixer": "^10.4.13",
@@ -35,7 +33,6 @@
     "lucide-react": "^0.469.0",
     "next": "16.1.1",
     "next-contentlayer2": "0.5.3",
-    "notion-to-md": "^3.1.4",
     "pliny": "^0.4.1",
     "postcss": "^8.4.49",
     "react": "19.0.0",

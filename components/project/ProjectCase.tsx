@@ -23,6 +23,7 @@ export default function ProjectCase({
 }) {
   const { language, t } = useLanguage();
   const illustration = artwork[project.title.en];
+  const hasDetails = project.problem || project.outcome || (project.contribution && project.contribution.en !== 'xxx');
   return (
     <article className={`case-card ${detailed ? 'case-detailed' : ''}`}>
       {illustration && (
@@ -30,7 +31,11 @@ export default function ProjectCase({
           <StudioImage
             artwork={illustration}
             alt=""
-            sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1440px) 33vw, 400px"
+            sizes={
+              detailed
+                ? '(max-width: 760px) calc(100vw - 32px), (max-width: 1440px) 33vw, 400px'
+                : '(max-width: 760px) 96px, (max-width: 1440px) 33vw, 400px'
+            }
           />
         </div>
       )}
@@ -41,7 +46,7 @@ export default function ProjectCase({
         </div>
         <h3>{project.title[language]}</h3>
         <p>{project.description?.[language]}</p>
-        {detailed && (
+        {detailed && hasDetails && (
           <dl className="case-details">
             {project.problem && (
               <div>
@@ -64,18 +69,20 @@ export default function ProjectCase({
           </dl>
         )}
         <div className="case-technologies">{project.builtWith.slice(0, 4).join(' / ')}</div>
-        <div className="case-links">
-          {project.url && (
-            <Link href={project.url} className="text-link">
-              {t('projects.cta.live')} <ArrowUpRight size={15} aria-hidden="true" />
-            </Link>
-          )}
-          {project.repo && (
-            <Link href={`https://github.com/${project.repo}`} className="text-link">
-              {t('projects.cta.code')} <ArrowUpRight size={15} aria-hidden="true" />
-            </Link>
-          )}
-        </div>
+        {(project.url || project.repo) && (
+          <div className="case-links">
+            {project.url && (
+              <Link href={project.url} className="text-link">
+                {language === 'zh' ? '访问网站' : 'Visit website'} <ArrowUpRight size={15} aria-hidden="true" />
+              </Link>
+            )}
+            {project.repo && (
+              <Link href={`https://github.com/${project.repo}`} className="text-link">
+                {language === 'zh' ? '查看源码' : 'View source'} <ArrowUpRight size={15} aria-hidden="true" />
+              </Link>
+            )}
+          </div>
+        )}
       </div>
     </article>
   );

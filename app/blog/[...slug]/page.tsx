@@ -66,11 +66,14 @@ export async function generateMetadata(props: { params: Promise<{ slug: string[]
     },
     twitter: {
       title: post.title,
+      description,
       card: 'summary_large_image',
       images,
     },
   };
 }
+
+import { clawCodeSeries } from '@/data/readingPaths';
 
 export default async function Page({ params }: { params: Promise<{ slug: string[] }> }) {
   const resolvedParams = await params;
@@ -78,7 +81,13 @@ export default async function Page({ params }: { params: Promise<{ slug: string[
   const post = allBlogs.find((p) => p.slug === slug) as Blog;
   const mainContent = coreContent(post);
   const jsonLd = post.structuredData;
-  const sortedPosts = sortPosts(allBlogs.filter((item) => !item.draft));
+  const seriesPosts = clawCodeSeries.chapters
+    .map((chapter) => allBlogs.find((item) => item.slug === chapter.slug && !item.draft))
+    .filter((item): item is Blog => !!item);
+  // BlogNav expects older/previous at index + 1, so reverse chapter order here.
+  const sortedPosts = seriesPosts.some((item) => item.slug === slug)
+    ? [...seriesPosts].reverse()
+    : sortPosts(allBlogs.filter((item) => !item.draft));
   const postIndex = sortedPosts.findIndex((item) => item.slug === slug);
   const prevPost = postIndex >= 0 ? sortedPosts[postIndex + 1] : undefined;
   const nextPost = postIndex > 0 ? sortedPosts[postIndex - 1] : undefined;

@@ -4,7 +4,7 @@ import { genPageMetadata } from 'app/seo';
 export { default } from '../about/page';
 
 export const metadata = genPageMetadata({
-  title: 'About',
+  title: '关于我',
   alternates: { canonical: '/about' },
   robots: { index: false, follow: true },
 });

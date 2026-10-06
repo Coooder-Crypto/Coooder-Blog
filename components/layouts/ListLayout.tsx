@@ -1,15 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import { formatDate } from 'pliny/utils/formatDate';
 import { CoreContent } from 'pliny/utils/contentlayer';
 import type { Blog } from 'contentlayer/generated';
 
 import { Link, Tag } from '@/components/ui';
 import { PopularTags } from '@/components/homepage';
-import siteMetadata from '@/data/siteMetadata';
 import { useLanguage } from '@/lib/i18n';
 import { getLocalizedBlogContent } from '@/lib/blogUtils';
+import ReadingPaths from '@/components/blog/ReadingPaths';
+
+const queryEvent = 'blog-query-change';
+const subscribeToQuery = (notify: () => void) => {
+  window.addEventListener('popstate', notify);
+  window.addEventListener(queryEvent, notify);
+  return () => {
+    window.removeEventListener('popstate', notify);
+    window.removeEventListener(queryEvent, notify);
+  };
+};
+const getQuery = () => window.location.search;
+const getServerQuery = () => '';
+
+function updateQuery(query: string, page: number, push = false) {
+  const url = new URL(window.location.href);
+  if (query) url.searchParams.set('q', query);
+  else url.searchParams.delete('q');
+  if (page > 1) url.searchParams.set('page', String(page));
+  else url.searchParams.delete('page');
+  const target = `${url.pathname}${url.search}${url.hash}`;
+  if (push) window.history.pushState(null, '', target);
+  else window.history.replaceState(null, '', target);
+  window.dispatchEvent(new Event(queryEvent));
+}
 
 interface PaginationMeta {
   totalPages: number;
@@ -26,6 +50,7 @@ interface ListLayoutProps {
   initialDisplayPosts?: CoreContent<Blog>[];
   pagination?: PaginationMeta;
   postsPerPage?: number;
+  showReadingPaths?: boolean;
 }
 
 function Pagination({ totalPages, currentPage, onPageChange }: PaginationProps) {
@@ -70,10 +95,14 @@ export default function ListLayout({
   initialDisplayPosts = [],
   pagination,
   postsPerPage,
+  showReadingPaths = false,
 }: ListLayoutProps) {
   const { t, language } = useLanguage();
-  const [searchValue, setSearchValue] = useState('');
-  const [currentPage, setCurrentPage] = useState(pagination?.currentPage ?? 1);
+  const queryString = useSyncExternalStore(subscribeToQuery, getQuery, getServerQuery);
+  const query = new URLSearchParams(queryString);
+  const searchValue = query.get('q') ?? '';
+  const pageParam = query.get('page');
+  const requestedPage = pageParam && /^[1-9]\d*$/.test(pageParam) ? Number(pageParam) : 1;
   const derivedPostsPerPage =
     postsPerPage ??
     (initialDisplayPosts.length || (pagination ? Math.ceil(posts.length / pagination.totalPages) : posts.length));
@@ -90,30 +119,30 @@ export default function ListLayout({
     ]
       .filter(Boolean)
       .join(' ');
-    return searchContent.toLowerCase().includes(searchValue.toLowerCase());
+    return searchContent.toLowerCase().includes(searchValue.trim().toLowerCase());
   });
+  const totalPages = pagination
+    ? Math.max(1, Math.ceil(filteredBlogPosts.length / Math.max(1, derivedPostsPerPage)))
+    : 1;
+  const currentPage = Math.min(requestedPage, totalPages);
+  const start = derivedPostsPerPage * (currentPage - 1);
+  const displayPosts = pagination ? filteredBlogPosts.slice(start, start + derivedPostsPerPage) : filteredBlogPosts;
 
-  const getPaginatedPosts = () => {
-    if (!pagination) {
-      return initialDisplayPosts.length > 0 ? initialDisplayPosts : filteredBlogPosts;
+  useEffect(() => {
+    if (pageParam !== null && pageParam !== (currentPage > 1 ? String(currentPage) : null)) {
+      updateQuery(searchValue, currentPage);
     }
-
-    if (currentPage === pagination.currentPage && initialDisplayPosts.length > 0) {
-      return initialDisplayPosts;
-    }
-
-    const start = derivedPostsPerPage * (currentPage - 1);
-    return posts.slice(start, start + derivedPostsPerPage);
-  };
-
-  const displayPosts = searchValue ? filteredBlogPosts : getPaginatedPosts();
+  }, [pageParam, currentPage, searchValue]);
 
   const handlePageChange = (page: number) => {
     if (!pagination) return;
-    if (page < 1 || page > pagination.totalPages) return;
-    setCurrentPage(page);
+    if (page < 1 || page > totalPages) return;
+    updateQuery(searchValue, page, true);
     if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({
+        top: 0,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      });
     }
   };
 
@@ -132,14 +161,16 @@ export default function ListLayout({
               : 'On agents, developer tools, and the craft of software. Notes from doing the work.'}
           </p>
         </header>
+        {showReadingPaths && !searchValue.trim() && currentPage === 1 && <ReadingPaths />}
         <div className="blog-toolbar">
           <div className="relative max-w-[420px]">
             <label>
               <span className="sr-only">{t('blog.searchArticles')}</span>
               <input
                 aria-label={t('blog.searchArticles')}
-                type="text"
-                onChange={(e) => setSearchValue(e.target.value)}
+                type="search"
+                value={searchValue}
+                onChange={(e) => updateQuery(e.target.value, 1)}
                 placeholder={t('blog.searchArticles')}
                 className="blog-search"
               />
@@ -161,6 +192,13 @@ export default function ListLayout({
           </div>
           <PopularTags />
         </div>
+        {searchValue.trim() && (
+          <p className="blog-search-status" role="status">
+            {language === 'zh'
+              ? `找到 ${filteredBlogPosts.length} 篇文章`
+              : `${filteredBlogPosts.length} articles found`}
+          </p>
+        )}
         <ul className="blog-posts">
           {!filteredBlogPosts.length && <li role="status">{t('blog.noPostsFound')}</li>}
           {displayPosts.map((post) => {
@@ -197,8 +235,8 @@ export default function ListLayout({
           })}
         </ul>
       </div>
-      {pagination && pagination.totalPages > 1 && !searchValue && (
-        <Pagination currentPage={currentPage} totalPages={pagination.totalPages} onPageChange={handlePageChange} />
+      {pagination && totalPages > 1 && (
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
       )}
     </>
   );

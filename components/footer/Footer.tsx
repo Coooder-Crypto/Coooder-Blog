@@ -15,6 +15,7 @@ export default function Footer() {
         <p>{language === 'zh' ? '认真构建，也保留一点好奇。' : 'Built with care. A little curiosity, always.'}</p>
       </div>
       <div className="footer-links">
+        <Link href={`mailto:${siteMetadata.email}`}>{language === 'zh' ? '写信给我' : 'Email me'} ↗</Link>
         <Link href={siteMetadata.github}>GitHub ↗</Link>
         <Link href={siteMetadata.twitter}>X ↗</Link>
         <Link href="/about">{language === 'zh' ? '关于我' : 'About'} ↗</Link>

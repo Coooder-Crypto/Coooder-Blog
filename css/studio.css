@@ -1061,6 +1061,55 @@ a {
   }
 }
 
+/* Keep the full illustrations on project pages; home cards are compact on phones. */
+@media (max-width: 760px) {
+  .field-home .case-card {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: start;
+  }
+  .field-home .case-art {
+    margin: 16px 0 16px 12px;
+    border: 2px solid var(--ink);
+  }
+  .field-home .case-art img {
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+  .field-home .case-body {
+    padding: 16px;
+    min-width: 0;
+  }
+  .field-home .case-index {
+    font-size: 8px;
+    margin-bottom: 12px;
+  }
+  .field-home .case-card h3 {
+    font-size: 20px;
+  }
+  .field-home .case-card p {
+    font-size: 13px;
+    margin-top: 8px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+  .field-home .case-technologies {
+    display: none;
+  }
+  .field-home .case-links {
+    flex-wrap: wrap;
+    gap: 0 12px;
+    margin-top: 10px;
+    padding-top: 2px;
+  }
+  .field-home .case-links a {
+    min-height: 44px;
+    font-size: 12px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto !important;

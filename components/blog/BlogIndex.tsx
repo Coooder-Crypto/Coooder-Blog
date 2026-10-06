@@ -21,6 +21,7 @@ export default function BlogIndex({ posts, postsPerPage }: BlogIndexProps) {
 
   return (
     <ListLayout
+      showReadingPaths
       posts={posts}
       initialDisplayPosts={initialDisplayPosts}
       pagination={pagination}

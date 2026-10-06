@@ -2,6 +2,7 @@
 
 import projectsData from '@/data/projectsData';
 import ProjectCase from '@/components/project/ProjectCase';
+import ProjectEvidence from '@/components/project/ProjectEvidence';
 import { useLanguage } from '@/lib/i18n';
 
 export default function Projects() {
@@ -34,6 +35,7 @@ export default function Projects() {
           ))}
         </div>
       </section>
+      <ProjectEvidence />
       <section aria-labelledby="archive-heading" className="editorial-section">
         <div className="section-heading">
           <div>

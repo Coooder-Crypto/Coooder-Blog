@@ -15,7 +15,7 @@ export async function generateMetadata(props: { params: Promise<{ tag: string }>
 
   return genPageMetadata({
     title: tag,
-    description: `${siteMetadata.title} ${tag} tagged content`,
+    description: `${siteMetadata.author} 关于 ${tag} 的文章与实践笔记。`,
     alternates: {
       canonical: './',
     },

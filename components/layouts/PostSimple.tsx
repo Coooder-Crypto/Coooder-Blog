@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import PostHeading from '@/components/blog/PostHeading';
+import SeriesNav from '@/components/blog/SeriesNav';
 import BlogNav from '@/components/blog/BlogNav';
 import TableOfContents from '@/components/blog/TableOfContents';
 
@@ -40,6 +41,7 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
             </div>
           </header>
           <TableOfContents toc={content.toc} />
+          <SeriesNav slug={content.slug} />
 
           <div className="grid-rows-[auto_1fr] divide-y divide-gray-200 pb-8 dark:divide-gray-700 xl:divide-y-0">
             <div className="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0">
