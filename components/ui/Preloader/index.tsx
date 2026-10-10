@@ -11,6 +11,7 @@ export default function Preloader() {
   const [dimension, setDimension] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- SVG dimensions require the browser viewport after hydration.
     setDimension({ width: window.innerWidth, height: window.innerHeight });
   }, []);
 

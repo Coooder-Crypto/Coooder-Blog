@@ -1,6 +1,6 @@
 import type { LocalizedText } from '@/types/data';
 
-interface ProjectEvidence {
+export interface ProjectEvidenceRecord {
   title: string;
   repo: string;
   revision: string;
@@ -12,7 +12,7 @@ interface ProjectEvidence {
 }
 
 // Public repository evidence, reviewed on 2026-10-06. Pin links to the reviewed revisions.
-export const projectEvidence: ProjectEvidence[] = [
+export const projectEvidence: ProjectEvidenceRecord[] = [
   {
     title: 'Vital Agent Sync',
     repo: 'Coooder-Crypto/vital-agent-sync',

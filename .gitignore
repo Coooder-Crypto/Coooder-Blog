@@ -14,6 +14,7 @@
 
 # next.js
 /.next/
+*.tsbuildinfo
 /out/
 public/sitemap.xml
 .vercel

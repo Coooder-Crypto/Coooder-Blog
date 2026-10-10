@@ -1,74 +1,25 @@
-import typescriptEslint from '@typescript-eslint/eslint-plugin';
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTypescript from 'eslint-config-next/typescript';
+import prettier from 'eslint-config-prettier';
 import globals from 'globals';
-import tsParser from '@typescript-eslint/parser';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
+// Next 16 exports native flat configs; wrapping them in FlatCompat creates cycles.
 export default [
+  { ignores: ['.next/**', '.contentlayer/**', 'out/**', '.yarn/**', 'node_modules/**', 'next-env.d.ts'] },
+  ...nextVitals,
+  ...nextTypescript,
+  prettier,
+  { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
   {
-    ignores: ['tailwind.config.js'],
-  },
-  js.configs.recommended,
-  ...compat.extends(
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:jsx-a11y/recommended',
-    'plugin:prettier/recommended',
-    'next',
-    'next/core-web-vitals'
-  ),
-  {
-    plugins: {
-      '@typescript-eslint': typescriptEslint,
-    },
-
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.amd,
-        ...globals.node,
-      },
-
-      parser: tsParser,
-      ecmaVersion: 5,
-      sourceType: 'commonjs',
-
-      parserOptions: {
-        project: true,
-        tsconfigRootDir: __dirname,
-      },
-    },
-
     rules: {
-      'prettier/prettier': 'error',
-      'react/react-in-jsx-scope': 'off',
-
-      'jsx-a11y/anchor-is-valid': [
-        'error',
-        {
-          components: ['Link'],
-          specialLink: ['hrefLeft', 'hrefRight'],
-          aspects: ['invalidHref', 'preferButton'],
-        },
-      ],
-      'react/prop-types': 'off',
+      // Preserve the existing project's TS and rendering conventions.
       '@typescript-eslint/no-unused-vars': 'off',
-      'react/no-unescaped-entities': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-var-requires': 'off',
-      '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unsafe-function-type': 'off',
-      'import/no-anonymous-default-export': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
+      'react/no-unescaped-entities': 'off',
       '@next/next/no-img-element': 'off',
+      'import/no-anonymous-default-export': 'off',
     },
   },
 ];

@@ -4,7 +4,8 @@ import 'katex/dist/katex.css';
 import type { Metadata } from 'next';
 import { MDXLayoutRenderer } from 'pliny/mdx-components';
 import type { Blog } from 'contentlayer/generated';
-import { allBlogs } from 'contentlayer/generated';
+import { notFound } from 'next/navigation';
+import { publishedPosts } from '@/lib/publishedPosts';
 import { coreContent, sortPosts } from 'pliny/utils/contentlayer';
 
 import { components } from '@/components/ui';
@@ -12,6 +13,7 @@ import { PostSimple, PostLayout, PostBanner } from '@/components/layouts';
 import siteMetadata from '@/data/siteMetadata';
 
 const defaultLayout = 'PostLayout';
+export const dynamicParams = false;
 const layouts = {
   PostSimple,
   PostLayout,
@@ -19,13 +21,13 @@ const layouts = {
 };
 
 export const generateStaticParams = async () => {
-  return allBlogs.map((p) => ({ slug: p.slug.split('/').map((name) => decodeURI(name)) }));
+  return publishedPosts.map((p) => ({ slug: p.slug.split('/').map((name) => decodeURI(name)) }));
 };
 
 export async function generateMetadata(props: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
   const resolvedParams = await props.params;
   const slug = decodeURI(resolvedParams.slug.join('/'));
-  const post = allBlogs.find((p) => p.slug === slug);
+  const post = publishedPosts.find((p) => p.slug === slug);
 
   if (!post) {
     return {
@@ -78,16 +80,17 @@ import { clawCodeSeries } from '@/data/readingPaths';
 export default async function Page({ params }: { params: Promise<{ slug: string[] }> }) {
   const resolvedParams = await params;
   const slug = decodeURI(resolvedParams.slug.join('/'));
-  const post = allBlogs.find((p) => p.slug === slug) as Blog;
+  const post = publishedPosts.find((p) => p.slug === slug);
+  if (!post) notFound();
   const mainContent = coreContent(post);
   const jsonLd = post.structuredData;
   const seriesPosts = clawCodeSeries.chapters
-    .map((chapter) => allBlogs.find((item) => item.slug === chapter.slug && !item.draft))
+    .map((chapter) => publishedPosts.find((item) => item.slug === chapter.slug))
     .filter((item): item is Blog => !!item);
   // BlogNav expects older/previous at index + 1, so reverse chapter order here.
   const sortedPosts = seriesPosts.some((item) => item.slug === slug)
     ? [...seriesPosts].reverse()
-    : sortPosts(allBlogs.filter((item) => !item.draft));
+    : sortPosts([...publishedPosts]);
   const postIndex = sortedPosts.findIndex((item) => item.slug === slug);
   const prevPost = postIndex >= 0 ? sortedPosts[postIndex + 1] : undefined;
   const nextPost = postIndex > 0 ? sortedPosts[postIndex - 1] : undefined;

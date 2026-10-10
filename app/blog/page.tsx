@@ -1,5 +1,5 @@
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer';
-import { allBlogs } from 'contentlayer/generated';
+import { publishedPosts } from '@/lib/publishedPosts';
 
 import { genPageMetadata } from 'app/seo';
 import BlogIndex from '@/components/blog/BlogIndex';
@@ -12,7 +12,7 @@ export const metadata = genPageMetadata({
 });
 
 export default function BlogPage() {
-  const posts = allCoreContent(sortPosts(allBlogs));
+  const posts = allCoreContent(sortPosts([...publishedPosts]));
 
   return <BlogIndex posts={posts} postsPerPage={POSTS_PER_PAGE} />;
 }

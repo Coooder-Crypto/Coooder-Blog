@@ -5,6 +5,8 @@ import { ArrowUpRight } from 'lucide-react';
 import Link from '@/components/ui/Link';
 import type { Project } from '@/types/data';
 import { useLanguage } from '@/lib/i18n';
+import ProjectEvidence from './ProjectEvidence';
+import type { ProjectEvidenceRecord } from '@/data/projectEvidence';
 
 const artwork: Record<string, 'health' | 'map' | 'notes'> = {
   'Vital Agent Sync': 'health',
@@ -16,10 +18,12 @@ export default function ProjectCase({
   project,
   index,
   detailed = false,
+  evidence,
 }: {
   project: Project;
   index: number;
   detailed?: boolean;
+  evidence?: ProjectEvidenceRecord;
 }) {
   const { language, t } = useLanguage();
   const illustration = artwork[project.title.en];
@@ -32,9 +36,11 @@ export default function ProjectCase({
             artwork={illustration}
             alt=""
             sizes={
-              detailed
-                ? '(max-width: 760px) calc(100vw - 32px), (max-width: 1440px) 33vw, 400px'
-                : '(max-width: 760px) 96px, (max-width: 1440px) 33vw, 400px'
+              evidence
+                ? '80px'
+                : detailed
+                  ? '(max-width: 760px) calc(100vw - 32px), (max-width: 1440px) 33vw, 400px'
+                  : '(max-width: 760px) 96px, (max-width: 1440px) 33vw, 400px'
             }
           />
         </div>
@@ -45,6 +51,7 @@ export default function ProjectCase({
           <span aria-hidden="true">↗</span>
         </div>
         <h3>{project.title[language]}</h3>
+        {evidence && <p className="case-status">{evidence.status[language]}</p>}
         <p>{project.description?.[language]}</p>
         {detailed && hasDetails && (
           <dl className="case-details">
@@ -60,7 +67,7 @@ export default function ProjectCase({
                 <dd>{project.outcome[language]}</dd>
               </div>
             )}
-            {project.contribution && project.contribution.en !== 'xxx' && (
+            {!evidence && project.contribution && project.contribution.en !== 'xxx' && (
               <div>
                 <dt>{t('projects.contribution')}</dt>
                 <dd>{project.contribution[language]}</dd>
@@ -83,6 +90,7 @@ export default function ProjectCase({
             )}
           </div>
         )}
+        {evidence && <ProjectEvidence evidence={evidence} />}
       </div>
     </article>
   );

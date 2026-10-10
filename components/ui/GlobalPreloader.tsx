@@ -14,6 +14,7 @@ export default function GlobalPreloader({ children }: { children: React.ReactNod
 
     if (hasShownPreloader === 'true') {
       // Already shown in this session, skip animation completely
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Resolve the browser-only session flag after hydration.
       setIsLoading(false);
       return;
     }

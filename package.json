@@ -7,9 +7,12 @@
     "dev": "cross-env INIT_CWD=$PWD next dev --webpack",
     "build": "cross-env INIT_CWD=$PWD next build --webpack",
     "images:optimize": "node scripts/optimize-studio-images.mjs",
-    "serve": "next start",
+    "serve": "node scripts/serve.mjs",
     "prepare": "husky install",
-    "lint": "next lint --fix --dir app --dir components --dir scripts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "cross-env INIT_CWD=$PWD contentlayer2 build && next typegen && tsc --noEmit",
+    "check": "yarn lint && yarn typecheck && yarn build && yarn check:content",
     "check:content": "node scripts/check-content.mjs"
   },
   "dependencies": {

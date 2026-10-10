@@ -13,16 +13,26 @@ A personal website built with Next.js 16, React 19, MDX, and Contentlayer. Notes
 ```bash
 yarn install --immutable
 yarn dev
-yarn build
-yarn check:content
+yarn check
+yarn serve
 ```
 
-`yarn check:content` checks the generated export; run it after `yarn build`.
+`yarn check` 依次执行 ESLint、类型检查、生产构建和导出内容检查，不修改源码、不发布、不触发远端任务。`yarn serve` 在本机预览 `out/`（默认端口 3101，可设置 `PORT`），不存在的地址返回真正的 404。
+
+`yarn check` runs ESLint, type checking, a production build, and export checks without fixing source files or publishing. `yarn serve` previews `out/` on localhost, port 3101 (`PORT` overrides it), including real 404 responses.
+
+- `yarn lint` — non-mutating source checks; `yarn lint:fix` explicitly applies fixes.
+- `yarn typecheck` — regenerates Contentlayer data and Next route types, then runs TypeScript.
+- `yarn check:content` — checks an existing export; run after `yarn build`.
+
+ESLint uses the native Next 16 flat configuration. Formatting is handled separately by Prettier, avoiding repository-wide format-only edits. Four existing browser-hydration state initializations have narrowly scoped, explained exceptions; the hooks rule remains enabled elsewhere.
 
 ## 内容与语言 / Content and language
 
 - 直接编辑 `data/blog/*.mdx`，文章与图片随仓库版本管理。Contentlayer 生成类型数据，Next.js 输出到 `out/`。
 - Author posts directly in `data/blog/*.mdx`. Content and images are versioned in Git; Contentlayer feeds the static export in `out/`.
+- `draft: true` 不进入公开页面、元信息、列表、标签、系列导航和 sitemap，开发预览也遵守同样规则。`data/blog/__draft-publication-check.mdx` 是无敏感数据的回归测试样例；检查会扫描导出文件，防止样例正文、标题、标签或草稿 URL 泄漏。
+- Draft protection applies to the website, **not GitHub visibility**. Never commit private drafts or secrets to a public repository. The synthetic draft fixture is intentionally public source used to test the export boundary.
 - UI、标题和摘要支持中英文；正文由 `bodyLanguage: zh | en` 指定原文语言，不自动翻译。
 - Navigation, titles, and summaries support Chinese and English. `bodyLanguage` describes the actual article body; switching the UI does not translate it.
 - 站点默认中文。通用页面的分享信息为中文，文章分享信息采用原文标题、摘要和语言。客户端语言偏好不会改变静态分享卡片；未提供正文译文的页面不声明英文替代 URL。

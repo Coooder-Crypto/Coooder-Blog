@@ -12,6 +12,7 @@ export default function LanguageProvider({ children }: LanguageProviderProps) {
   const [language, setLanguageState] = useState<Language>('zh');
 
   useLayoutEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Read browser preferences only after the Chinese static document hydrates, before paint.
     setLanguageState(getDefaultLanguage());
   }, []);
 

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import path from 'node:path';
 import { fromHtmlIsomorphic } from 'hast-util-from-html-isomorphic';
 import { transformSync } from 'esbuild';
 
@@ -39,6 +40,39 @@ for (const route of ['', 'blog', 'projects', 'about', 'tags', 'resume']) {
 }
 
 const posts = JSON.parse(readFileSync('.contentlayer/generated/Blog/_index.json', 'utf8'));
+const drafts = posts.filter((post) => post.draft === true);
+assert.ok(
+  drafts.some((post) => post.slug === '__draft-publication-check'),
+  'Draft regression fixture must be loaded'
+);
+for (const draft of drafts) {
+  assert.ok(!existsSync(`out/blog/${draft.slug}.html`), `Draft page exported: ${draft.slug}`);
+  assert.ok(!existsSync(`out/blog/${draft.slug}/index.html`), `Draft directory exported: ${draft.slug}`);
+}
+function checkExport(directory) {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const filename = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      checkExport(filename);
+      continue;
+    }
+    if (!/\.(html|txt|json|js|xml)$/.test(entry.name)) continue;
+    const text = readFileSync(filename, 'utf8');
+    for (const draft of drafts) {
+      assert.ok(!text.includes(`/blog/${draft.slug}`), `Draft URL leaked into ${filename}`);
+    }
+    assert.ok(!/DRAFT_REGRESSION_|draft-regression-7d9a/.test(text), `Draft content leaked into ${filename}`);
+  }
+}
+checkExport('out');
+const publicSlugs = JSON.parse(readFileSync('app/published-slugs.json', 'utf8'));
+assert.deepEqual(
+  [...publicSlugs].sort(),
+  posts
+    .filter((post) => !post.draft)
+    .map((post) => post.slug)
+    .sort()
+);
 for (const post of posts.filter((item) => !item.draft)) {
   const { nodes, meta } = readPage(`blog/${post.slug}`);
   const language = post.bodyLanguage === 'en' ? 'en' : 'zh-CN';
@@ -57,6 +91,15 @@ const source = readFileSync('data/projectEvidence.ts', 'utf8');
 const { code } = transformSync(source, { loader: 'ts', format: 'esm' });
 const { projectEvidence } = await import(`data:text/javascript;base64,${Buffer.from(code).toString('base64')}`);
 const { nodes } = readPage('projects');
+assert.equal(nodes.filter((node) => node.tagName === 'article').length, 3, 'One case per featured project');
+const screenshots = nodes.filter(
+  (node) => node.tagName === 'details' && node.properties.className?.includes('evidence-screenshot')
+);
+assert.equal(screenshots.length, 2, 'Two optional demo screenshots');
+assert.ok(
+  screenshots.every((node) => !node.properties.open),
+  'Screenshots start collapsed'
+);
 for (const project of projectEvidence) {
   assert.match(project.revision, /^[a-f0-9]{40}$/);
   assert.ok(project.sources.length >= 2);
@@ -84,5 +127,5 @@ const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
 assert.ok(!pkg.scripts['sync:blog'] && !pkg.scripts['sync:social']);
 assert.ok(!pkg.dependencies['@notionhq/client'] && !pkg.dependencies['notion-to-md']);
 console.log(
-  `Content checks passed: 6 pages, ${posts.filter((post) => !post.draft).length} articles, ${projectEvidence.length} project evidence records, and retired sync tooling.`
+  `Content checks passed: 6 pages, ${posts.filter((post) => !post.draft).length} articles, ${drafts.length} excluded draft(s), ${projectEvidence.length} compact project cases, and retired sync tooling.`
 );

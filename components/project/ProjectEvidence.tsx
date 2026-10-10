@@ -1,82 +1,68 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Zoom from 'react-medium-image-zoom';
 import Link from '@/components/ui/Link';
 import { useLanguage } from '@/lib/i18n';
-import { projectEvidence } from '@/data/projectEvidence';
+import type { ProjectEvidenceRecord } from '@/data/projectEvidence';
 
-export default function ProjectEvidence() {
+export default function ProjectEvidence({ evidence }: { evidence: ProjectEvidenceRecord }) {
   const { language } = useLanguage();
   const zh = language === 'zh';
+  const [showScreenshot, setShowScreenshot] = useState(false);
   return (
-    <section className="project-evidence editorial-section" aria-labelledby="evidence-title">
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">{zh ? '公开源码 · 实现证据' : 'PUBLIC CODE · IMPLEMENTATION EVIDENCE'}</p>
-          <h2 id="evidence-title">{zh ? '让作品自己说话' : 'A closer look at the work'}</h2>
-          <p>
-            {zh
-              ? '核对于 2026.10.06 · 以下链接固定到核对时的代码版本。'
-              : 'Reviewed Oct 6, 2026 · Source links are pinned to the reviewed revisions.'}
-          </p>
-        </div>
-      </div>
-      {projectEvidence.map((project) => (
-        <article className="evidence-case" key={project.repo}>
-          <div className="evidence-heading">
-            <h3>{project.title}</h3>
-            <span>{project.status[language]}</span>
-          </div>
-          <div className="evidence-copy">
-            <dl>
-              <div>
-                <dt>{zh ? '实现了什么' : 'What is implemented'}</dt>
-                <dd>{project.implementation[language]}</dd>
-              </div>
-              <div>
-                <dt>{zh ? '当前边界' : 'Current boundaries'}</dt>
-                <dd>{project.boundary[language]}</dd>
-              </div>
-            </dl>
-            <ul
-              className="evidence-sources"
-              aria-label={zh ? `${project.title} 公开证据` : `${project.title} public evidence`}
+    <div className="case-evidence">
+      <ul className="evidence-sources" aria-label={`${evidence.title} — ${zh ? '公开证据' : 'Public evidence'}`}>
+        {evidence.sources.map((source) => (
+          <li key={source.path}>
+            <Link
+              href={`https://github.com/${evidence.repo}/blob/${evidence.revision}/${source.path}`}
+              className="text-link"
             >
-              {project.sources.map((source) => (
-                <li key={source.path}>
-                  <Link
-                    href={`https://github.com/${project.repo}/blob/${project.revision}/${source.path}`}
-                    className="text-link"
-                  >
-                    {source.label[language]} ↗
-                  </Link>
-                </li>
-              ))}
-            </ul>
+              {source.label[language]} ↗
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <details className="evidence-details">
+        <summary>{zh ? '实现细节与当前边界' : 'Implementation and current boundaries'}</summary>
+        <dl>
+          <div>
+            <dt>{zh ? '实现了什么' : 'What is implemented'}</dt>
+            <dd>{evidence.implementation[language]}</dd>
           </div>
-          {project.screenshot && (
+          <div>
+            <dt>{zh ? '当前边界' : 'Current boundaries'}</dt>
+            <dd>{evidence.boundary[language]}</dd>
+          </div>
+        </dl>
+      </details>
+      {evidence.screenshot && (
+        <details
+          className="evidence-details evidence-screenshot"
+          onToggle={(event) => setShowScreenshot(event.currentTarget.open)}
+        >
+          <summary>
+            {zh ? '查看演示截图' : 'View demo screenshot'} <span>{evidence.title}</span>
+          </summary>
+          {showScreenshot && (
             <figure>
-              <Zoom a11yNameButtonZoom={`${zh ? '放大截图' : 'Enlarge screenshot'} — ${project.title}`}>
+              <Zoom a11yNameButtonZoom={`${zh ? '放大截图' : 'Enlarge screenshot'} — ${evidence.title}`}>
                 <Image
-                  src={project.screenshot.src}
-                  width={project.screenshot.width}
-                  height={project.screenshot.height}
-                  alt={project.screenshot.alt[language]}
+                  src={evidence.screenshot.src}
+                  width={evidence.screenshot.width}
+                  height={evidence.screenshot.height}
+                  alt={evidence.screenshot.alt[language]}
                   loading="lazy"
                   unoptimized
                 />
               </Zoom>
-              <figcaption>{project.screenshot.caption[language]}</figcaption>
+              <figcaption>{evidence.screenshot.caption[language]}</figcaption>
             </figure>
           )}
-        </article>
-      ))}
-      <p className="evidence-review-note">
-        {zh
-          ? '说明：以上核对基于公开源码与文档，未重新运行各项目测试；测试链接用于展示覆盖设计，不代表生产验收。'
-          : 'Review note: based on public code and documentation, without rerunning project tests. Test links illustrate coverage design, not production acceptance.'}
-      </p>
-    </section>
+        </details>
+      )}
+    </div>
   );
 }

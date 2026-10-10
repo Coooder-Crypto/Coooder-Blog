@@ -9,7 +9,6 @@ interface Props {
 export default function StudioImage({ artwork, alt, priority = false, sizes }: Props) {
   const base = `/static/images/studio/responsive/${artwork}`;
   return (
-    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={`${base}-768.webp`}
       srcSet={[480, 768, 1200].map((width) => `${base}-${width}.webp ${width}w`).join(', ')}

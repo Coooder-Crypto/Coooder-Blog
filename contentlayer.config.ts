@@ -26,7 +26,6 @@ import siteMetadata from './data/siteMetadata';
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js';
 
 const root = process.cwd();
-const isProduction = process.env.NODE_ENV === 'production';
 
 const toAbsoluteUrl = (value: string) =>
   value.startsWith('http') ? value : `${siteMetadata.siteUrl}${value.startsWith('/') ? value : `/${value}`}`;
@@ -67,7 +66,7 @@ const computedFields: ComputedFields = {
 function createTagCount(allBlogs) {
   const tagCount: Record<string, number> = {};
   allBlogs.forEach((file) => {
-    if (file.tags && (!isProduction || file.draft !== true)) {
+    if (file.tags && file.draft !== true) {
       file.tags.forEach((tag) => {
         const formattedTag = slug(tag);
         if (formattedTag in tagCount) {
@@ -173,5 +172,13 @@ export default makeSource({
   onSuccess: async (importData) => {
     const { allBlogs } = await importData();
     createTagCount(allBlogs);
+    writeFileSync(
+      './app/published-slugs.json',
+      JSON.stringify(
+        allBlogs.filter((post) => post.draft !== true).map((post) => post.slug),
+        null,
+        2
+      ) + '\n'
+    );
   },
 });
