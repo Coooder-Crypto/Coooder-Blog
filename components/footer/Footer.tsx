@@ -10,7 +10,7 @@ export default function Footer() {
     <footer className="studio-footer">
       <div>
         <Link className="footer-wordmark" href="/">
-          coooder<span aria-hidden="true">✳︎</span>
+          coooder<span aria-hidden="true">.</span>
         </Link>
         <p>{language === 'zh' ? '认真构建，也保留一点好奇。' : 'Built with care. A little curiosity, always.'}</p>
       </div>

@@ -13,8 +13,8 @@ export default function AboutHeader() {
       </h1>
       <p>
         {language === 'zh'
-          ? '一个全栈工程师，和他持续更新的构建手记。'
-          : 'A fullstack engineer, and a collection of things learned along the way.'}
+          ? '专注 Agent Harness、AI-Native Engineering 与本地优先工具的全栈开发者。'
+          : 'A fullstack builder focused on Agent Harnesses, AI-native engineering, and local-first tools.'}
       </p>
     </header>
   );

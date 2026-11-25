@@ -24,6 +24,7 @@ yarn serve
 - `yarn lint` — non-mutating source checks; `yarn lint:fix` explicitly applies fixes.
 - `yarn typecheck` — regenerates Contentlayer data and Next route types, then runs TypeScript.
 - `yarn check:content` — checks an existing export; run after `yarn build`.
+- `yarn brain:import <note.md> --slug <slug>` — explicitly imports a reviewed note from `../Jarvis/jarvis-brain/output/writing/`, optimizes Obsidian image embeds to WebP, strips internal wikilinks, checks privacy redlines, and writes a draft MDX file (`draft: true` by default).
 
 ESLint uses the native Next 16 flat configuration. Formatting is handled separately by Prettier, avoiding repository-wide format-only edits. Four existing browser-hydration state initializations have narrowly scoped, explained exceptions; the hooks rule remains enabled elsewhere.
 

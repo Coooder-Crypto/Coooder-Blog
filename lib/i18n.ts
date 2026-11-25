@@ -34,6 +34,7 @@ export const translations: Record<Language, Translations> = {
     // Navigation
     'nav.blog': 'Blog',
     'nav.projects': 'Projects',
+    'nav.library': 'Radar',
     'nav.about': 'About',
     'nav.primary': 'Primary navigation',
     'nav.openMenu': 'Open navigation menu',
@@ -153,6 +154,7 @@ export const translations: Record<Language, Translations> = {
     // Navigation
     'nav.blog': '博客',
     'nav.projects': '项目',
+    'nav.library': '雷达',
     'nav.about': '关于',
     'nav.primary': '主导航',
     'nav.openMenu': '打开导航菜单',

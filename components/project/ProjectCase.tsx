@@ -1,58 +1,52 @@
 'use client';
 
-import StudioImage from '@/components/ui/StudioImage';
+import type { ComponentType } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import Link from '@/components/ui/Link';
+import { ByteNoteSvg, CapitalMapSvg, VitalSyncSvg } from '@/components/ui/EditorialDiagrams';
 import type { Project } from '@/types/data';
 import { useLanguage } from '@/lib/i18n';
 import ProjectEvidence from './ProjectEvidence';
 import type { ProjectEvidenceRecord } from '@/data/projectEvidence';
 
-const artwork: Record<string, 'health' | 'map' | 'notes'> = {
-  'Vital Agent Sync': 'health',
-  'AI Capital Map': 'map',
-  ByteNote: 'notes',
+const projectDiagrams: Record<string, ComponentType<{ className?: string }>> = {
+  'Vital Agent Sync': VitalSyncSvg,
+  'AI Capital Map': CapitalMapSvg,
+  ByteNote: ByteNoteSvg,
 };
 
 export default function ProjectCase({
   project,
   index,
   detailed = false,
+  featuredLead = false,
   evidence,
 }: {
   project: Project;
   index: number;
   detailed?: boolean;
+  featuredLead?: boolean;
   evidence?: ProjectEvidenceRecord;
 }) {
   const { language, t } = useLanguage();
-  const illustration = artwork[project.title.en];
+  const Diagram = projectDiagrams[project.title.en];
   const hasDetails = project.problem || project.outcome || (project.contribution && project.contribution.en !== 'xxx');
   return (
-    <article className={`case-card ${detailed ? 'case-detailed' : ''}`}>
-      {illustration && (
+    <article className={`case-card ${detailed ? 'case-detailed' : ''} ${featuredLead ? 'case-lead' : ''}`}>
+      {Diagram && (
         <div className="case-art">
-          <StudioImage
-            artwork={illustration}
-            alt=""
-            sizes={
-              evidence
-                ? '80px'
-                : detailed
-                  ? '(max-width: 760px) calc(100vw - 32px), (max-width: 1440px) 33vw, 400px'
-                  : '(max-width: 760px) 96px, (max-width: 1440px) 33vw, 400px'
-            }
-          />
+          <Diagram />
         </div>
       )}
       <div className="case-body">
         <div className="case-index">
-          <span>EXPERIMENT / {String(index + 1).padStart(2, '0')}</span>
-          <span aria-hidden="true">↗</span>
+          <span className="case-serif-num display-serif">{String(index + 1).padStart(2, '0')}</span>
+          <span className="case-index-tag">CASE STUDY</span>
         </div>
         <h3>{project.title[language]}</h3>
         {evidence && <p className="case-status">{evidence.status[language]}</p>}
         <p>{project.description?.[language]}</p>
+        {featuredLead && project.problem && <p className="case-lead-note">{project.problem[language]}</p>}
         {detailed && hasDetails && (
           <dl className="case-details">
             {project.problem && (
@@ -75,7 +69,7 @@ export default function ProjectCase({
             )}
           </dl>
         )}
-        <div className="case-technologies">{project.builtWith.slice(0, 4).join(' / ')}</div>
+        <div className="case-technologies">{project.builtWith.slice(0, 4).join(' · ')}</div>
         {(project.url || project.repo) && (
           <div className="case-links">
             {project.url && (

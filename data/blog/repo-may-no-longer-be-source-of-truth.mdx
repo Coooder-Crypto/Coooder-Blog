@@ -1,0 +1,78 @@
+---
+title: '代码仓库，可能不再是真相源'
+titleEn: 'The Code Repository May No Longer Be the Source of Truth'
+bodyLanguage: 'zh'
+summary: '从折腾个人常驻 Agent 服务器（Jarvis）的真实痛点出发，思考 Agent 时代软件工程的重心迁移：运行环境成为新的 Context Center，Git 退化为 Control Plane 与审计层。'
+summaryEn: 'Notes from operating a personal always-on agent host (Jarvis): why live runtime environments are becoming the real Context Center for agents while Git repositories shift toward Control Plane and audit roles.'
+date: '2026-06-20'
+lastmod: '2026-06-20'
+tags: ['agents', 'jarvis', 'architecture', 'ai-native-engineering']
+images: ['/static/images/blog/repo-may-no-longer-be-source-of-truth/repo-vs-environment-centric.webp']
+draft: false
+---
+
+![过去 Repository-Centric 与未来 Environment-Centric 的开发范式对照](/static/images/blog/repo-may-no-longer-be-source-of-truth/repo-vs-environment-centric.webp)
+
+> 暴论：Git 可能正在从软件开发的中心，退化成软件开发的日志系统。
+
+最近折腾自己的个人 Agent 服务器（Jarvis）时，一开始我严格遵循着传统的软件工程范式：本地开发，Git 同步，CI/CD 部署。为了让整个系统规范一点，我专门拆分了一系列仓库（配置、数据、工作台、运维部署），搭建了自动化部署链路，希望把本地开发环境和远端运行环境维持在一个可控状态。
+
+但很快我发现，对于 Agent 系统来说，代码根本不是最重要的资产，真正重要的是**运行中的状态**。
+
+Hermes 的 Memory、数据库中的用户数据、Agent 的长期记忆、运行中的配置、任务队列、日志，以及各种工具连接状态，共同构成了 Agent 的真实上下文。理论上，我可以把这些东西全部同步回本地，但随着系统越来越复杂，我发现自己花费越来越多的时间在维护同步链路，而不是在解决问题本身。
+
+后来在开发调试环境里，我干脆换了一种方式。
+
+我不再只从本地改完代码再同步到服务器，而是直接让 AI 在受控的 Dev 环境里查看代码、分析日志、核对配置、运行测试、验证服务状态，然后继续观察结果。整个排查和迭代过程几乎不需要本地反复模拟。
+
+有意思的是，这种方式用起来反而更自然。因为对于 Agent 来说，服务器并不是部署目标，**服务器就是工作现场**。
+
+## 被动摇的默认前提
+
+这让我开始怀疑，软件工程里一个存在了二十多年的默认前提，可能正在被动摇。
+
+过去我们默认认为 Repository 是系统的 Source of Truth。代码仓库记录着系统应该是什么样子，运行环境只是代码仓库的投影。所以 Git、GitHub、GitLab、Jenkins、DevOps 等一系列工具，本质上都在解决同一个问题：如何把 Repository 中的状态准确地同步到 Runtime 中。
+
+但 Agent 的出现改变了一件事情。
+
+对于人类开发者来说，本地开发很舒服，因为我们需要显示器、键盘、IDE 和各种图形界面工具。但对于 Agent 而言，本地和远程几乎没有区别，它不关心代码存放在哪台机器上，也不关心 VS Code 还是 Cursor，它只关心**哪里拥有最完整的上下文**。
+
+而运行环境恰好拥有最多的上下文。
+
+代码在这里，日志在这里，数据库在这里，配置在这里，监控指标在这里，运行状态也在这里。相比之下，本地仓库很多时候只是某个时间点的代码快照。如果 Agent 已经能够稳定使用 Shell、数据库只读查询工具和日志监控工具，那么让它直接在受控运行环境中观察与验证，反而比在本地模拟运行环境更加合理。
+
+## 历史里的相似迁移
+
+仔细想想，这种变化其实并不陌生。
+
+早期开发者习惯把数据下载到本地分析，后来 Google 提出了 *Bring Computation to the Data* 的思想。MapReduce、Bigtable、GFS 等系统背后的核心逻辑之一，就是承认数据规模已经大到无法高效移动，因此应该让计算主动靠近数据，而不是让数据迁移到计算旁边。
+
+后来云计算的发展也遵循着同样的方向。GitHub Codespaces、Remote SSH、JetBrains Gateway、Cloud IDE 的流行，本质上都在弱化一个长期存在的假设：开发必须发生在本地电脑上。
+
+AI 只是把这个趋势进一步推向了极致。
+
+过去大家讨论 AI 编程时，关注的是 Code Generation；但过去一年最受欢迎的工具，无论是 Claude Code、Codex 还是 Cursor Agent，它们真正强大的能力都已经不只是写代码，而是读取环境、调用工具、执行命令、观察结果、验证修改。换句话说，它们越来越像工程师，而越来越不像代码补全工具。
+
+所以我越来越觉得，未来几年软件工程真正发生变化的地方，并不是代码生成，而是 Source of Truth 的迁移：
+
+- **过去**：`Repository = Source of Truth`
+- **未来**：`Running System = Source of Truth`
+
+代码仓库记录的是系统“应该是什么样子”，而运行环境记录的是系统“实际上是什么样子”。对于 Agent 来说，后者显然更有价值。
+
+## 从 Repository-Centric 到 Environment-Centric
+
+如果这个判断成立，那么软件工程接下来几年最重要的变化，可能不是从 Human-Centric Development 走向 AI-Centric Development，而是从 **Repository-Centric Development** 走向 **Environment-Centric Development**。
+
+当然，这并不意味着未来大家都会直接 SSH 到生产环境改代码。
+
+对于大规模团队协作和生产系统来说，Repository、PR、Code Review、CI/CD、权限控制、审计追踪仍然不可替代。甚至随着 Agent 生成代码的速度越来越快，Git 这样的协作、回滚和审计系统可能会变得比今天更加重要。
+
+我真正想表达的并不是 Repository 会消失，而是它在软件工程中的位置正在发生变化。过去 Repository 同时承担着代码存储、协作管理和上下文中心的角色；而在 Agent 时代，运行环境正在逐渐成为最重要的上下文来源——配置漂移、数据库状态、长期记忆、定时任务队列与真实日志，都在运行现场里。
+
+所以也许未来的演进并不是 Repository-Centric 被 Environment-Centric 彻底取代，而是新的分工：
+
+- **Environment 成为新的 Context Center**：Agent 在受控运行环境中观察、理解与验证；
+- **Repository 成为 Control Plane**：团队在代码仓库中提交、评审、审计与回滚。
+
+正如云计算没有消灭本地开发，而是重新定义了本地开发的角色一样，Agent 也不会消灭 Git，而是会重新定义 Git 在整个软件工程体系中的位置。

@@ -83,38 +83,38 @@ const projectsData: Project[] = [
   {
     type: 'work',
     title: {
-      en: 'Thunderbit: AI Web Scraper - Scrape any website in 2 click.',
-      zh: 'Thunderbit：AI 网页爬虫 —— 两次点击抓取任意网站',
+      en: 'Thunderbit: AI Web Scraper',
+      zh: 'Thunderbit：AI 网页爬虫与无代码工作流',
     },
     description: {
-      en: 'AI Web Scraper - Scrape any website in 2 click.',
-      zh: 'AI 网页爬虫，支持两次点击抓取任意网站内容。',
+      en: 'AI Web Scraper and no-code LLM workflow platform spanning web app and Chrome extension.',
+      zh: '覆盖 Web 与 Chrome 扩展的 AI 网页抓取与大模型无代码工作流平台。',
     },
     contribution: {
-      en: 'xxx',
-      zh: 'xxx',
+      en: 'Built core frontend components and LLM workflow UI across the web app and Chrome extension.',
+      zh: '负责 Web 端与 Chrome 扩展核心组件及大模型 Workflow 交互实现。',
     },
     imgSrc: '/static/images/projects/thunderbit.webp',
     url: 'https://thunderbit.com/',
-    builtWith: ['React', 'Styled-Component', 'NextJS'],
+    builtWith: ['React', 'Styled-Component', 'Next.js', 'Chrome Extension'],
   },
   {
     type: 'work',
     title: {
-      en: 'EthPanda: NFT Collection Platform',
-      zh: 'EthPanda：NFT 收藏平台',
+      en: 'EthPanda: Community & NFT Platform',
+      zh: 'EthPanda：社区与 NFT 平台',
     },
     description: {
-      en: 'A comprehensive NFT collection and trading platform built with modern web technologies.',
-      zh: '一个使用现代 Web 技术构建的综合 NFT 收藏与交易平台。',
+      en: 'A community and NFT collection platform built with Next.js, tRPC, and Tailwind CSS.',
+      zh: '基于 Next.js、tRPC 与 Tailwind CSS 构建的社区与 NFT 收藏平台。',
     },
     contribution: {
-      en: 'xxx',
-      zh: 'xxx',
+      en: 'Implemented responsive frontend modules and tRPC-backed interactive views.',
+      zh: '负责响应式前端模块与基于 tRPC 的交互页面实现。',
     },
     imgSrc: '/static/images/projects/ethpanda.webp',
     url: 'https://ethpanda.org/',
-    builtWith: ['React', 'TailwindCSS', 'TRPC', 'NextJS'],
+    builtWith: ['React', 'TailwindCSS', 'tRPC', 'Next.js'],
   },
   {
     type: 'self',
@@ -194,20 +194,20 @@ const projectsData: Project[] = [
   {
     type: 'self',
     title: {
-      en: 'Personal website',
-      zh: '个人网站',
+      en: 'Personal Website (Coooder Blog)',
+      zh: '个人网站（Coooder Blog）',
     },
     description: {
-      en: 'A bilingual personal website for engineering notes, projects, and experiments, built with Next.js and MDX.',
-      zh: '使用 Next.js 和 Tailwind CSS 构建的个人网站。',
+      en: 'A bilingual static website for Agent Harness notes, verified project evidence, and essays, built with Next.js 16 and MDX.',
+      zh: '基于 Next.js 16、Contentlayer 与 MDX 构建的双语个人网站，包含公开项目证据核对与静态导出校验。',
     },
     contribution: {
-      en: 'xxx',
-      zh: 'xxx',
+      en: 'Designed the studio UI, bilingual metadata pipeline, draft-isolation checks, and local second-brain import workflow.',
+      zh: '负责站点设计、双语元信息、草稿防泄漏校验与本地第二大脑导入工作流。',
     },
     imgSrc: '/static/images/projects/coooder-blog.webp',
     url: 'https://coooder-blog.vercel.app/',
-    builtWith: ['Next.js', 'Tailwind', 'Typescript', 'MDX'],
+    builtWith: ['Next.js', 'Tailwind', 'TypeScript', 'MDX'],
   },
   {
     type: 'self',
@@ -216,16 +216,16 @@ const projectsData: Project[] = [
       zh: 'LXDAO 官方网站',
     },
     description: {
-      en: 'The LXDAO community website, built with Next.js and Tailwind CSS.',
+      en: 'The LXDAO builder community website, built with Next.js and Tailwind CSS.',
       zh: '使用 Next.js 和 Tailwind CSS 构建的 LXDAO 官方站点。',
     },
     contribution: {
-      en: 'xxx',
-      zh: 'xxx',
+      en: 'Contributed frontend pages and community site maintenance as an LXDAO builder.',
+      zh: '作为社区 Builder 参与官网前端页面开发与维护。',
     },
     imgSrc: '/static/images/projects/lxdao.webp',
     url: 'https://lxdao.io/',
-    builtWith: ['Next.js', 'Tailwind', 'Typescript'],
+    builtWith: ['Next.js', 'Tailwind', 'TypeScript'],
   },
   {
     type: 'self',
@@ -234,16 +234,16 @@ const projectsData: Project[] = [
       zh: 'Openbuild 开发者社区',
     },
     description: {
-      en: 'A developer community website, built with Next.js and Tailwind CSS.',
-      zh: '使用 Next.js 和 Tailwind CSS 构建的开发者社区网站。',
+      en: 'A developer community website, built with Next.js, Tailwind CSS, and MDX.',
+      zh: '使用 Next.js、Tailwind CSS 与 MDX 构建的开发者社区网站。',
     },
     contribution: {
-      en: 'xxx',
-      zh: 'xxx',
+      en: 'Contributed community web modules and content presentation components.',
+      zh: '参与开发者社区 Web 模块与内容展示组件构建。',
     },
     imgSrc: '/static/images/projects/openbuild.webp',
     url: 'https://openbuild.xyz/',
-    builtWith: ['Next.js', 'Tailwind', 'Typescript', 'MDX'],
+    builtWith: ['Next.js', 'Tailwind', 'TypeScript', 'MDX'],
   },
   {
     type: 'self',
@@ -256,30 +256,30 @@ const projectsData: Project[] = [
       zh: '使用 Next.js 和 Tailwind CSS 构建的投资机构官网。',
     },
     contribution: {
-      en: 'xxx',
-      zh: 'xxx',
+      en: 'Implemented responsive landing pages and interactive sections.',
+      zh: '负责响应式官网页面与交互模块实现。',
     },
     imgSrc: '/static/images/projects/mmcapital.webp',
     // Public URL withheld until verified; the previous LXDAO link was unrelated.
-    builtWith: ['Next.js', 'Tailwind', 'Typescript'],
+    builtWith: ['Next.js', 'Tailwind', 'TypeScript'],
   },
   {
     type: 'self',
     title: {
-      en: 'Circuit',
-      zh: 'Circuit',
+      en: 'Circuit DEX',
+      zh: 'Circuit DEX',
     },
     description: {
-      en: 'A creative showcase website, built with Next.js and Tailwind CSS.',
-      zh: '使用 Next.js 和 Tailwind CSS 构建的创意展示站点。',
+      en: 'Frontend application for a decentralized exchange on Zircuit, focused on swap UI and UX iteration.',
+      zh: '面向 Zircuit 生态的去中心化交易所前端应用，聚焦交易交互与体验迭代。',
     },
     contribution: {
-      en: 'xxx',
-      zh: 'xxx',
+      en: 'Developed core DEX frontend flows alongside product and design.',
+      zh: '协同产品与设计完成 DEX 核心前端流程开发与体验优化。',
     },
     imgSrc: '/static/images/projects/circuit.webp',
     // Public URL withheld until verified.
-    builtWith: ['Next.js', 'Tailwind', 'Typescript'],
+    builtWith: ['Next.js', 'Tailwind', 'TypeScript'],
   },
   {
     type: 'self',
@@ -288,16 +288,16 @@ const projectsData: Project[] = [
       zh: 'ZK Asset Raffle',
     },
     description: {
-      en: 'A zero-knowledge asset raffle website, built with Next.js and Tailwind CSS.',
-      zh: '使用 Next.js 和 Tailwind CSS 构建的零知识资产抽奖平台。',
+      en: 'A zero-knowledge asset raffle web application built with Next.js and Tailwind CSS.',
+      zh: '使用 Next.js 和 Tailwind CSS 构建的零知识资产抽奖应用。',
     },
     contribution: {
-      en: 'xxx',
-      zh: 'xxx',
+      en: 'Built frontend flows and wallet/proof interaction states.',
+      zh: '负责前端交互流程与钱包/零知识证明状态呈现。',
     },
     imgSrc: '/static/images/projects/zkassetraffle.webp',
     // Public URL withheld until verified.
-    builtWith: ['Next.js', 'Tailwind', 'Typescript'],
+    builtWith: ['Next.js', 'Tailwind', 'TypeScript'],
   },
 ];
 

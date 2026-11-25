@@ -9,10 +9,28 @@ type PopularTag = {
 
 const popularTags: PopularTag[] = [
   {
-    href: '/tags/javascript',
-    iconType: 'Javascript',
-    slug: 'javascript',
-    title: 'JavaScript',
+    href: '/tags/agents',
+    iconType: 'AI',
+    slug: 'agents',
+    title: 'Agents',
+  },
+  {
+    href: '/tags/agent-harness',
+    iconType: 'Bash',
+    slug: 'agent-harness',
+    title: 'Agent Harness',
+  },
+  {
+    href: '/tags/ai-native-engineering',
+    iconType: 'Git',
+    slug: 'ai-native-engineering',
+    title: 'AI-Native',
+  },
+  {
+    href: '/tags/architecture',
+    iconType: 'Markdown',
+    slug: 'architecture',
+    title: 'Architecture',
   },
   {
     href: '/tags/react',
@@ -27,22 +45,10 @@ const popularTags: PopularTag[] = [
     title: 'Next.js',
   },
   {
-    href: '/tags/typescript',
-    iconType: 'Typescript',
-    slug: 'typescript',
-    title: 'TypeScript',
-  },
-  {
-    href: '/tags/vercel',
-    iconType: 'Vercel',
-    slug: 'vercel',
-    title: 'Vercel',
-  },
-  {
-    href: '/tags/ai',
-    iconType: 'AI',
-    slug: 'ai',
-    title: 'AI',
+    href: '/tags/javascript',
+    iconType: 'Javascript',
+    slug: 'javascript',
+    title: 'JavaScript',
   },
 ];
 

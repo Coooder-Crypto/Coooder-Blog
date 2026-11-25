@@ -23,10 +23,30 @@ const subscribeToQuery = (notify: () => void) => {
 const getQuery = () => window.location.search;
 const getServerQuery = () => '';
 
-function updateQuery(query: string, page: number, push = false) {
+const agentTags = new Set([
+  'agents',
+  'agent-harness',
+  'ai-native-engineering',
+  'context-management',
+  'ai',
+  'jarvis',
+  'memory',
+  'source-code',
+  'automation',
+]);
+
+type CategoryKey = 'all' | 'agent' | 'frontend';
+
+function isAgentPost(post: CoreContent<Blog>) {
+  return Boolean(post.tags?.some((tag) => agentTags.has(tag.toLowerCase())));
+}
+
+function updateQuery(query: string, page: number, tab: CategoryKey = 'all', push = false) {
   const url = new URL(window.location.href);
   if (query) url.searchParams.set('q', query);
   else url.searchParams.delete('q');
+  if (tab !== 'all') url.searchParams.set('tab', tab);
+  else url.searchParams.delete('tab');
   if (page > 1) url.searchParams.set('page', String(page));
   else url.searchParams.delete('page');
   const target = `${url.pathname}${url.search}${url.hash}`;
@@ -101,12 +121,22 @@ export default function ListLayout({
   const queryString = useSyncExternalStore(subscribeToQuery, getQuery, getServerQuery);
   const query = new URLSearchParams(queryString);
   const searchValue = query.get('q') ?? '';
+  const rawTab = query.get('tab');
+  const activeTab: CategoryKey = showReadingPaths && (rawTab === 'agent' || rawTab === 'frontend') ? rawTab : 'all';
   const pageParam = query.get('page');
   const requestedPage = pageParam && /^[1-9]\d*$/.test(pageParam) ? Number(pageParam) : 1;
   const derivedPostsPerPage =
     postsPerPage ??
     (initialDisplayPosts.length || (pagination ? Math.ceil(posts.length / pagination.totalPages) : posts.length));
-  const filteredBlogPosts = posts.filter((post) => {
+  const agentCount = posts.filter(isAgentPost).length;
+  const frontendCount = posts.length - agentCount;
+  const categoryPosts =
+    activeTab === 'agent'
+      ? posts.filter(isAgentPost)
+      : activeTab === 'frontend'
+        ? posts.filter((post) => !isAgentPost(post))
+        : posts;
+  const filteredBlogPosts = categoryPosts.filter((post) => {
     const localizedPost = getLocalizedBlogContent(post, language);
     const searchContent = [
       localizedPost.title,
@@ -130,14 +160,14 @@ export default function ListLayout({
 
   useEffect(() => {
     if (pageParam !== null && pageParam !== (currentPage > 1 ? String(currentPage) : null)) {
-      updateQuery(searchValue, currentPage);
+      updateQuery(searchValue, currentPage, activeTab);
     }
-  }, [pageParam, currentPage, searchValue]);
+  }, [pageParam, currentPage, searchValue, activeTab]);
 
   const handlePageChange = (page: number) => {
     if (!pagination) return;
     if (page < 1 || page > totalPages) return;
-    updateQuery(searchValue, page, true);
+    updateQuery(searchValue, page, activeTab, true);
     if (typeof window !== 'undefined') {
       window.scrollTo({
         top: 0,
@@ -150,19 +180,50 @@ export default function ListLayout({
     <>
       <div className="blog-index">
         <header className="editorial-page-heading">
-          <p className="eyebrow">{language === 'zh' ? '实践 / 思考 / 记录' : 'EXPERIMENTS / IDEAS / OBSERVATIONS'}</p>
+          <p className="eyebrow">
+            {language === 'zh' ? 'AGENT HARNESS / 实证 / 思考' : 'AGENT HARNESS / EXPERIMENTS / NOTES'}
+          </p>
           <h1>
             {title}
             <span className="rust-dot">.</span>
           </h1>
           <p>
             {language === 'zh'
-              ? '关于 Agent、开发工具与软件工程。一边构建，一边记录。'
-              : 'On agents, developer tools, and the craft of software. Notes from doing the work.'}
+              ? '记录 AI-Native Engineering、Agent Runtime 拆解、Jarvis 实践与全栈工程基础。'
+              : 'Notes on AI-native engineering, agent runtimes, personal systems, and fullstack fundamentals.'}
           </p>
         </header>
-        {showReadingPaths && !searchValue.trim() && currentPage === 1 && <ReadingPaths />}
+        {showReadingPaths && !searchValue.trim() && currentPage === 1 && activeTab === 'all' && <ReadingPaths />}
         <div className="blog-toolbar">
+          {showReadingPaths && (
+            <div className="blog-category-tabs" role="tablist" aria-label={language === 'zh' ? '文章主题分组' : 'Post topics'}>
+              {[
+                { key: 'all' as const, label: language === 'zh' ? '全部文章' : 'All posts', count: posts.length },
+                {
+                  key: 'agent' as const,
+                  label: language === 'zh' ? 'Agent 与 AI-Native' : 'Agents & AI-Native',
+                  count: agentCount,
+                },
+                {
+                  key: 'frontend' as const,
+                  label: language === 'zh' ? '前端与全栈归档' : 'Frontend archive',
+                  count: frontendCount,
+                },
+              ].map((item) => (
+                <button
+                  key={item.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === item.key}
+                  onClick={() => updateQuery(searchValue, 1, item.key, true)}
+                  className={`blog-category-tab ${activeTab === item.key ? 'active' : ''}`}
+                >
+                  {item.label}
+                  <span>{item.count}</span>
+                </button>
+              ))}
+            </div>
+          )}
           <div className="relative max-w-[420px]">
             <label>
               <span className="sr-only">{t('blog.searchArticles')}</span>
@@ -170,7 +231,7 @@ export default function ListLayout({
                 aria-label={t('blog.searchArticles')}
                 type="search"
                 value={searchValue}
-                onChange={(e) => updateQuery(e.target.value, 1)}
+                onChange={(e) => updateQuery(e.target.value, 1, activeTab)}
                 placeholder={t('blog.searchArticles')}
                 className="blog-search"
               />

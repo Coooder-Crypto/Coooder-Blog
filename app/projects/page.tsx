@@ -3,6 +3,7 @@
 import projectsData from '@/data/projectsData';
 import ProjectCase from '@/components/project/ProjectCase';
 import ProjectArchive from '@/components/project/ProjectArchive';
+import JarvisSpotlight from '@/components/project/JarvisSpotlight';
 import { projectEvidence } from '@/data/projectEvidence';
 import { useLanguage } from '@/lib/i18n';
 
@@ -47,6 +48,7 @@ export default function Projects() {
             : 'Evidence reviewed Oct 6, 2026; links are pinned to public revisions. Project tests were not rerun; test links show coverage design, not production acceptance.'}
         </p>
       </section>
+      <JarvisSpotlight />
       <section aria-labelledby="archive-heading" className="editorial-section">
         <div className="section-heading">
           <div>

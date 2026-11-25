@@ -63,8 +63,8 @@ export default function GamingShelf() {
       </ul>
       <p className="gaming-art-credit">
         {zh
-          ? '游戏封面来自 Steam，版权归各自权利人所有。'
-          : 'Game artwork via Steam. All artwork belongs to its respective owners.'}
+          ? '偶尔也会顺手给自己搭 Steam / CS2 战绩数据管道做复盘。游戏封面来自 Steam，版权归各自权利人所有。'
+          : 'Sometimes I even build small Steam / CS2 telemetry pipelines for match reviews. Game artwork via Steam, belonging to its respective owners.'}
       </p>
     </section>
   );

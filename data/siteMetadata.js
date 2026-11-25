@@ -1,10 +1,10 @@
 const siteMetadata = {
-  title: 'Coooder — AI Agent 与全栈工程',
+  title: 'Coooder — Agent Harness 与全栈工程',
   author: 'Coooder',
   fullName: 'Coooder',
   headerTitle: "Coooder's Blog",
   description:
-    '我是 Coooder，一名探索 AI Agent、开发者工具与全栈工程的开发者。这里记录我的项目、实验与工程实践；提供双语导航与摘要，文章保留原文语言。',
+    '我是 Coooder，专注于 Agent Harness、AI-Native Engineering、本地优先个人系统（Jarvis）与全栈工程实践。提供双语导航与摘要，文章保留原文语言。',
   language: 'zh-CN',
   theme: 'system',
   siteUrl: 'https://coooder-blog.vercel.app',

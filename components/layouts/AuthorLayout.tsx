@@ -2,6 +2,7 @@ import type { Authors } from 'contentlayer/generated';
 import { Mail, Github, ArrowUpRight } from 'lucide-react';
 import { Link, Image } from '@/components/ui';
 import AboutIntro from '@/components/about/AboutIntro';
+import WorkbenchNow from '@/components/about/WorkbenchNow';
 import CareerTimeline from '@/components/about/CareerTimeline';
 import AboutHeader from '@/components/about/AboutHeader';
 import PlayerProfile from '@/components/gaming/PlayerProfile';
@@ -20,7 +21,7 @@ export default function AuthorLayout({ children, content }: Props) {
         <aside className="about-profile">
           <Image src={avatar || '/static/images/avatar.png'} alt="Coooder" width={430} height={430} />
           <h3>{name}</h3>
-          <p>ENGINEER / BUILDER / EXPLORER</p>
+          <p>AGENT HARNESS / FULLSTACK / LOCAL-FIRST</p>
           <div className="about-socials">
             {email && (
               <Link href={`mailto:${email}`} aria-label="Email Coooder">
@@ -42,6 +43,7 @@ export default function AuthorLayout({ children, content }: Props) {
         <div className="about-content prose max-w-none">
           <AboutIntro />
           {children}
+          <WorkbenchNow />
           <CareerTimeline />
         </div>
       </div>

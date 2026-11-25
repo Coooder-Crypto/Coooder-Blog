@@ -1,10 +1,14 @@
 [
   "agent-framework-comparison-guide",
+  "ai-coding-second-payment-and-knowledge-debt",
+  "ai-dev-bottleneck-is-feedback-loop",
+  "ai-native-engineering-design-for-agents",
   "browser-loading-process",
   "claw-code-cli-to-runtime",
   "claw-code-context-management-compaction",
   "claw-code-is-not-just-a-chat-cli",
   "claw-code-tools-skills-slash-commands",
+  "context-compaction-is-not-summarization",
   "frontend-learning-roadmap",
   "how-hermes-agent-self-improves",
   "javascript-prototype-chain",
@@ -14,6 +18,7 @@
   "notion-as-cms-system-implementation",
   "react-18-new-features",
   "react-19-new-features",
+  "repo-may-no-longer-be-source-of-truth",
   "vue-vs-react-design-philosophy",
   "when-not-to-use-ai-agents"
 ]

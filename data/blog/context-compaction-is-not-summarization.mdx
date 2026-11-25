@@ -1,0 +1,132 @@
+---
+title: '上下文压缩不是摘要：Agent Harness 的一层护城河'
+titleEn: 'Context Compaction Is Not Summarization: A Moat Layer in Agent Harnesses'
+bodyLanguage: 'zh'
+summary: '拆解长程 Agent 的上下文压缩：从 OpenAI Responses API 原生 compaction、多层前置防线、任务状态与脚手架重建，到 Local vs Remote 的长程对照 probe。'
+summaryEn: 'Unpacks long-horizon context compaction in agent harnesses: native server-side compaction, pre-compaction defenses, rebuilding task state vs. workspace scaffolding, and a controlled Local vs. Remote probe.'
+date: '2026-07-13'
+lastmod: '2026-07-13'
+tags: ['agents', 'agent-harness', 'context-management', 'architecture']
+images: ['/static/images/blog/context-compaction-is-not-summarization/local-vs-remote-probe.webp']
+draft: false
+---
+
+## 从“手动交接”到 Vibe Contexting
+
+长程 Agent 过去有一条几乎是常识的操作原则：不要等上下文被挤满。关键任务做到一半时，手动写 handoff、开新会话，往往比依赖自动摘要更稳妥。因为每压缩一次就可能丢掉一部分分支、工具结果或决策依据，连续压缩后尤其容易跑偏。
+
+但最近的产品体验正在反过来：人们开始期待 Agent 自动跨过多个上下文窗口，而不需要用户盯着进度条管理会话。这种“vibe contexting”式的承诺并不是“摘要模型变强”这么简单，而是整个上下文管理链路被产品化了。
+
+## 什么是上下文压缩
+
+长程 Agent 的“上下文压缩”不是简单地把聊天记录总结一下。一个 Agent 连续工作几十轮以后，真正要保住的不只是对话文本，还包括：任务做到哪一步、已经做过哪些决策、工具调用带来了什么证据、哪些约束仍然有效，以及下一步应该验证什么。丢掉其中任何一块，模型都可能在下一轮看起来还会说话，却已经不知道自己在做什么。
+
+所以最近越来越流行“放心让 Agent 自动压缩”的体验，背后并不只是摘要模型变强了，而是一套更完整的上下文工程。
+
+## 官方能力已经从“手动摘要”走向原生 compaction
+
+OpenAI 当前公开的 Responses API 提供两种 compaction 路径。
+
+第一种是 **server-side compaction**：在普通的 `/responses` 请求中配置 `context_management` 和 `compact_threshold`。当渲染后的上下文达到阈值，服务端会在同一条响应流中完成压缩，并返回一个可用于后续续接的 compaction item。
+
+![官方示例在 Responses 请求中配置 context_management 与 compact_threshold](/static/images/blog/context-compaction-is-not-summarization/responses-compaction-flow.webp)
+
+第二种是 **standalone `/responses/compact`**：应用在需要明确控制时，把当前上下文发送给专用端点，取得新的紧凑上下文窗口，再把它原样用于下一次 Responses 请求。
+
+两种方式的共同点很关键：返回的是携带先前任务状态的 **opaque、加密 item**。它的职责是让模型继续工作，不是给客户端或人类阅读、解析和依赖其内部格式。官方文档也明确说明，这类内部逻辑可以演进。
+
+![官方文档说明服务端压缩在阈值触发后执行，并在响应流中返回加密的 compaction item](/static/images/blog/context-compaction-is-not-summarization/server-side-compaction-docs.webp)
+
+这意味着 compaction 更像一次 checkpoint：不是把历史粗暴删掉，而是生成一个能支撑下一段执行的新基线。
+
+## 在全量压缩之前：上下文还有多层防线
+
+“快满了就做一次摘要”只是最后一道防线。一个可用的 Agent 客户端通常会先限制工具输出进入历史的体积、清理无效或孤立的调用记录、避免重复注入不变的系统说明，并把必要但过大的内容留在可按需回读的位置。
+
+这背后有两个目标：一是尽量延缓 full compaction，二是不要随意改写已经稳定存在的历史前缀。后者会影响 prompt cache 的命中，也会让长任务的延迟和成本突然跳升。因此，上下文工程不是单目标的“压得越小越好”，而是在信息保留、窗口预算和缓存稳定性之间取舍。
+
+对本地客户端来说，一个实用的分层顺序是：先减少无价值的重复输出；再把可重新读取的证据外置或建立索引；最后才生成任务交接状态。这样，summary 承担的是“恢复任务主线”，而不是被迫塞下所有原始日志。
+
+## 为什么压缩之后，Agent 有时还能“记得住”
+
+一个长程任务能否续跑，取决于至少两层东西。
+
+第一层是 **任务状态**：已经修改过什么、当前分支或文件处于什么状态、哪些假设已被验证、接下来还剩什么。它由 compaction 负责尽可能压缩和携带。
+
+第二层是 **工作脚手架**：仓库规则、权限边界、可用工具、测试命令、当前目录和用户约束。这些不应该完全寄托在摘要里。一个成熟的 Agent 系统会在续接时重新提供或重新加载必要的系统上下文，让压缩后的状态专注于“任务本身”。
+
+这两层缺一不可。只有摘要，没有规则重建，Agent 可能记得任务，却忘了不能碰哪个目录；只有规则，没有任务状态，Agent 又会遵守规范地重复已经做过的工作。
+
+因此，压缩质量不是一个孤立的模型能力，而是 compaction、上下文装配、工具结果管理和系统指令重建共同产生的结果。
+
+## 客户端实现快照：不止一条 compact 路径
+
+从 Codex 客户端代码快照看，压缩至少存在三种客户端可见的形态：
+
+- **Local Compact**：客户端调用当前模型写 handoff summary，以摘要、近期用户消息和必要状态替换较长历史；
+- **Remote Compact V1**：客户端请求专用的服务端压缩能力，拿到 opaque compaction item 后继续携带；
+- **Remote Compact V2**：同样由服务端返回可续接状态，但协议可改为在常规 Responses 流中表达。
+
+这组命名是实现快照，不是稳定承诺。真正值得关注的区别是：Local 的质量更依赖客户端选择了哪些历史、提示词如何写、摘要模型是否覆盖工具证据；Remote 将压缩状态交给服务端，客户端只能把 opaque item 当作规范输入继续传递，不能解析或改写其内部内容。
+
+因此，一个本地客户端要做好这件事，不能只把聊天记录缩短。它至少要保存任务进度、关键决策、文件与分支指针、测试或工具结果、未完成事项和仍然有效的规则；触发压缩后，再把这些内容连同必要的系统约束重新注入下一轮。缺少其中任何一环，压缩后的 Agent 都可能“记得主题”，但无法继续可靠地执行。
+
+我对同一段复杂长程任务做过这两条路径的对照。结果显示，在那一个任务、那一组客户端与模型配置下，Remote 路径保留了更多分支、测试和验收细节；Local 路径则更容易把主线降级为“不确定”。
+
+![同一评测提示下的一次个人长程任务 probe：Local Compact vs Remote V1 / V2 的客观得分与 gold facts 保留数](/static/images/blog/context-compaction-is-not-summarization/local-vs-remote-probe.webp)
+
+这个结果值得重视，但不该被写成“某条路径永远碾压另一条路径”。
+
+因为上下文压缩的评估非常容易被任务形态影响：
+
+- 任务是否有大量工具输出、分支和中断；
+- 使用的模型、客户端版本和上下文窗口；
+- 何时触发压缩、压缩过几次；
+- 评分是否禁止工具、是否有预先定义的 gold facts；
+- 续接后要考察的是事实记忆、任务推进，还是最终代码质量。
+
+更严谨的写法，是把它称作一个 probe：它说明这条工作流值得继续验证，而不是给所有 provider、所有版本下结论。
+
+## 黑盒里还能、不能推断什么
+
+Remote 返回的 compaction item 对客户端是 opaque 的，这只证明客户端不应依赖它的内部格式，并不自动证明里面保存了哪些字段、更不证明其中存在某种额外的“神秘记忆”。实验中 Remote 的高分说明端到端恢复得更完整；它不能单独分辨贡献来自压缩器、工具结果处理、状态装配、模型选择，还是这些因素的组合。
+
+这反而是一个重要结论：压缩提示词只是链路中的一小段。评估一个 Agent 的长程能力，应当观测压缩后的实际续跑——能否找回文件和分支、是否知道测试结论、能否继续完成验收——而不是只比较一段 handoff 文本写得是否漂亮。
+
+下一步更有价值的实验，是在相同会话上逐项控制变量：固定模型，替换压缩策略；固定压缩策略，改变工具结果规模；再记录每次 compact 后任务状态、缓存成本和最终代码质量。这样才能逐步定位差异来自哪里。
+
+## Harness 才是长程 Agent 的产品
+
+讨论到这里，重点已经不只是“Remote 还是 Local”。
+
+长程 Agent 的体验由一整套 Harness 决定：模型能否读懂工具输出，客户端是否能稳定保存状态，服务端是否支持原生 compaction，系统规则是否能在新窗口重建，验证闭环是否足够清楚。
+
+这也是为什么原厂 Agent 经常看起来更“顺手”。优势未必只来自同一个模型更强，也可能来自模型、API、客户端编排、缓存、工具协议和评估数据之间的协同。它们共同决定了模型在长任务中是持续推进，还是每隔一段时间就重新失忆。
+
+但这不等于第三方 Agent 没有价值，更不意味着应该迷信任何不透明实现。真正应该关注的是可观测性与可验证性：
+
+- 压缩是否有明确触发与失败行为；
+- 续接后能否保留任务状态与关键约束；
+- 重要工具结果是否可以按需回读；
+- 系统是否给出足够证据，让人判断 Agent 是否真的没有跑偏。
+
+对使用者来说，最实用的建议不是去猜 opaque item 里装了什么，更不是依赖未公开的 feature flag 或 provider 伪装技巧。应该用自己的真实工作流做小规模对照：长任务是否能续跑、测试是否仍然可复现、关键决策是否仍能追溯。
+
+## 对 Context / Harness Engineer 的启发
+
+Context Engineer 并没有消失，只是职责从“手工写一段摘要 prompt”上移为设计整条运行时链路：哪些状态必须持久化，哪些证据可以回读，何时压缩，压缩失败怎么办，以及系统约束如何在新窗口中可靠地重建。
+
+这也是 Harness Engineer 与 Loop Engineer 出现的原因。模型负责生成下一步；Harness 负责让模型在工具、状态、权限、验证和上下文边界之内持续推进；Loop 则把“计划—执行—检查—修正”变成可重复运行的闭环。真正的竞争不只是谁的模型更强，而是谁更能把这些环节变成稳定的产品体验。
+
+## 结语
+
+“Vibe contexting” 听起来很轻松，背后其实是一套不那么 vibe 的工程系统。
+
+上下文压缩不是摘要功能的附属品，而是 Agent 长程执行的状态管理能力。它决定了模型跨过窗口边界之后，是继续沿着任务主线前进，还是礼貌地忘记前面发生的一切。
+
+模型是引擎，Harness 才是让它能跑长途的车。未来 Agent 的竞争，也会越来越多地发生在这层看不见的工程里。
+
+## 参考
+
+- [OpenAI Compaction guide](https://developers.openai.com/api/docs/guides/compaction)
+- [OpenAI Codex prompting guide: Compaction](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide#compaction)
