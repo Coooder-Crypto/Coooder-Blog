@@ -27,10 +27,10 @@ const principles = [
   },
   {
     num: '03',
-    title: { zh: '数据主权归己，敏感边界硬隔离', en: 'Data sovereignty & hard privacy walls' },
+    title: { zh: '数据主权归己，记忆与账本分离', en: 'Data sovereignty & ledger over raw memory' },
     body: {
-      zh: '在 Jarvis 与 Vital Agent Sync 的设计里，原始健康记录、凭据与私有数据永远留在受控本地层，Agent 只通过最小权限 CLI 读取聚合摘要。',
-      en: 'Across Jarvis and Vital Agent Sync, raw personal exports and secrets stay isolated locally; agents only access bounded summaries through controlled CLIs.',
+      zh: '记忆负责回忆，账本负责计算。在 Jarvis、Vital Agent Sync 与 MemTable 里，原始健康记录与敏感数据留在本地硬隔离层，Agent 只通过最小权限 MCP/CLI 读写受控摘要与可审计记录。',
+      en: 'Memory recalls what happened; a ledger computes what changed. Across Jarvis, Vital Agent Sync, and MemTable, raw personal exports stay isolated locally behind minimal MCP/CLI boundaries.',
     },
     href: '/projects#jarvis-system',
     linkLabel: { zh: 'Jarvis 架构原则', en: 'Jarvis architecture' },

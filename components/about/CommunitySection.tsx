@@ -7,29 +7,33 @@ import { useLanguage } from '@/lib/i18n';
 const communityItems = [
   {
     icon: 'award' as const,
-    tag: 'HACKATHON · ETH BEIJING',
-    title: { zh: 'Public Goods 赛道三等奖', en: 'Public Goods Track · 3rd Prize' },
+    tag: 'HACKATHON · ETH BEIJING 2025 & MORPH',
+    title: { zh: 'zkAssetRaffle · 双赛道一等奖', en: 'zkAssetRaffle · Dual 1st Prize' },
     detail: {
-      zh: '在 ETH Beijing 黑客松中与团队从零构建并完成现场演示，聚焦公共物品与开发者协作体验。',
-      en: 'Shipped and pitched an end-to-end prototype in the Public Goods track at ETH Beijing.',
+      zh: '获 ETH Beijing 2025 Public Goods 一等奖与 Morph Hackathon 一等奖：用 TEE 机密承诺、加密二维码与 Merkle/ZK 证明构建实物资产可验证公平抽奖协议。',
+      en: '1st Prize in ETH Beijing 2025 Public Goods and Morph Hackathon: a verifiable RWA raffle protocol pairing confidential commitments, encrypted QR codes, and Merkle/ZK proofs.',
     },
+    href: 'https://github.com/Coooder-Crypto/zk-asset-raffle',
+    linkLabel: { zh: '查看仓库', en: 'View repository' },
   },
   {
     icon: 'award' as const,
-    tag: 'HACKATHON · ETHGLOBAL BANGKOK',
-    title: { zh: 'WorldCoin 赛道获奖项目', en: 'ETHGlobal Bangkok · WorldCoin Award' },
+    tag: 'HACKATHON · ETH SHANGHAI 2025 & ETH BEIJING 2024',
+    title: { zh: 'OwnFace & Proof of Discord', en: 'OwnFace & Proof of Discord' },
     detail: {
-      zh: '参与 ETHGlobal 曼谷黑客松，围绕零知识身份与前端交互链路完成高强度 48 小时交付。',
-      en: 'Built and delivered a 48-hour prototype in Bangkok focused on verifiable identity and frontend UX.',
+      zh: 'OwnFace（零知识人脸生物认证栈）获 ETH Shanghai 2025 二等奖；zkp-discord（ZK Email 身份证明）获 ETH Beijing 2024 三等奖与 Scroll 二等奖。',
+      en: 'OwnFace (ZK biometric auth stack) won 2nd Prize at ETH Shanghai 2025; zkp-discord (ZK Email verification) won 3rd Prize at ETH Beijing 2024 and 2nd Prize at Scroll Hackathon.',
     },
+    href: 'https://github.com/Coooder-Crypto/OwnFace',
+    linkLabel: { zh: '查看 OwnFace', en: 'View OwnFace' },
   },
   {
     icon: 'code' as const,
     tag: 'OPEN SOURCE · SINCE 2023',
     title: { zh: 'DFArchon（Dark Forest 生态）', en: 'DFArchon (Dark Forest Ecosystem)' },
     detail: {
-      zh: '自 2023 年起参与全链上游戏 Dark Forest 社区开发，深度参与 Web Worker 地图探索分片、调度与任务去重架构。',
-      en: 'Contributing since 2023 to Web Worker map-exploration sharding, scheduling, and task deduplication in the Dark Forest ecosystem.',
+      zh: '自 2023 年起参与全链上游戏 Dark Forest 社区开发，覆盖 Web Worker 地图探索分片/调度去重，以及 Aztec/Noir 隐私消息模块与工具链升级。',
+      en: 'Contributing since 2023 to Dark Forest Web Worker map-exploration scheduling and deduplication, plus Aztec/Noir privacy messaging modules and toolchain upgrades.',
     },
     href: 'https://github.com/dfarchon',
     linkLabel: { zh: '查看组织仓库', en: 'View GitHub org' },
@@ -37,10 +41,10 @@ const communityItems = [
   {
     icon: 'users' as const,
     tag: 'COMMUNITY · BUILDER & LEAD',
-    title: { zh: 'BUPT3DAO 前会长 · LXDAO Builder', en: 'Former President, BUPT3DAO · LXDAO Builder' },
+    title: { zh: 'BUPT3DAO 前会长 · LXDAO & ETHPanda', en: 'Former President, BUPT3DAO · LXDAO & ETHPanda' },
     detail: {
-      zh: '曾任北京邮电大学区块链协会会长，联动 LXDAO、EthPanda、PlanckerDAO 等社区组织技术分享、产品调研与黑客松共创。',
-      en: 'Led the BUPT Blockchain Association and contributed as an LXDAO builder & S10 product researcher across open communities.',
+      zh: '曾任北京邮电大学区块链协会会长，长期作为 LXDAO 与 ETHPanda 全栈贡献者参与社区平台、黑客松评审系统与开发者生态共创。',
+      en: 'Former president of BUPT Blockchain Association; long-term fullstack contributor across LXDAO and ETHPanda community tooling and hackathon platforms.',
     },
     href: 'https://lxdao.io/',
     linkLabel: { zh: '了解 LXDAO', en: 'Visit LXDAO' },

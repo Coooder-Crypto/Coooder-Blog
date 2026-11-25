@@ -12,7 +12,7 @@ const siteMetadata = {
   siteLogo: '/static/images/avatar.png',
   image: '/static/images/avatar.png',
   socialBanner: '/static/images/social-editorial.jpg',
-  email: 'coooder.dev@gmail.com',
+  email: 'cncoooder@gmail.com',
   github: 'https://github.com/Coooder-Crypto',
   linkedin: 'https://www.linkedin.com/in/coooder',
   twitter: 'https://x.com/Coooder_Crypto',

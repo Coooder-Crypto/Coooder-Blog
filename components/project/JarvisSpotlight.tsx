@@ -21,8 +21,8 @@ const layers = [
     tag: 'SECOND BRAIN',
     title: { zh: '证据型第二大脑', en: 'Evidence-first second brain' },
     detail: {
-      zh: '基于 Git + Obsidian 的 jarvis-brain：按 inbox → sources → resources → synthesis → decisions 分层沉淀。',
-      en: 'A Git-backed Obsidian vault layered by inbox, sources, resources, synthesis, and decisions for grounded retrieval.',
+      zh: '基于 Git + Obsidian 的 jarvis-brain：以 me/ 个人主干、agent-sessions 交互萃取与 visibility 隐私分层组织长期上下文。',
+      en: 'A Git-backed Obsidian vault combining a me/ personal core, distilled agent-sessions provenance, and visibility privacy boundaries.',
     },
   },
   {

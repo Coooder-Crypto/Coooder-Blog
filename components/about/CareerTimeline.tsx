@@ -5,9 +5,9 @@ import { useLanguage } from '@/lib/i18n';
 const experiences = [
   {
     company: { en: 'Ant Group', zh: '蚂蚁集团' },
-    team: { en: 'Ant Fortune · Financial Insurance Business Group', zh: '蚂蚁财富 · 财保事业群' },
-    role: { en: 'Agent Algorithm Intern', zh: 'Agent 算法实习生' },
-    period: { en: 'May 2026 – Present', zh: '2026.05 – 至今' },
+    team: { en: 'Ant Fortune · Research & Advisory Tech', zh: '蚂蚁财富 · 投研投顾技术部' },
+    role: { en: 'AI Agent Engineering Intern', zh: 'Agent 应用研发实习生' },
+    period: { en: 'May 2026 – Oct 2026', zh: '2026.05 – 2026.10' },
   },
   {
     company: { en: 'ByteDance', zh: '字节跳动' },
@@ -27,7 +27,7 @@ const education = [
   {
     school: { en: 'Beijing University of Posts and Telecommunications (BUPT)', zh: '北京邮电大学（BUPT）' },
     degree: { en: 'M.Eng. in Communication Engineering', zh: '通信工程 · 工学硕士' },
-    period: { en: '2024 – 2026', zh: '2024 – 2026' },
+    period: { en: '2024 – 2027', zh: '2024 – 2027' },
   },
   {
     school: { en: 'Beijing University of Posts and Telecommunications (BUPT)', zh: '北京邮电大学（BUPT）' },

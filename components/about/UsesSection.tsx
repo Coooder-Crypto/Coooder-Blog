@@ -13,8 +13,16 @@ const setupGroups = [
   {
     category: { zh: '知识管理与写作', en: 'SECOND BRAIN & WRITING' },
     items: {
-      zh: ['Obsidian（Git 同步 jarvis-brain）', '五层笔记流：inbox → sources → resources → synthesis → decisions', '本地显式脚本导入 MDX 发布'],
-      en: ['Obsidian (Git-backed jarvis-brain)', 'Layered vault: inbox → sources → synthesis → decisions', 'Explicit local MDX import script'],
+      zh: [
+        'Obsidian（Git 同步 jarvis-brain，作为个人定性真相源）',
+        '分层笔记流：me/ → inbox → sources/agent-sessions → synthesis → decisions',
+        'visibility 隐私隔离 + whoami 常驻简报 + 本地显式脚本导入 MDX',
+      ],
+      en: [
+        'Obsidian (Git-backed jarvis-brain as qualitative personal SSOT)',
+        'Layered vault: me/ → inbox → sources/agent-sessions → synthesis → decisions',
+        'visibility privacy walls + whoami brief + explicit local MDX import',
+      ],
     },
   },
   {

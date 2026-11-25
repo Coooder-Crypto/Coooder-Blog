@@ -119,6 +119,40 @@ const projectsData: Project[] = [
   {
     type: 'self',
     title: {
+      en: 'MemTable',
+      zh: 'MemTable',
+    },
+    description: {
+      en: 'A local-first structured ledger runtime for long-running agents — memory recalls what happened; a ledger computes what changed.',
+      zh: '面向长运行 Agent 的本地优先结构化账本运行时：记忆负责回忆，账本负责计算变化。',
+    },
+    contribution: {
+      en: 'Built the SQLite ledger core, HTTP/MCP server, declarative extractors, fitness & agent-work packs, and Hermes enhancer plugin.',
+      zh: '实现 SQLite 账本核心、HTTP/MCP 服务、声明式提取规则、fitness/agent-work 领域包与 Hermes 增强插件。',
+    },
+    repo: 'Coooder-Crypto/mem-table',
+    builtWith: ['TypeScript', 'SQLite', 'MCP', 'Hermes'],
+  },
+  {
+    type: 'self',
+    title: {
+      en: 'Dark Forest (DFArchon)',
+      zh: 'Dark Forest（DFArchon 生态）',
+    },
+    description: {
+      en: 'Community-maintained fully onchain strategy game spanning Web Worker exploration and Aztec/Noir privacy extensions.',
+      zh: '社区维护的全链上战争迷雾策略游戏生态，涵盖前端 Web Worker 探索调度与 Aztec/Noir 隐私扩展。',
+    },
+    contribution: {
+      en: 'Maintained Web Worker map-exploration job scheduling & IndexedDB dedup; implemented player-gated Noir messaging and Aztec 5.x upgrade support.',
+      zh: '维护 Web Worker 地图探索任务调度与 IndexedDB 去重；实现 Aztec/Noir 玩家门控消息模块并协助工具链升级。',
+    },
+    url: 'https://dfarchon.xyz/',
+    builtWith: ['TypeScript', 'Web Workers', 'Aztec', 'Noir'],
+  },
+  {
+    type: 'self',
+    title: {
       en: 'YieldPilot',
       zh: 'YieldPilot',
     },
@@ -140,16 +174,16 @@ const projectsData: Project[] = [
       zh: 'OwnFace',
     },
     description: {
-      en: 'A zero-knowledge biometric authentication stack that proves identity without exposing raw face embeddings.',
-      zh: '一个零知识生物认证系统，在不暴露原始人脸向量的前提下完成身份验证。',
+      en: 'ETH Shanghai 2025 2nd Prize — an end-to-end zero-knowledge biometric authentication stack proving identity without exposing raw face embeddings.',
+      zh: 'ETH Shanghai 2025 二等奖：端到端零知识人脸生物认证栈，在不暴露原始人脸向量的前提下完成链上身份验真。',
     },
     contribution: {
-      en: 'Built the frontend, proving backend, Groth16 circuit flow, and on-chain verification integration.',
-      zh: '构建前端、证明后端、Groth16 电路链路与链上验证集成。',
+      en: 'Built the frontend, proving backend, Pedersen/Poseidon + Groth16 flow, and Sepolia on-chain verification integration.',
+      zh: '负责架构、前端、Pedersen/Poseidon + Groth16 证明链路与 Sepolia 链上合约验证集成。',
     },
     imgSrc: '/static/images/projects/ownface.webp',
     repo: 'Coooder-Crypto/OwnFace',
-    builtWith: ['Next.js', 'Circom', 'Solidity', 'Groth16'],
+    builtWith: ['Next.js', 'Groth16', 'Solidity', 'ZK'],
   },
   {
     type: 'self',
@@ -158,11 +192,11 @@ const projectsData: Project[] = [
       zh: 'Oh My Notion',
     },
     description: {
-      en: 'A local-first Notion knowledge agent with hybrid retrieval, grounded answers, memory, skills, and evaluation tooling.',
-      zh: '一个本地优先的 Notion 知识 Agent，具备混合检索、可溯源回答、记忆、技能路由与评测工具。',
+      en: 'A local-first Notion knowledge agent with SQLite FTS5 + local embedding hybrid retrieval, grounded answers, inspectable memory, and built-in evals.',
+      zh: '一个本地优先的 Notion 知识 Agent，具备 SQLite FTS5 + 本地向量混合检索、可溯源回答、可检视记忆与内置评测工具。',
     },
     repo: 'Coooder-Crypto/oh-my-notion',
-    builtWith: ['Python', 'SQLite', 'LlamaIndex', 'FTS5'],
+    builtWith: ['Python', 'SQLite', 'FTS5', 'Hybrid RAG'],
   },
   {
     type: 'self',
@@ -288,16 +322,16 @@ const projectsData: Project[] = [
       zh: 'ZK Asset Raffle',
     },
     description: {
-      en: 'A zero-knowledge asset raffle web application built with Next.js and Tailwind CSS.',
-      zh: '使用 Next.js 和 Tailwind CSS 构建的零知识资产抽奖应用。',
+      en: 'ETH Beijing 2025 & Morph 1st Prize — a verifiable real-world asset (RWA) raffle protocol pairing confidential commitments, encrypted QR codes, and Merkle/ZK proofs.',
+      zh: 'ETH Beijing 2025 与 Morph 双一等奖：面向实物资产的可验证公平抽奖协议，结合机密承诺、加密二维码与 Merkle/ZK 证明。',
     },
     contribution: {
-      en: 'Built frontend flows and wallet/proof interaction states.',
-      zh: '负责前端交互流程与钱包/零知识证明状态呈现。',
+      en: 'Built full-stack monorepo flows across Next.js, typed tRPC APIs, proof/redemption states, and EVM/Move contract integration.',
+      zh: '负责 Next.js 前端、tRPC API、证明与领奖状态流转及 EVM/Move 合约集成。',
     },
     imgSrc: '/static/images/projects/zkassetraffle.webp',
-    // Public URL withheld until verified.
-    builtWith: ['Next.js', 'Tailwind', 'TypeScript'],
+    repo: 'Coooder-Crypto/zk-asset-raffle',
+    builtWith: ['Next.js', 'tRPC', 'ZK', 'Solidity / Move'],
   },
 ];
 
