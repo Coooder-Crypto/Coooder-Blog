@@ -1,9 +1,13 @@
 import type { Authors } from 'contentlayer/generated';
-import { Mail, Github, ArrowUpRight } from 'lucide-react';
-import { Link, Image } from '@/components/ui';
 import AboutIntro from '@/components/about/AboutIntro';
+import AboutSidebar from '@/components/about/AboutSidebar';
+import OperatingPrinciples from '@/components/about/OperatingPrinciples';
 import WorkbenchNow from '@/components/about/WorkbenchNow';
 import CareerTimeline from '@/components/about/CareerTimeline';
+import ResearchSection from '@/components/about/ResearchSection';
+import CommunitySection from '@/components/about/CommunitySection';
+import UsesSection from '@/components/about/UsesSection';
+import ConnectSection from '@/components/about/ConnectSection';
 import AboutHeader from '@/components/about/AboutHeader';
 import PlayerProfile from '@/components/gaming/PlayerProfile';
 
@@ -18,33 +22,19 @@ export default function AuthorLayout({ children, content }: Props) {
     <div className="about">
       <AboutHeader />
       <div className="about-layout">
-        <aside className="about-profile">
-          <Image src={avatar || '/static/images/avatar.png'} alt="Coooder" width={430} height={430} />
-          <h3>{name}</h3>
-          <p>AGENT HARNESS / FULLSTACK / LOCAL-FIRST</p>
-          <div className="about-socials">
-            {email && (
-              <Link href={`mailto:${email}`} aria-label="Email Coooder">
-                <Mail size={20} />
-              </Link>
-            )}
-            {github && (
-              <Link href={github} aria-label="Coooder on GitHub">
-                <Github size={20} />
-              </Link>
-            )}
-            {twitter && (
-              <Link href={twitter} aria-label="Coooder on X">
-                <ArrowUpRight size={20} />
-              </Link>
-            )}
-          </div>
-        </aside>
+        <AboutSidebar name={name} avatar={avatar} email={email} twitter={twitter} github={github} />
         <div className="about-content prose max-w-none">
-          <AboutIntro />
-          {children}
+          <div id="intro" className="about-intro-anchor">
+            <AboutIntro />
+            {children}
+          </div>
+          <OperatingPrinciples />
           <WorkbenchNow />
           <CareerTimeline />
+          <ResearchSection />
+          <CommunitySection />
+          <UsesSection />
+          <ConnectSection />
         </div>
       </div>
       <PlayerProfile />

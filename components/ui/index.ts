@@ -4,7 +4,6 @@ import Card from './Card';
 import Link from './Link';
 import Image from './Image';
 import Button from './Button';
-import Twemoji from './Twemoji';
 import BrandIcon from './BrandIcon';
 import PageTitle from './PageTitle';
 import TableWrapper from './TableWrapper';
@@ -21,7 +20,6 @@ export {
   Zoom,
   Image,
   Button,
-  Twemoji,
   BrandIcon,
   PageTitle,
   components,

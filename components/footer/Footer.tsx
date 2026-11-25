@@ -19,6 +19,8 @@ export default function Footer() {
         <Link href={siteMetadata.github}>GitHub ↗</Link>
         <Link href={siteMetadata.twitter}>X ↗</Link>
         <Link href="/about">{language === 'zh' ? '关于我' : 'About'} ↗</Link>
+        <a href="/feed.xml">RSS ↗</a>
+        <a href="/llms.txt">llms.txt ↗</a>
       </div>
       <span className="footer-copyright">© {new Date().getFullYear()} COOODER</span>
     </footer>

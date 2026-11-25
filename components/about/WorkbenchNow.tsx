@@ -42,7 +42,7 @@ export default function WorkbenchNow() {
   const zh = language === 'zh';
 
   return (
-    <section className="not-prose workbench-now" aria-labelledby="workbench-now-heading">
+    <section id="workbench" className="not-prose workbench-now" aria-labelledby="workbench-now-heading">
       <p className="eyebrow">{zh ? '当前聚焦与工作台' : 'NOW & WORKBENCH'}</p>
       <h2 id="workbench-now-heading">{zh ? '最近在深挖的三条主线' : 'Three threads I focus on right now'}</h2>
       <ul className="workbench-now-grid">

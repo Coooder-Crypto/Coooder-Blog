@@ -1,6 +1,8 @@
 import 'css/prism.css';
 import 'katex/dist/katex.css';
 
+import { existsSync } from 'node:fs';
+import path from 'node:path';
 import type { Metadata } from 'next';
 import { MDXLayoutRenderer } from 'pliny/mdx-components';
 import type { Blog } from 'contentlayer/generated';
@@ -43,13 +45,17 @@ export async function generateMetadata(props: { params: Promise<{ slug: string[]
       : `${siteMetadata.siteUrl}${canonicalFromFrontmatter.startsWith('/') ? '' : '/'}${canonicalFromFrontmatter}`
     : `${siteMetadata.siteUrl}/blog/${post.slug}`;
   const description = post.summary || siteMetadata.description;
+  const generatedOgPath = `/static/images/og/${post.slug}.jpg`;
+  const defaultPostOg = existsSync(path.join(process.cwd(), 'public', generatedOgPath))
+    ? generatedOgPath
+    : siteMetadata.socialBanner;
   const images = Array.isArray(post.images)
     ? post.images.length > 0
       ? post.images
-      : [siteMetadata.socialBanner]
+      : [defaultPostOg]
     : post.images
       ? [post.images]
-      : [siteMetadata.socialBanner];
+      : [defaultPostOg];
 
   return {
     title: post.title,
@@ -97,12 +103,31 @@ export default async function Page({ params }: { params: Promise<{ slug: string[
   const prev = prevPost ? { path: prevPost.path, title: prevPost.title, titleEn: prevPost.titleEn } : undefined;
   const next = nextPost ? { path: nextPost.path, title: nextPost.title, titleEn: nextPost.titleEn } : undefined;
 
+  const currentTags = new Set((post.tags ?? []).map((t) => t.toLowerCase()));
+  const related = sortPosts([...publishedPosts])
+    .filter((candidate) => candidate.slug !== slug && candidate.slug !== prevPost?.slug && candidate.slug !== nextPost?.slug)
+    .map((candidate) => ({
+      candidate,
+      overlap: (candidate.tags ?? []).filter((t) => currentTags.has(t.toLowerCase())).length,
+    }))
+    .filter((item) => item.overlap > 0)
+    .sort((a, b) => b.overlap - a.overlap)
+    .slice(0, 2)
+    .map(({ candidate }) => ({
+      slug: candidate.slug,
+      title: candidate.title,
+      titleEn: candidate.titleEn,
+      summary: candidate.summary,
+      summaryEn: candidate.summaryEn,
+      tag: candidate.tags?.[0],
+    }));
+
   const Layout = layouts[post.layout || defaultLayout];
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <Layout content={mainContent} prev={prev} next={next}>
+      <Layout content={mainContent} prev={prev} next={next} related={related}>
         <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />
       </Layout>
     </>

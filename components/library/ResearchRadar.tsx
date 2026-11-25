@@ -43,7 +43,7 @@ export default function ResearchRadar() {
         <h1>
           {zh ? (
             <>
-              Agent Harness <em className="display-serif">研究雷达</em>
+              Agent Harness <span className="accent-zh">研究雷达</span>
               <span className="rust-dot">.</span>
             </>
           ) : (

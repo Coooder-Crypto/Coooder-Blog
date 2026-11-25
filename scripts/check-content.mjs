@@ -85,7 +85,17 @@ for (const post of posts.filter((item) => !item.draft)) {
   const structured = nodes.find((node) => node.tagName === 'script' && node.properties.type === 'application/ld+json');
   assert.ok(structured, `${post.slug}: structured data`);
   assert.equal(JSON.parse(structured.children.map((child) => child.value || '').join('')).inLanguage, language);
+  const ogImage = meta('og:image');
+  assert.ok(ogImage, `${post.slug}: og:image present`);
+  const ogPathname = new URL(ogImage).pathname;
+  assert.ok(existsSync(`public${ogPathname}`), `${post.slug}: og:image asset exists (${ogPathname})`);
 }
+
+assert.ok(existsSync('out/feed.xml'), 'RSS feed must be exported');
+assert.ok(readFileSync('out/feed.xml', 'utf8').includes('<rss version="2.0"'), 'RSS feed must be valid RSS 2.0');
+assert.ok(existsSync('out/llms.txt'), 'llms.txt must be exported');
+assert.ok(readFileSync('out/sitemap.xml', 'utf8').includes('/library'), 'sitemap.xml must include /library');
+assert.ok(!existsSync('out/search.json'), 'Stale template search.json must remain removed');
 
 const source = readFileSync('data/projectEvidence.ts', 'utf8');
 const { code } = transformSync(source, { loader: 'ts', format: 'esm' });

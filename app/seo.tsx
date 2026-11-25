@@ -30,7 +30,7 @@ export function genPageMetadata({
               url: siteMetadata.socialBanner,
               width: 1200,
               height: 630,
-              alt: 'Coooder 的漫画工作室：AI Agent、开发者工具与工程实践',
+              alt: 'Coooder — Agent Harness 与全栈工程',
             },
           ],
       locale: siteMetadata.openGraphLocale,

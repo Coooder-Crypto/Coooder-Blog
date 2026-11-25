@@ -45,9 +45,53 @@ const layers = [
   },
 ] as const;
 
-export default function JarvisSpotlight({ compact = false }: { compact?: boolean }) {
+export default function JarvisSpotlight({
+  compact = false,
+  variant = 'full',
+}: {
+  compact?: boolean;
+  variant?: 'full' | 'summary';
+}) {
   const { language } = useLanguage();
   const zh = language === 'zh';
+
+  if (variant === 'summary') {
+    return (
+      <section id="jarvis-system" className="editorial-section" aria-labelledby="jarvis-heading">
+        <div className="jarvis-monolith jarvis-monolith-summary">
+          <div className="jarvis-monolith-header">
+            <div>
+              <p className="eyebrow">PRIVATE PERSONAL STACK · LOCAL-FIRST</p>
+              <h2 id="jarvis-heading">
+                {zh ? (
+                  <>
+                    <em className="display-serif">Jarvis</em>：常驻个人 Agent 与第二大脑
+                  </>
+                ) : (
+                  <>
+                    <em className="display-serif">Jarvis</em>: Always-on personal agent &amp; second brain
+                  </>
+                )}
+              </h2>
+              <p className="jarvis-summary-desc">
+                {zh
+                  ? '部署在自有常驻节点上的多仓库个人系统：上游 Hermes 运行时与配置/数据/Obsidian 第二大脑完全解耦，敏感数据硬隔离，仅通过受控 CLI 与只读研究管道交互。'
+                  : 'A multi-repo personal system running on a private host—decoupling upstream Hermes runtime from config, controlled Postgres summaries, and an Obsidian second brain.'}
+              </p>
+            </div>
+            <div className="jarvis-summary-actions">
+              <Link href="/#jarvis-system" className="monolith-top-link">
+                {zh ? '查看完整拓扑' : 'View topology'} <ArrowUpRight size={15} aria-hidden="true" />
+              </Link>
+              <Link href="/blog/repo-may-no-longer-be-source-of-truth" className="monolith-link">
+                {zh ? '阅读架构文章' : 'Architecture essay'} <ArrowUpRight size={14} aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="jarvis-system" className="editorial-section" aria-labelledby="jarvis-heading">

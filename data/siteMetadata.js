@@ -11,20 +11,17 @@ const siteMetadata = {
   siteRepo: 'https://github.com/Coooder-Crypto/Coooder-Blog',
   siteLogo: '/static/images/avatar.png',
   image: '/static/images/avatar.png',
-  socialBanner: '/static/images/studio/social-comic.jpg',
+  socialBanner: '/static/images/social-editorial.jpg',
   email: 'coooder.dev@gmail.com',
   github: 'https://github.com/Coooder-Crypto',
-  facebook: 'https://www.facebook.com/coooder.dev',
   linkedin: 'https://www.linkedin.com/in/coooder',
   twitter: 'https://x.com/Coooder_Crypto',
-  youtube: 'https://youtube.com',
   locale: 'zh-CN',
   openGraphLocale: 'zh_CN',
   stickyNav: false,
   socialAccounts: {
     github: 'Coooder-Crypto',
     linkedin: 'coooder',
-    facebook: 'coooder.dev',
   },
 };
 

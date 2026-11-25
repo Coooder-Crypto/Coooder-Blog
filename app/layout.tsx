@@ -3,7 +3,6 @@ import 'css/studio.css';
 import 'css/gaming.css';
 import 'css/reading.css';
 import 'css/identity.css';
-import 'css/twemoji.css';
 import 'react-medium-image-zoom/dist/styles.css';
 import 'remark-github-blockquote-alert/alert.css';
 
@@ -44,7 +43,7 @@ export const metadata: Metadata = {
         url: siteMetadata.socialBanner,
         width: 1200,
         height: 630,
-        alt: 'Coooder 的漫画工作室：AI Agent、开发者工具与工程实践',
+        alt: 'Coooder — Agent Harness 与全栈工程',
       },
     ],
     locale: siteMetadata.openGraphLocale,
@@ -92,6 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" type="image/svg+xml" href="/static/favicons/coooder.svg" />
         <link rel="apple-touch-icon" sizes="180x180" href="/static/favicons/coooder-180.png" />
         <link rel="manifest" href="/static/favicons/site.webmanifest" />
+        <link rel="alternate" type="application/rss+xml" title={siteMetadata.title} href="/feed.xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {/* eslint-disable-next-line @next/next/no-page-custom-font -- Root App Router layout loads display serif and mono fonts across all routes. */}

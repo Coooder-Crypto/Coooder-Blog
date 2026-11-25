@@ -50,7 +50,10 @@ export default function Header() {
           title={language === 'zh' ? '快速搜索与操作 (⌘K)' : 'Quick search & actions (⌘K)'}
         >
           <Search size={13} aria-hidden="true" />
-          <kbd>⌘K</kbd>
+          <span className="cmd-key-group" aria-hidden="true">
+            <kbd>⌘</kbd>
+            <kbd>K</kbd>
+          </span>
         </button>
         <ThemeToggle />
         <LanguageSwitch />

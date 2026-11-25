@@ -48,7 +48,7 @@ export default function Projects() {
             : 'Evidence reviewed Oct 6, 2026; links are pinned to public revisions. Project tests were not rerun; test links show coverage design, not production acceptance.'}
         </p>
       </section>
-      <JarvisSpotlight />
+      <JarvisSpotlight variant="summary" />
       <section aria-labelledby="archive-heading" className="editorial-section">
         <div className="section-heading">
           <div>

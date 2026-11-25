@@ -10,10 +10,10 @@ export default function NotFound() {
     <section className="comic-not-found" aria-labelledby="lost-heading">
       <div className="lost-panel" aria-hidden="true">
         <span>404</span>
-        <p>{zh ? 'PAGE NOT FOUND' : 'PAGE NOT FOUND'}</p>
+        <p>{zh ? '页面未找到' : 'PAGE NOT FOUND'}</p>
       </div>
       <div>
-        <p className="eyebrow">{zh ? 'ROUTE MISSING' : 'ROUTE MISSING'}</p>
+        <p className="eyebrow">{zh ? '路径缺失 · 404' : 'ROUTE MISSING · 404'}</p>
         <h1 id="lost-heading">{zh ? '这个页面不存在。' : 'This page could not be found.'}</h1>
         <p>
           {zh

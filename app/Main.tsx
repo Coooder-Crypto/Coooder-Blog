@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Search } from 'lucide-react';
 import type { Blog } from 'contentlayer/generated';
 import type { CoreContent } from 'pliny/utils/contentlayer';
 import { formatDate } from 'pliny/utils/formatDate';
@@ -9,9 +9,11 @@ import ProjectCase from '@/components/project/ProjectCase';
 import JarvisSpotlight from '@/components/project/JarvisSpotlight';
 import HarnessLab from '@/components/homepage/HarnessLab';
 import GamingShelf from '@/components/gaming/GamingShelf';
-import { BeijingClock, KineticTicker, ParallaxPlate, Reveal } from '@/components/ui/EditorialMotion';
+import { BeijingClock, ParallaxPlate, Reveal } from '@/components/ui/EditorialMotion';
 import { HeroHarnessSvg } from '@/components/ui/EditorialDiagrams';
+import { OPEN_PALETTE_EVENT } from '@/components/ui/CommandPalette';
 import projectsData from '@/data/projectsData';
+import { researchRadarItems } from '@/data/researchRadar';
 import siteMetadata from '@/data/siteMetadata';
 import { useLanguage } from '@/lib/i18n';
 import { getLocalizedBlogContent } from '@/lib/blogUtils';
@@ -19,8 +21,9 @@ import { getLocalizedBlogContent } from '@/lib/blogUtils';
 export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
   const { language } = useLanguage();
   const zh = language === 'zh';
+  const publicPosts = posts.filter((post) => !post.draft);
   const featured = projectsData.filter((project) => project.type === 'featured').slice(0, 3);
-  const latest = posts.filter((post) => !post.draft).slice(0, 4);
+  const latest = publicPosts.slice(0, 4);
 
   return (
     <div className="field-home">
@@ -39,15 +42,13 @@ export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
           <h1 id="home-heading" className="hero-monumental">
             {zh ? (
               <>
-                为 <em className="display-serif">Agent</em> 原生时代，
-                <br />
-                构建<em className="display-serif">可验证</em>的工程系统<span className="rust-dot">.</span>
+                为 <em className="display-serif">Agent</em> 原生时代，构建
+                <span className="accent-zh">可验证</span>的工程系统<span className="rust-dot">.</span>
               </>
             ) : (
               <>
-                Building <em className="display-serif">verifiable</em> systems
-                <br />
-                for AI-native <em className="display-serif">engineering</em>
+                Building <em className="display-serif">verifiable</em> systems for AI-native{' '}
+                <em className="display-serif">engineering</em>
                 <span className="rust-dot">.</span>
               </>
             )}
@@ -55,12 +56,12 @@ export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
           <div className="hero-subrow">
             <p className="hero-description">
               {zh
-                ? '我是 Coooder，专注 Agent Harness（Context / Execution / Verification）、本地优先个人系统 Jarvis 与开发者工具。这里沉淀一手实证测量、源码拆解与经得起检验的软件系统。'
+                ? '我是 Coooder，专注 Agent Harness（Context / Execution / Verification）、本地优先个人系统 Jarvis 与全栈开发者工具。这里沉淀一手实证测量、源码拆解与经得起检验的软件系统。'
                 : 'I’m Coooder—focused on Agent Harnesses (Context / Execution / Verification), the local-first Jarvis stack, and developer tools. This studio collects empirical measurements, source breakdowns, and verifiable software.'}
             </p>
             <div className="studio-actions">
               <Link className="ink-button" href="/projects">
-                {zh ? '查看项目与证据' : 'Explore verified builds'} <ArrowUpRight size={16} aria-hidden="true" />
+                {zh ? '查看项目与证据' : 'Explore builds'} <ArrowUpRight size={16} aria-hidden="true" />
               </Link>
               <Link className="secondary-button" href="/blog/ai-native-engineering-design-for-agents">
                 {zh ? '阅读工程宣言' : 'Read thesis'} <ArrowUpRight size={15} aria-hidden="true" />
@@ -69,7 +70,7 @@ export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
           </div>
         </Reveal>
 
-        <Reveal delay={0.12} className="hero-stage">
+        <Reveal delay={0.1} className="hero-stage">
           <div className="hero-stage-visual">
             <div className="stage-bar">
               <span>FIG. 01 — AGENT HARNESS ARCHITECTURE</span>
@@ -80,59 +81,60 @@ export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
             </ParallaxPlate>
           </div>
 
-          <aside className="hero-spec-panel" aria-label={zh ? '研究与工程索引' : 'Research & engineering index'}>
+          <aside className="hero-spec-panel" aria-label={zh ? '工作室索引' : 'Studio index'}>
             <div className="hero-spec-header">
-              <span>FIELD TELEMETRY</span>
+              <span>STUDIO INDEX</span>
               <span className="hero-spec-status">
                 <span className="status-dot" aria-hidden="true" />
-                {zh ? '持续迭代' : 'ACTIVE'}
+                {zh ? '持续更新' : 'LIVE'}
               </span>
             </div>
             <ul className="hero-spec-list">
               <li>
-                <span className="hero-spec-key">01 · CORE PRINCIPLE</span>
+                <span className="hero-spec-key">01 · CURRENT FOCUS</span>
                 <p className="hero-spec-value">
-                  <strong>{zh ? '先找验证闭环，再放 Agent 进入闭环。' : 'Verification loop before autonomy.'}</strong>{' '}
-                  {zh ? 'Delegate · Review · Own。' : 'Delegate · Review · Own.'}
-                </p>
-              </li>
-              <li>
-                <span className="hero-spec-key">02 · LIVING SYSTEM</span>
-                <p className="hero-spec-value">
-                  <strong>Jarvis + jarvis-brain</strong> —{' '}
+                  <strong>{zh ? 'Agent Harness & Local-First' : 'Agent Harness & Local-First'}</strong> —{' '}
                   {zh
-                    ? '常驻控制节点、受控数据边界与 Obsidian 证据型第二大脑。'
-                    : 'Always-on host, controlled data boundaries & Obsidian second brain.'}
+                    ? '先建验证闭环，再放 Agent 进入执行链。'
+                    : 'Build deterministic verification loops before inviting agents in.'}
                 </p>
               </li>
               <li>
-                <span className="hero-spec-key">03 · EMPIRICAL RATIO (192.4 MIN)</span>
-                <div className="empirical-meter" aria-label="60.7% feedback loop vs 24.0% direct code edits">
-                  <div className="empirical-bar-track">
-                    <span className="empirical-bar-feedback" style={{ width: '60.7%' }} />
-                    <span className="empirical-bar-code" style={{ width: '24%' }} />
-                  </div>
-                  <div className="empirical-legend">
-                    <span>
-                      <i className="legend-dot legend-accent" />
-                      {zh ? '60.7% 反馈验证' : '60.7% Feedback'}
-                    </span>
-                    <span>
-                      <i className="legend-dot legend-blue" />
-                      {zh ? '24.0% 改代码' : '24.0% Edits'}
-                    </span>
-                  </div>
+                <span className="hero-spec-key">02 · ARCHIVE METRICS</span>
+                <div className="studio-stat-row">
+                  <Link href="/blog" className="studio-stat-cell">
+                    <strong className="display-serif">{publicPosts.length}</strong>
+                    <span>{zh ? '公开文章' : 'Essays'}</span>
+                  </Link>
+                  <Link href="/library" className="studio-stat-cell">
+                    <strong className="display-serif">{researchRadarItems.length}</strong>
+                    <span>{zh ? '研究文献' : 'Papers'}</span>
+                  </Link>
+                  <Link href="/projects" className="studio-stat-cell">
+                    <strong className="display-serif">{featured.length}</strong>
+                    <span>{zh ? '源码证据' : 'Evidence'}</span>
+                  </Link>
                 </div>
-                <Link href="/blog/ai-dev-bottleneck-is-feedback-loop" className="hero-spec-link">
-                  {zh ? '查看三栈实证数据' : 'Inspect 3-stack study'} <ArrowUpRight size={14} aria-hidden="true" />
-                </Link>
+              </li>
+              <li>
+                <span className="hero-spec-key">03 · QUICK COMMAND</span>
+                <button
+                  type="button"
+                  className="hero-cmd-btn"
+                  onClick={() => window.dispatchEvent(new Event(OPEN_PALETTE_EVENT))}
+                >
+                  <Search size={14} aria-hidden="true" />
+                  <span>{zh ? '全局检索文章、论文或切主题' : 'Search essays, papers, or toggle theme'}</span>
+                  <span className="cmd-key-group" aria-hidden="true">
+                    <kbd>⌘</kbd>
+                    <kbd>K</kbd>
+                  </span>
+                </button>
               </li>
             </ul>
           </aside>
         </Reveal>
       </section>
-
-      <KineticTicker />
 
       <Reveal>
         <HarnessLab />
@@ -146,7 +148,7 @@ export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
               <h2 id="work-heading">
                 {zh ? (
                   <>
-                    附公开源码证据的<em className="display-serif">代表构建</em>
+                    附公开源码证据的<span className="accent-zh">代表构建</span>
                   </>
                 ) : (
                   <>
@@ -181,7 +183,7 @@ export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
               <h2 id="writing-heading">
                 {zh ? (
                   <>
-                    从实践与测量里<em className="display-serif">写下来</em>
+                    从实践与测量里<span className="accent-zh">写下来</span>
                   </>
                 ) : (
                   <>
@@ -236,11 +238,11 @@ export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
       <Reveal>
         <aside className="studio-signoff">
           <div>
-            <span className="eyebrow">{zh ? 'OPEN FOR CONVERSATION' : 'OPEN FOR CONVERSATION'}</span>
+            <span className="eyebrow">OPEN FOR CONVERSATION</span>
             <p>
               {zh ? (
                 <>
-                  好系统，值得认真拆解与<em className="display-serif">一起琢磨</em>
+                  好系统，值得认真拆解与<span className="accent-zh">一起琢磨</span>
                   <span className="rust-dot">.</span>
                 </>
               ) : (
@@ -252,8 +254,8 @@ export default function Home({ posts }: { posts: CoreContent<Blog>[] }) {
             </p>
           </div>
           <div className="signoff-actions">
-            <Link href={`mailto:${siteMetadata.email}`} className="ink-button">
-              {zh ? '发邮件联系' : 'Say hello'} <ArrowUpRight size={15} aria-hidden="true" />
+            <Link href="/about#connect" className="ink-button">
+              {zh ? '认识我 & 联系' : 'About & Connect'} <ArrowUpRight size={15} aria-hidden="true" />
             </Link>
             <Link href={siteMetadata.github} className="secondary-button">
               GitHub <ArrowUpRight size={15} aria-hidden="true" />

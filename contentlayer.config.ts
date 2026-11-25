@@ -1,5 +1,5 @@
 import { defineDocumentType, ComputedFields, makeSource } from 'contentlayer2/source-files';
-import { writeFileSync } from 'fs';
+import { existsSync, writeFileSync } from 'fs';
 import readingTime from 'reading-time';
 import { slug } from 'github-slugger';
 import path from 'path';
@@ -109,6 +109,11 @@ export const Blog = defineDocumentType(() => ({
       type: 'json',
       resolve: (doc) => {
         const image = Array.isArray(doc.images) ? doc.images[0] : doc.images;
+        const postSlug = doc._raw.flattenedPath.replace(/^.+?(\/)/, '');
+        const generatedOg = `/static/images/og/${postSlug}.jpg`;
+        const fallbackOg = existsSync(path.join(root, 'public', generatedOg))
+          ? generatedOg
+          : siteMetadata.socialBanner;
 
         return {
           '@context': 'https://schema.org',
@@ -118,7 +123,7 @@ export const Blog = defineDocumentType(() => ({
           datePublished: doc.date,
           dateModified: doc.lastmod || doc.date,
           description: doc.summary,
-          image: toAbsoluteUrl(image || siteMetadata.socialBanner),
+          image: toAbsoluteUrl(image || fallbackOg),
           url: `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`,
         };
       },

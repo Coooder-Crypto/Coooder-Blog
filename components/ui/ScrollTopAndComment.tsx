@@ -1,49 +1,42 @@
 'use client';
 
-import clsx from 'clsx';
 import { useEffect, useState } from 'react';
-import { ChevronsUp } from 'lucide-react';
-import { ScrollButtonProps } from '@/types/index';
-
-const ScrollButton = (props: ScrollButtonProps) => {
-  const { onClick, ariaLabel, icon: Icon } = props;
-
-  return (
-    <button
-      aria-label={ariaLabel}
-      onClick={onClick}
-      className={clsx([
-        'rounded-lg p-2 transition-all',
-        'hover:bg-gray-100 dark:hover:bg-gray-800',
-        'ring-1 ring-inset ring-zinc-900/20 dark:ring-white/20',
-      ])}
-    >
-      <Icon className="h-5 w-5" />
-    </button>
-  );
-};
+import { ArrowUp } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n';
 
 const ScrollTopAndComment = () => {
   const [show, setShow] = useState(false);
+  const { language } = useLanguage();
+  const zh = language === 'zh';
 
   useEffect(() => {
     const handleWindowScroll = () => {
-      if (window.scrollY > 50) setShow(true);
-      else setShow(false);
+      setShow(window.scrollY > 360);
     };
 
-    window.addEventListener('scroll', handleWindowScroll);
+    handleWindowScroll();
+    window.addEventListener('scroll', handleWindowScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleWindowScroll);
   }, []);
 
   const handleScrollTop = () => {
-    window.scrollTo({ top: 0 });
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
   };
 
+  if (!show) return null;
+
   return (
-    <div className={`fixed bottom-8 right-8 hidden flex-col gap-3 ${show ? 'lg:flex' : 'lg:hidden'}`}>
-      <ScrollButton icon={ChevronsUp} ariaLabel="Scroll To Top" onClick={handleScrollTop} />
-    </div>
+    <button
+      type="button"
+      onClick={handleScrollTop}
+      aria-label={zh ? '返回顶部' : 'Back to top'}
+      title={zh ? '返回顶部' : 'Back to top'}
+      className="swiss-scroll-top"
+    >
+      <ArrowUp size={15} aria-hidden="true" />
+      <span>TOP</span>
+    </button>
   );
 };
 

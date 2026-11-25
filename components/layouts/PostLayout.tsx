@@ -6,17 +6,19 @@ import { BlogTags, BlogMeta, BlogNav, TableOfContents, XDiscussion } from '@/com
 import { SectionContainer, ScrollTopAndComment } from '@/components/ui';
 import PostHeading from '@/components/blog/PostHeading';
 import SeriesNav from '@/components/blog/SeriesNav';
+import RelatedPosts, { type RelatedPostSummary } from '@/components/blog/RelatedPosts';
 
 interface LayoutProps {
   content: CoreContent<Blog>;
   authorDetails: CoreContent<Authors>[];
   next?: { path: string; title: string; titleEn?: string };
   prev?: { path: string; title: string; titleEn?: string };
+  related?: RelatedPostSummary[];
   children: ReactNode;
 }
 
 export default function PostLayout(props: LayoutProps) {
-  const { content, next, prev, children } = props;
+  const { content, next, prev, related, children } = props;
   const { toc, date, title, titleEn, bodyLanguage, tags, readingTime, xPostUrl, socialSummary } = content;
 
   return (
@@ -62,6 +64,7 @@ export default function PostLayout(props: LayoutProps) {
 
         {/*START: Footer*/}
         <footer>
+          <RelatedPosts posts={related} />
           <BlogNav next={next} prev={prev} />
         </footer>
         {/*END: Footer*/}
