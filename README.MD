@@ -4,7 +4,7 @@
 
 A personal website built with Next.js 16, React 19, MDX, and Contentlayer. Notes on AI agents, developer tools, and fullstack engineering, statically exported for Vercel.
 
-线上 / Live: <https://coooder-blog.vercel.app/>
+线上 / Live: <https://coooder.space/>
 
 ## 本地开发 / Development
 

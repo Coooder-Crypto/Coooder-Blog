@@ -18,11 +18,11 @@ const communityItems = [
   },
   {
     icon: 'award' as const,
-    tag: 'HACKATHON · ETH SHANGHAI 2025 & ETH BEIJING 2024',
-    title: { zh: 'OwnFace & Proof of Discord', en: 'OwnFace & Proof of Discord' },
+    tag: 'HACKATHON · ETH SHANGHAI / APTOS / ETHGLOBAL',
+    title: { zh: 'OwnFace、zkp-discord 与多场黑客松获奖', en: 'OwnFace, zkp-discord & Global Hackathons' },
     detail: {
-      zh: 'OwnFace（零知识人脸生物认证栈）获 ETH Shanghai 2025 二等奖；zkp-discord（ZK Email 身份证明）获 ETH Beijing 2024 三等奖与 Scroll 二等奖。',
-      en: 'OwnFace (ZK biometric auth stack) won 2nd Prize at ETH Shanghai 2025; zkp-discord (ZK Email verification) won 3rd Prize at ETH Beijing 2024 and 2nd Prize at Scroll Hackathon.',
+      zh: 'OwnFace 获 ETH Shanghai 2025 公共物品赛道三等奖；zkp-discord 获 ETH Beijing 2024 三等奖与 Scroll 二等奖；另获 Aptos Hackathon 二等奖、ETHGlobal Bangkok WorldCoin 赛道奖，并多次参加红杉 AI 黑客松。',
+      en: 'OwnFace won 3rd Prize (Public Goods) at ETH Shanghai 2025; zkp-discord won 3rd Prize at ETH Beijing 2024 & 2nd Prize at Scroll; plus Aptos Hackathon 2nd Prize and ETHGlobal Bangkok WorldCoin Award.',
     },
     href: 'https://github.com/Coooder-Crypto/OwnFace',
     linkLabel: { zh: '查看 OwnFace', en: 'View OwnFace' },

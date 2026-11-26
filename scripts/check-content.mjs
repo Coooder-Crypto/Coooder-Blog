@@ -24,7 +24,7 @@ function readPage(route) {
   assert.equal(meta('og:title'), meta('twitter:title'), `${route}: share title`);
   assert.equal(meta('og:image'), meta('twitter:image'), `${route}: share image`);
   assert.ok(
-    canonical && new URL(canonical).origin === 'https://coooder-blog.vercel.app',
+    canonical && new URL(canonical).origin === 'https://coooder.space',
     `${route}: absolute canonical`
   );
   assert.ok(

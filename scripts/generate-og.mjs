@@ -136,7 +136,7 @@ function buildSvg({ title, titleEn, date, tags }) {
 
   <circle cx="96" cy="84" r="6" fill="#c2492a"/>
   <text x="116" y="89" font-family="'JetBrains Mono', 'SF Mono', Menlo, monospace" font-size="15" font-weight="600" fill="#57534e" letter-spacing="1.6">ESSAY · ${escapeXml(shortDate || 'COOODER')}</text>
-  <text x="1104" y="89" text-anchor="end" font-family="'JetBrains Mono', 'SF Mono', Menlo, monospace" font-size="15" fill="#78716c" letter-spacing="0.4">coooder-blog.vercel.app</text>
+  <text x="1104" y="89" text-anchor="end" font-family="'JetBrains Mono', 'SF Mono', Menlo, monospace" font-size="15" fill="#78716c" letter-spacing="0.4">coooder.space</text>
 
   <g opacity="0.88">
     <circle cx="1012" cy="336" r="118" fill="none" stroke="#e4dfd2" stroke-width="1.4" stroke-dasharray="5 7"/>

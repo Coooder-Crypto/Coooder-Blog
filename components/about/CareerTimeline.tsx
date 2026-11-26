@@ -16,10 +16,28 @@ const experiences = [
     period: { en: 'Nov 2025 – May 2026', zh: '2025.11 – 2026.05' },
   },
   {
-    company: { en: 'Thunderbit', zh: 'Thunderbit' },
-    team: { en: 'Web App & Chrome Extension · LLM Workflow', zh: 'Web 端与 Chrome 扩展 · 大模型工作流' },
+    company: { en: 'Weex Exchange', zh: 'Weex 交易所' },
+    team: { en: 'User Growth · Campaign Platform (Vue / React)', zh: '用户增长 · 活动配置与展示平台（Vue / React）' },
     role: { en: 'Frontend Development Intern', zh: '前端开发实习生' },
-    period: { en: 'Jan 2024 – Jul 2024', zh: '2024.01 – 2024.07' },
+    period: { en: 'Feb 2025 – Jul 2025', zh: '2025.02 – 2025.07' },
+  },
+  {
+    company: { en: 'Circuit (Zircuit DEX)', zh: 'Circuit（Zircuit 首个 DEX）' },
+    team: { en: 'DeFi Trading & Liquidity App · circuit.money', zh: 'DeFi 交易与流动性前端应用 · circuit.money' },
+    role: { en: 'Frontend Engineer (React)', zh: '前端开发工程师（React）' },
+    period: { en: 'Jun 2024 – Dec 2024', zh: '2024.06 – 2024.12' },
+  },
+  {
+    company: { en: 'Thunderbit', zh: 'Thunderbit' },
+    team: { en: 'AI SaaS No-Code Web App & Chrome Extension (Slate.js / Streaming Chatbox)', zh: '出海 AI SaaS 无代码平台与浏览器插件（Slate.js / 流式 Chatbox）' },
+    role: { en: 'Frontend Development Intern', zh: '前端开发实习生' },
+    period: { en: 'Dec 2023 – Jul 2024', zh: '2023.12 – 2024.07' },
+  },
+  {
+    company: { en: 'Zhongke Longjingshi Semiconductor', zh: '中科龙晶石半导体' },
+    team: { en: 'Hardware Debugging Platform · Firmware & Waveform Dashboard (Vue3)', zh: '全流程硬件调试平台 · 固件烧录与波形看板（Vue3）' },
+    role: { en: 'Fullstack Development Intern', zh: '全栈开发实习生' },
+    period: { en: 'Sep 2022 – Apr 2023', zh: '2022.09 – 2023.04' },
   },
 ] as const;
 

@@ -174,8 +174,8 @@ const projectsData: Project[] = [
       zh: 'OwnFace',
     },
     description: {
-      en: 'ETH Shanghai 2025 2nd Prize — an end-to-end zero-knowledge biometric authentication stack proving identity without exposing raw face embeddings.',
-      zh: 'ETH Shanghai 2025 二等奖：端到端零知识人脸生物认证栈，在不暴露原始人脸向量的前提下完成链上身份验真。',
+      en: 'ETH Shanghai 2025 Public Goods 3rd Prize — an end-to-end zero-knowledge biometric authentication stack proving identity without exposing raw face embeddings.',
+      zh: 'ETH Shanghai 2025 公共物品赛道三等奖：端到端零知识人脸生物认证栈，在不暴露原始人脸向量的前提下完成链上身份验真。',
     },
     contribution: {
       en: 'Built the frontend, proving backend, Pedersen/Poseidon + Groth16 flow, and Sepolia on-chain verification integration.',
@@ -240,7 +240,7 @@ const projectsData: Project[] = [
       zh: '负责站点设计、双语元信息、草稿防泄漏校验与本地第二大脑导入工作流。',
     },
     imgSrc: '/static/images/projects/coooder-blog.webp',
-    url: 'https://coooder-blog.vercel.app/',
+    url: 'https://coooder.space/',
     builtWith: ['Next.js', 'Tailwind', 'TypeScript', 'MDX'],
   },
   {
@@ -312,7 +312,7 @@ const projectsData: Project[] = [
       zh: '协同产品与设计完成 DEX 核心前端流程开发与体验优化。',
     },
     imgSrc: '/static/images/projects/circuit.webp',
-    // Public URL withheld until verified.
+    url: 'https://www.circuit.money/',
     builtWith: ['Next.js', 'Tailwind', 'TypeScript'],
   },
   {
