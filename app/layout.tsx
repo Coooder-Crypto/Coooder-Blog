@@ -7,24 +7,16 @@ import 'react-medium-image-zoom/dist/styles.css';
 import 'remark-github-blockquote-alert/alert.css';
 
 import { Metadata } from 'next';
-import { Outfit } from 'next/font/google';
 
 import { sortPosts } from 'pliny/utils/contentlayer';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import siteMetadata from '@/data/siteMetadata';
 import { SectionContainer } from '@/components/ui';
-import { ScrollProgressBar } from '@/components/ui/EditorialMotion';
+import AsciiAmbientBackground from '@/components/ui/AsciiAmbientBackground';
 import CommandPalette, { type CommandPostItem } from '@/components/ui/CommandPalette';
 import LanguageProvider from '@/components/providers/LanguageProvider';
 import { publishedPosts } from '@/lib/publishedPosts';
-
-const FONT_OUTFIT = Outfit({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-outfit',
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
@@ -85,40 +77,34 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   }));
 
   return (
-    <html lang={siteMetadata.language} className={`${FONT_OUTFIT.variable} scroll-smooth`} suppressHydrationWarning>
+    <html lang={siteMetadata.language} className="scroll-smooth" suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" sizes="32x32" href="/static/favicons/coooder-32.png" />
         <link rel="icon" type="image/svg+xml" href="/static/favicons/coooder.svg" />
         <link rel="apple-touch-icon" sizes="180x180" href="/static/favicons/coooder-180.png" />
         <link rel="manifest" href="/static/favicons/site.webmanifest" />
         <link rel="alternate" type="application/rss+xml" title={siteMetadata.title} href="/feed.xml" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font -- Root App Router layout loads display serif and mono fonts across all routes. */}
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap"
-        />
-        <meta name="msapplication-TileColor" content="#faf8f3" />
-        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf8f3" />
-        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e0e0d" />
+        <meta name="msapplication-TileColor" content="#ffffff" />
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#09090b" />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="studio-body antialiased">
-        <div className="paper-grain" aria-hidden="true" />
-        <ScrollProgressBar />
         <LanguageProvider>
           <CommandPalette posts={commandPosts} />
           <a href="#main-content" className="skip-link">
             Skip to content / 跳到正文
           </a>
-          <SectionContainer>
+          <AsciiAmbientBackground />
+          <div className="architectural-shell">
             <Header />
-            <main id="main-content" className="site-main">
-              {children}
-            </main>
-            <Footer />
-          </SectionContainer>
+            <SectionContainer>
+              <main id="main-content" className="site-main">
+                {children}
+              </main>
+              <Footer />
+            </SectionContainer>
+          </div>
         </LanguageProvider>
       </body>
     </html>

@@ -661,3 +661,183 @@ export function JarvisSystemSvg({ className = '' }: DiagramProps) {
     </svg>
   );
 }
+
+/**
+ * CASE 02 — MemTable: Structured auditable ledger runtime (Event -> Proposal -> SQLite Ledger -> MCP Query)
+ */
+export function MemTableSvg({ className = '', minimal = false }: DiagramProps) {
+  return (
+    <svg
+      viewBox="0 0 600 375"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={`editorial-svg ${className}`}
+      role="img"
+      aria-label="Architectural vector diagram showing MemTable turning agent events into auditable proposals and SQLite ledger aggregations exposed via MCP"
+    >
+      <defs>
+        <pattern id="memtable-grid" width="30" height="30" patternUnits="userSpaceOnUse">
+          <path d="M 30 0 L 0 0 0 30" stroke="var(--line)" strokeWidth="0.75" opacity="0.65" />
+        </pattern>
+      </defs>
+      <rect width="600" height="375" fill="url(#memtable-grid)" />
+
+      {/* Left: Observed Agent Events */}
+      <g>
+        <rect
+          x="34"
+          y="78"
+          width="148"
+          height="54"
+          rx="8"
+          fill="var(--paper-light)"
+          stroke="var(--line-strong)"
+          strokeWidth="1.2"
+        />
+        <text x="48" y="100" className="svg-mono-micro" fill="var(--accent-blue)">
+          OBSERVE
+        </text>
+        <text x="48" y="119" className="svg-mono-sub" fill="var(--ink)">
+          Agent Events
+        </text>
+
+        <rect
+          x="34"
+          y="156"
+          width="148"
+          height="54"
+          rx="8"
+          fill="var(--paper-light)"
+          stroke="var(--line-strong)"
+          strokeWidth="1.2"
+        />
+        <text x="48" y="178" className="svg-mono-micro" fill="var(--accent-ink)">
+          PROPOSAL
+        </text>
+        <text x="48" y="197" className="svg-mono-sub" fill="var(--ink)">
+          Schema + Trace
+        </text>
+
+        <rect
+          x="34"
+          y="234"
+          width="148"
+          height="54"
+          rx="8"
+          fill="var(--paper-light)"
+          stroke="var(--line-strong)"
+          strokeWidth="1.2"
+        />
+        <text x="48" y="256" className="svg-mono-micro" fill="var(--muted)">
+          PACKS
+        </text>
+        <text x="48" y="275" className="svg-mono-sub" fill="var(--ink)">
+          fitness · work
+        </text>
+      </g>
+
+      {/* Connecting flows into Ledger */}
+      <g stroke="var(--line-strong)" strokeWidth="1.25">
+        <path d="M 182 105 C 216 105, 218 162, 248 162" />
+        <path d="M 182 183 L 248 183" />
+        <path d="M 182 261 C 216 261, 218 204, 248 204" />
+      </g>
+      <path
+        d="M 182 105 C 216 105, 218 162, 248 162"
+        stroke="var(--accent-blue)"
+        strokeWidth="2.1"
+        strokeLinecap="round"
+        strokeDasharray="24 140"
+        className="svg-flow-short"
+      />
+      <path
+        d="M 182 183 L 248 183"
+        stroke="var(--accent)"
+        strokeWidth="2.1"
+        strokeLinecap="round"
+        strokeDasharray="22 120"
+        className="svg-flow-short-delayed"
+      />
+
+      {/* Center: SQLite Structured Ledger */}
+      <g className="svg-float-gentle">
+        <rect
+          x="248"
+          y="88"
+          width="174"
+          height="190"
+          rx="12"
+          fill="var(--paper-light)"
+          stroke="var(--accent)"
+          strokeWidth="1.6"
+        />
+        <circle cx="268" cy="112" r="4.5" fill="var(--accent)" className="svg-pulse-dot" />
+        <text x="280" y="116" className="svg-mono-micro" fill="var(--accent-ink)">
+          SQLITE LEDGER
+        </text>
+        <line x1="262" y1="130" x2="408" y2="130" stroke="var(--line)" strokeWidth="1" />
+        {/* Ledger rows */}
+        <rect x="264" y="144" width="142" height="24" rx="4" fill="var(--paper)" stroke="var(--line)" />
+        <text x="272" y="160" className="svg-mono-micro" fill="var(--ink)">
+          ts · schema · verified
+        </text>
+        <rect x="264" y="176" width="142" height="24" rx="4" fill="var(--paper)" stroke="var(--line)" />
+        <text x="272" y="192" className="svg-mono-micro" fill="var(--ink)">
+          bench: 60kg → 65kg
+        </text>
+        <rect x="264" y="208" width="142" height="24" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" />
+        <text x="272" y="224" className="svg-mono-micro" fill="var(--accent-ink)">
+          Δ +5kg · source_id
+        </text>
+        <text x="264" y="258" className="svg-mono-micro" fill="var(--muted)">
+          COMPUTE WHAT CHANGED
+        </text>
+      </g>
+
+      {/* Right: MCP & Query Surface */}
+      <path d="M 422 183 L 462 183" stroke="var(--line-strong)" strokeWidth="1.3" />
+      <path
+        d="M 422 183 L 462 183"
+        stroke="var(--accent-blue)"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeDasharray="16 80"
+        className="svg-flow-short"
+      />
+      <rect
+        x="462"
+        y="128"
+        width="106"
+        height="110"
+        rx="10"
+        fill="var(--paper-light)"
+        stroke="var(--ink)"
+        strokeWidth="1.25"
+      />
+      <text x="476" y="154" className="svg-mono-micro" fill="var(--accent-blue)">
+        MCP / CLI
+      </text>
+      <line x1="474" y1="166" x2="554" y2="166" stroke="var(--line)" />
+      <text x="476" y="188" className="svg-mono-sub" fill="var(--ink)">
+        Aggregate
+      </text>
+      <text x="476" y="208" className="svg-mono-sub" fill="var(--ink)">
+        Trace ID
+      </text>
+      <text x="476" y="226" className="svg-mono-micro" fill="var(--muted)">
+        Hermes Plug
+      </text>
+
+      {!minimal && (
+        <>
+          <text x="34" y="344" className="svg-mono-micro" fill="var(--muted)">
+            MEMORY RECALLS · LEDGER COMPUTES
+          </text>
+          <text x="566" y="344" textAnchor="end" className="svg-mono-micro" fill="var(--muted)">
+            NODE:SQLITE · MCP · V0.1
+          </text>
+        </>
+      )}
+    </svg>
+  );
+}

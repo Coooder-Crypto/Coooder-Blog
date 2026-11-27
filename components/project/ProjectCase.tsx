@@ -1,25 +1,15 @@
 'use client';
 
-import type { ComponentType } from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { PixelArrowUpRight } from '@/components/ui/PixelIcons';
 import Link from '@/components/ui/Link';
-import { ByteNoteSvg, CapitalMapSvg, VitalSyncSvg } from '@/components/ui/EditorialDiagrams';
 import type { Project } from '@/types/data';
 import { useLanguage } from '@/lib/i18n';
 import ProjectEvidence from './ProjectEvidence';
 import type { ProjectEvidenceRecord } from '@/data/projectEvidence';
 
-const projectDiagrams: Record<string, ComponentType<{ className?: string; minimal?: boolean }>> = {
-  'Vital Agent Sync': VitalSyncSvg,
-  'AI Capital Map': CapitalMapSvg,
-  ByteNote: ByteNoteSvg,
-};
-
 export default function ProjectCase({
   project,
-  index,
   detailed = false,
-  featuredLead = false,
   evidence,
 }: {
   project: Project;
@@ -29,28 +19,18 @@ export default function ProjectCase({
   evidence?: ProjectEvidenceRecord;
 }) {
   const { language, t } = useLanguage();
-  const Diagram = projectDiagrams[project.title.en];
   const hasDetails = project.problem || project.outcome || (project.contribution && project.contribution.en !== 'xxx');
 
   if (detailed) {
     return (
       <article className="case-card case-detailed">
         <div className="case-body">
-          <div className="case-detailed-head">
-            <div className="case-detailed-head-copy">
-              <div className="case-index">
-                <span className="case-serif-num display-serif">{String(index + 1).padStart(2, '0')}</span>
-                <span className="case-index-tag">VERIFIED CASE</span>
-              </div>
+          <div className="case-detailed-head-copy">
+            <div className="case-detailed-title-row">
               <h3>{project.title[language]}</h3>
-              {evidence && <p className="case-status">{evidence.status[language]}</p>}
-              <p>{project.description?.[language]}</p>
+              {evidence && <span className="case-status">{evidence.status[language]}</span>}
             </div>
-            {Diagram && (
-              <div className="case-art case-art-thumb">
-                <Diagram minimal />
-              </div>
-            )}
+            <p>{project.description?.[language]}</p>
           </div>
 
           {hasDetails && (
@@ -75,17 +55,23 @@ export default function ProjectCase({
               )}
             </dl>
           )}
-          <div className="case-technologies">{project.builtWith.slice(0, 4).join(' · ')}</div>
+          <div className="pixel-tag-row">
+            {project.builtWith.slice(0, 4).map((tech) => (
+              <span key={tech} className="pixel-tag">
+                {tech}
+              </span>
+            ))}
+          </div>
           {(project.url || project.repo) && (
             <div className="case-links">
               {project.url && (
                 <Link href={project.url} className="text-link">
-                  {language === 'zh' ? '访问网站' : 'Visit website'} <ArrowUpRight size={15} aria-hidden="true" />
+                  {language === 'zh' ? '访问网站' : 'Visit website'} <PixelArrowUpRight size={13} />
                 </Link>
               )}
               {project.repo && (
                 <Link href={`https://github.com/${project.repo}`} className="text-link">
-                  {language === 'zh' ? '查看源码' : 'View source'} <ArrowUpRight size={15} aria-hidden="true" />
+                  {language === 'zh' ? '查看源码' : 'View source'} <PixelArrowUpRight size={13} />
                 </Link>
               )}
             </div>
@@ -97,31 +83,27 @@ export default function ProjectCase({
   }
 
   return (
-    <article className={`case-card ${featuredLead ? 'case-lead' : ''}`}>
-      {Diagram && (
-        <div className="case-art">
-          <Diagram />
-        </div>
-      )}
+    <article className="case-card">
       <div className="case-body">
-        <div className="case-index">
-          <span className="case-serif-num display-serif">{String(index + 1).padStart(2, '0')}</span>
-          <span className="case-index-tag">CASE STUDY</span>
-        </div>
         <h3>{project.title[language]}</h3>
         <p>{project.description?.[language]}</p>
-        {featuredLead && project.problem && <p className="case-lead-note">{project.problem[language]}</p>}
-        <div className="case-technologies">{project.builtWith.slice(0, 4).join(' · ')}</div>
+        <div className="pixel-tag-row">
+          {project.builtWith.slice(0, 4).map((tech) => (
+            <span key={tech} className="pixel-tag">
+              {tech}
+            </span>
+          ))}
+        </div>
         {(project.url || project.repo) && (
           <div className="case-links">
             {project.url && (
               <Link href={project.url} className="text-link">
-                {language === 'zh' ? '访问网站' : 'Visit website'} <ArrowUpRight size={15} aria-hidden="true" />
+                {language === 'zh' ? '访问网站' : 'Visit website'} <PixelArrowUpRight size={13} />
               </Link>
             )}
             {project.repo && (
               <Link href={`https://github.com/${project.repo}`} className="text-link">
-                {language === 'zh' ? '查看源码' : 'View source'} <ArrowUpRight size={15} aria-hidden="true" />
+                {language === 'zh' ? '查看源码' : 'View source'} <PixelArrowUpRight size={13} />
               </Link>
             )}
           </div>

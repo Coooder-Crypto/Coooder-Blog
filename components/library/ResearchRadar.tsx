@@ -39,20 +39,7 @@ export default function ResearchRadar() {
   return (
     <div className="radar-page">
       <header className="editorial-page-heading">
-        <p className="eyebrow">{zh ? 'CURATED FROM JARVIS-BRAIN · 文献雷达' : 'CURATED FROM JARVIS-BRAIN · RESEARCH RADAR'}</p>
-        <h1>
-          {zh ? (
-            <>
-              Agent Harness <span className="accent-zh">研究雷达</span>
-              <span className="rust-dot">.</span>
-            </>
-          ) : (
-            <>
-              Agent Harness <em className="display-serif">Research Radar</em>
-              <span className="rust-dot">.</span>
-            </>
-          )}
-        </h1>
+        <h1>{zh ? '研究文献' : 'Research Library'}</h1>
         <p>
           {zh
             ? '持续跟踪 Agent 从“单次 LLM 调用”走向“受控运行系统”的关键论文与工程文献。按系统组件而非热度归类——每一条都落到一个具体工程问题：上下文、执行、验证、编排、安全或可观测性。'

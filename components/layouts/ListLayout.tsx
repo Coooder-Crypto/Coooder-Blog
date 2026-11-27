@@ -180,13 +180,7 @@ export default function ListLayout({
     <>
       <div className="blog-index">
         <header className="editorial-page-heading">
-          <p className="eyebrow">
-            {language === 'zh' ? 'AGENT HARNESS / 实证 / 思考' : 'AGENT HARNESS / EXPERIMENTS / NOTES'}
-          </p>
-          <h1>
-            {title}
-            <span className="rust-dot">.</span>
-          </h1>
+          <h1>{title}</h1>
           <p>
             {language === 'zh'
               ? '记录 AI-Native Engineering、Agent Runtime 拆解、Jarvis 实践与全栈工程基础。'

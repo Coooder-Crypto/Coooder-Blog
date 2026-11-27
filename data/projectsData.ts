@@ -30,6 +30,31 @@ const projectsData: Project[] = [
   {
     type: 'featured',
     title: {
+      en: 'MemTable',
+      zh: 'MemTable',
+    },
+    description: {
+      en: 'A local-first structured ledger runtime for long-running agents — memory recalls what happened; a ledger computes what changed.',
+      zh: '面向长运行 Agent 的本地优先结构化账本运行时：记忆负责回忆发生过什么，账本负责计算到底变了什么。',
+    },
+    problem: {
+      en: 'Text and vector memory recall stories, but struggle with real data questions like training progression, trends, or task failure counts.',
+      zh: '文本与向量记忆擅长回忆碎片，却很难准确回答训练进步、体重趋势或任务失败统计这类数据计算问题。',
+    },
+    outcome: {
+      en: 'An auditable SQLite ledger MVP with proposal review, declarative extractors, fitness/agent-work packs, MCP tools, and a Hermes plugin.',
+      zh: '可审计的 SQLite 账本运行时 MVP：支持提案确认、声明式提取规则、fitness/agent-work 领域包、MCP 工具与 Hermes 增强插件。',
+    },
+    contribution: {
+      en: 'Built @memtable/core, HTTP/MCP server, CLI, fitness and agent-work packs, and Hermes/OpenClaw enhancer adapters.',
+      zh: '实现 @memtable/core、HTTP/MCP 服务、CLI、fitness/agent-work 领域包及 Hermes/OpenClaw 增强适配层。',
+    },
+    repo: 'Coooder-Crypto/mem-table',
+    builtWith: ['TypeScript', 'SQLite', 'MCP', 'Hermes'],
+  },
+  {
+    type: 'featured',
+    title: {
       en: 'AI Capital Map',
       zh: 'AI Capital Map',
     },
@@ -54,26 +79,18 @@ const projectsData: Project[] = [
     builtWith: ['Next.js', 'TypeScript', 'PostgreSQL', 'Data Research'],
   },
   {
-    type: 'featured',
+    type: 'self',
     title: {
       en: 'ByteNote',
       zh: 'ByteNote',
     },
     description: {
-      en: 'An offline-first collaborative writing app with structured editing, automatic sync, self-hosted collaboration, and AI assistance.',
-      zh: '一款离线优先的协作文档应用，包含结构化编辑、自动同步、自托管协作与 AI 辅助。',
-    },
-    problem: {
-      en: 'Writing tools often make collaboration depend on a stable connection and a centrally hosted workspace.',
-      zh: '许多写作工具让协作依赖稳定网络与中心化工作区，离线与数据控制往往被牺牲。',
-    },
-    outcome: {
-      en: 'An editor with IndexedDB persistence, a reconnection sync queue, and a separately self-hostable Yjs collaboration service.',
-      zh: '具备 IndexedDB 持久化、联网恢复后的同步队列，以及可独立自建的 Yjs 协作服务。',
+      en: 'An offline-first collaborative writing app with IndexedDB persistence, a reconnection sync queue, and a self-hostable Yjs service.',
+      zh: '离线优先的协作文档应用：具备 IndexedDB 持久化、断网恢复同步队列与可独立自建的 Yjs 协作服务。',
     },
     contribution: {
-      en: 'Designed the offline sync queue, IndexedDB persistence, Yjs collaboration, editor experience, and full-stack integration.',
-      zh: '设计离线同步队列、IndexedDB 持久化、Yjs 协作、编辑器体验与全栈集成。',
+      en: 'Designed the offline sync queue, IndexedDB persistence, Yjs collaboration, Slate editor, and full-stack integration.',
+      zh: '设计离线同步队列、IndexedDB 持久化、Yjs 协作、Slate 编辑器体验与全栈集成。',
     },
     imgSrc: '/static/images/projects/bytenote.webp',
     repo: 'Coooder-Crypto/ByteNote',
@@ -115,23 +132,6 @@ const projectsData: Project[] = [
     imgSrc: '/static/images/projects/ethpanda.webp',
     url: 'https://ethpanda.org/',
     builtWith: ['React', 'TailwindCSS', 'tRPC', 'Next.js'],
-  },
-  {
-    type: 'self',
-    title: {
-      en: 'MemTable',
-      zh: 'MemTable',
-    },
-    description: {
-      en: 'A local-first structured ledger runtime for long-running agents — memory recalls what happened; a ledger computes what changed.',
-      zh: '面向长运行 Agent 的本地优先结构化账本运行时：记忆负责回忆，账本负责计算变化。',
-    },
-    contribution: {
-      en: 'Built the SQLite ledger core, HTTP/MCP server, declarative extractors, fitness & agent-work packs, and Hermes enhancer plugin.',
-      zh: '实现 SQLite 账本核心、HTTP/MCP 服务、声明式提取规则、fitness/agent-work 领域包与 Hermes 增强插件。',
-    },
-    repo: 'Coooder-Crypto/mem-table',
-    builtWith: ['TypeScript', 'SQLite', 'MCP', 'Hermes'],
   },
   {
     type: 'self',

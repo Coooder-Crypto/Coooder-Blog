@@ -1,58 +1,61 @@
+/* Architectural Pixel Reading Page Styles */
 .article-language-note {
-  margin-top: 16px;
+  margin-top: 14px;
   padding: 10px 14px;
-  border-left: 3px solid var(--accent-blue);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  background: var(--accent-blue-soft);
-  color: var(--ink-secondary);
-  font-size: 13px;
+  border-left: 2px solid var(--line-strong);
+  background: var(--surface-subtle);
+  color: var(--muted);
+  font-size: 12.5px;
   line-height: 1.7;
 }
 
 .article-toc {
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  background: var(--paper);
-  padding: 16px 18px;
+  margin-top: 18px;
+  padding: 10px 14px;
+  border: 1px solid var(--edge);
+  background: var(--surface-subtle);
 }
 .article-toc summary {
-  min-height: 28px;
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  min-height: 24px;
+  font-family: var(--font-editorial-mono);
+  font-size: 12px;
   color: var(--muted);
+  transition: color 0.14s ease;
 }
-.article-toc summary:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
+.article-toc summary:hover {
+  color: var(--ink);
+}
+.article-toc summary span {
+  font-size: 12.5px;
+  font-weight: 500;
 }
 .article-toc ul {
-  max-height: min(55vh, 480px);
+  max-height: min(46vh, 360px);
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-right: 6px;
+  padding: 6px 0 2px 4px;
 }
 .article-toc a {
   display: block;
-  padding: 5px 0;
-  font-size: 13.5px;
+  padding: 4px 0;
+  font-size: 13px;
   line-height: 1.55;
   color: var(--muted);
-  transition: color 0.15s ease;
 }
 .article-toc a:hover {
-  color: var(--accent);
+  color: var(--ink);
 }
 
 .reading-page :is(h2, h3, h4) {
-  scroll-margin-top: 84px;
+  scroll-margin-top: 68px;
 }
 
 .blog-search-status {
-  margin: 0 0 16px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--edge);
   color: var(--muted);
-  font-size: 13.5px;
+  font-family: var(--font-editorial-mono);
+  font-size: 11.5px;
 }
 
 .mobile-toc-trigger {
@@ -67,19 +70,18 @@
 .mobile-toc-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(17, 17, 16, 0.45);
+  background: rgba(9, 9, 11, 0.45);
   backdrop-filter: blur(2px);
 }
 
 .mobile-toc-panel {
   position: fixed;
   inset: auto 0 0;
-  max-height: 78dvh;
+  max-height: 75dvh;
   display: flex;
   flex-direction: column;
-  background: var(--paper-light);
+  background: var(--paper);
   border-top: 1px solid var(--line-strong);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   padding: 18px 20px max(20px, env(safe-area-inset-bottom));
   box-shadow: var(--shadow-md);
 }
@@ -90,32 +92,32 @@
   justify-content: space-between;
   gap: 16px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--line);
-  font-weight: 700;
+  border-bottom: 1px solid var(--edge);
+  font-weight: 600;
   color: var(--ink);
 }
 .mobile-toc-header button {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   color: var(--muted);
 }
 
 .mobile-toc-panel nav {
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-top: 12px;
+  padding-top: 10px;
 }
 .mobile-toc-panel a {
   display: block;
-  padding: 10px 4px;
-  font-size: 14.5px;
+  padding: 9px 2px;
+  font-size: 13.5px;
   line-height: 1.6;
   color: var(--ink-secondary);
 }
 .mobile-toc-panel a[aria-current] {
-  color: var(--accent);
+  color: var(--ink);
   font-weight: 600;
 }
 
@@ -128,17 +130,15 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    min-height: 38px;
-    padding: 7px 13px;
+    min-height: 34px;
+    padding: 5px 11px;
     border: 1px solid var(--line-strong);
-    border-radius: 999px;
     background: var(--header-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     color: var(--ink);
-    box-shadow: var(--shadow-md);
-    font-size: 12.5px;
-    font-weight: 600;
+    font-family: var(--font-editorial-mono);
+    font-size: 11.5px;
   }
 }
 
@@ -148,8 +148,7 @@
 .article-zoom-wrap [data-rmiz-content] img,
 .article-zoom-wrap img {
   cursor: zoom-in;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--line);
+  border: 1px solid var(--edge);
 }
 
 .article-anchor-heading {
@@ -163,71 +162,59 @@
   align-items: center;
   gap: 4px;
   margin-left: 8px;
-  padding: 2px 7px;
+  padding: 2px 6px;
   border: 1px solid transparent;
-  border-radius: 999px;
   background: transparent;
   color: var(--muted);
-  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
+  font-family: var(--font-editorial-mono);
   font-size: 11px;
-  font-weight: 600;
   line-height: 1.4;
   vertical-align: middle;
   opacity: 0;
-  transition: opacity 0.16s ease, color 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  transition:
+    opacity 0.14s ease,
+    color 0.14s ease,
+    border-color 0.14s ease;
 }
 .article-anchor-heading:hover .article-heading-copy,
 .article-anchor-heading:focus-within .article-heading-copy,
 .article-heading-copy.copied {
   opacity: 1;
 }
-.article-heading-copy:hover {
-  border-color: var(--line-strong);
-  background: var(--paper);
-  color: var(--ink);
-}
+.article-heading-copy:hover,
 .article-heading-copy.copied {
-  border-color: var(--accent);
-  background: var(--accent-soft, rgba(194, 73, 42, 0.1));
-  color: var(--accent);
-}
-@media (hover: none) {
-  .article-heading-copy {
-    opacity: 0.65;
-  }
+  border-color: var(--line-strong);
+  color: var(--ink);
 }
 
 .swiss-scroll-top {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
+  right: 20px;
+  bottom: 20px;
   z-index: 55;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  min-height: 36px;
-  padding: 6px 12px;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
+  min-height: 32px;
+  padding: 5px 10px;
+  border: 1px solid var(--edge);
   background: var(--header-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: var(--ink);
-  box-shadow: var(--shadow-sm);
-  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--muted);
+  font-family: var(--font-editorial-mono);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  transition: border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+  transition:
+    border-color 0.14s ease,
+    color 0.14s ease;
 }
 .swiss-scroll-top:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  transform: translateY(-2px);
+  border-color: var(--ink);
+  color: var(--ink);
 }
 @media (max-width: 1023px) {
   .swiss-scroll-top {
     right: 16px;
-    bottom: calc(max(18px, env(safe-area-inset-bottom)) + 48px);
+    bottom: calc(max(18px, env(safe-area-inset-bottom)) + 44px);
   }
 }

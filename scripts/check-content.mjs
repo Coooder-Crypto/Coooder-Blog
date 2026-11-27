@@ -34,7 +34,7 @@ function readPage(route) {
   return { nodes, meta, canonical };
 }
 
-for (const route of ['', 'blog', 'projects', 'about', 'tags', 'resume']) {
+for (const route of ['', 'blog', 'projects', 'about', 'now', 'tags', 'resume']) {
   const { meta } = readPage(route);
   assert.equal(meta('og:locale'), 'zh_CN', `${route}: default locale`);
 }
@@ -95,6 +95,7 @@ assert.ok(existsSync('out/feed.xml'), 'RSS feed must be exported');
 assert.ok(readFileSync('out/feed.xml', 'utf8').includes('<rss version="2.0"'), 'RSS feed must be valid RSS 2.0');
 assert.ok(existsSync('out/llms.txt'), 'llms.txt must be exported');
 assert.ok(readFileSync('out/sitemap.xml', 'utf8').includes('/library'), 'sitemap.xml must include /library');
+assert.ok(readFileSync('out/sitemap.xml', 'utf8').includes('/now'), 'sitemap.xml must include /now');
 assert.ok(!existsSync('out/search.json'), 'Stale template search.json must remain removed');
 
 const source = readFileSync('data/projectEvidence.ts', 'utf8');
@@ -105,7 +106,7 @@ assert.equal(nodes.filter((node) => node.tagName === 'article').length, 3, 'One 
 const screenshots = nodes.filter(
   (node) => node.tagName === 'details' && node.properties.className?.includes('evidence-screenshot')
 );
-assert.equal(screenshots.length, 2, 'Two optional demo screenshots');
+assert.equal(screenshots.length, 1, 'One optional demo screenshot');
 assert.ok(
   screenshots.every((node) => !node.properties.open),
   'Screenshots start collapsed'

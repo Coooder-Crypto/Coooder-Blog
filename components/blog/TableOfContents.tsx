@@ -33,7 +33,6 @@ const TableOfContents = (props: TableOfContentsProps) => {
   useEffect(() => {
     const desktop = window.matchMedia('(min-width: 1024px)');
     const update = () => {
-      setExpanded(desktop.matches);
       if (desktop.matches) setMobileOpen(false);
     };
     update();

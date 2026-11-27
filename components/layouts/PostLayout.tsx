@@ -26,48 +26,33 @@ export default function PostLayout(props: LayoutProps) {
       <ScrollTopAndComment />
 
       <article className="reading-page">
-        {/*START: Header*/}
         <header>
-          <div className="dark:border-gray space-y-1 border-b border-gray-200 pb-10">
-            <div className="space-y-6">
-              <PostHeading title={title} titleEn={titleEn} bodyLanguage={bodyLanguage} />
-              <BlogTags tags={tags} />
-              <dl>
-                <div>
-                  <dt className="sr-only">Published on / 发布于</dt>
-                  <BlogMeta date={date} readingTime={readingTime} />
-                </div>
-              </dl>
-            </div>
+          <div className="space-y-4 border-b border-[var(--line)] pb-8">
+            <PostHeading title={title} titleEn={titleEn} bodyLanguage={bodyLanguage} />
+            <dl>
+              <div>
+                <dt className="sr-only">Published on / 发布于</dt>
+                <BlogMeta date={date} readingTime={readingTime} />
+              </div>
+            </dl>
+            <BlogTags tags={tags} />
           </div>
         </header>
-        {/*END: Header*/}
         <SeriesNav slug={content.slug} />
 
-        {/*START: Content*/}
-        <div className="grid grid-cols-1 gap-12 pt-8 lg:grid-cols-12 lg:pt-10">
-          {!!toc?.length && (
-            <aside className="lg:order-last lg:col-span-4 xl:col-span-3">
-              <div className="lg:sticky lg:top-8">
-                <TableOfContents toc={toc} />
-              </div>
-            </aside>
-          )}
-          <div className="divide-y divide-gray-200 dark:divide-gray-700 lg:col-span-8 xl:col-span-9">
-            <div className="prose max-w-none dark:prose-dark lg:prose-lg lg:pb-8">
-              <div lang={bodyLanguage === 'en' ? 'en' : 'zh-CN'}>{children}</div>
-              <XDiscussion xPostUrl={xPostUrl} socialSummary={socialSummary} />
-            </div>
+        {!!toc?.length && <TableOfContents toc={toc} />}
+
+        <div className="pt-8">
+          <div className="prose max-w-none dark:prose-dark">
+            <div lang={bodyLanguage === 'en' ? 'en' : 'zh-CN'}>{children}</div>
+            <XDiscussion xPostUrl={xPostUrl} socialSummary={socialSummary} />
           </div>
         </div>
-        {/*END: Content*/}
 
-        {/*START: Footer*/}
         <footer>
           <RelatedPosts posts={related} />
           <BlogNav next={next} prev={prev} />
         </footer>
-        {/*END: Footer*/}
       </article>
     </SectionContainer>
   );

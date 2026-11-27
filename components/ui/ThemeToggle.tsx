@@ -1,7 +1,7 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
-import { Moon, Sun } from 'lucide-react';
+import { PixelMoon, PixelSun } from '@/components/ui/PixelIcons';
 import { useLanguage } from '@/lib/i18n';
 
 const THEME_EVENT = 'coooder-theme-change';
@@ -55,7 +55,7 @@ export default function ThemeToggle() {
       }
       title={isDark ? (language === 'zh' ? '浅色模式' : 'Light mode') : language === 'zh' ? '深色模式' : 'Dark mode'}
     >
-      {isDark ? <Sun size={15} aria-hidden="true" /> : <Moon size={15} aria-hidden="true" />}
+      {isDark ? <PixelSun size={14} /> : <PixelMoon size={14} />}
     </button>
   );
 }

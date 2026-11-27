@@ -11,7 +11,7 @@ export interface ProjectEvidenceRecord {
   screenshot?: { src: string; width: number; height: number; alt: LocalizedText; caption: LocalizedText };
 }
 
-// Public repository evidence, reviewed on 2026-10-06. Pin links to the reviewed revisions.
+// Public repository evidence, reviewed on 2026-11-26. Pin links to the reviewed revisions.
 export const projectEvidence: ProjectEvidenceRecord[] = [
   {
     title: 'Vital Agent Sync',
@@ -36,36 +36,23 @@ export const projectEvidence: ProjectEvidenceRecord[] = [
     ],
   },
   {
-    title: 'ByteNote',
-    repo: 'Coooder-Crypto/ByteNote',
-    revision: '36bed7bca0f306d0b5d66f9f754f1cde8c86ed33',
-    status: { zh: '离线优先的协作文档应用', en: 'Offline-first collaborative writing' },
+    title: 'MemTable',
+    repo: 'Coooder-Crypto/mem-table',
+    revision: '68c3ab7d13b7f939d7397a49ce48a0eb3c5bddd0',
+    status: { zh: '结构化 Agent 账本运行时 · v0.1 Alpha', en: 'Structured agent ledger runtime · v0.1 Alpha' },
     implementation: {
-      zh: '用 IndexedDB 保存本地笔记，通过 dirty 队列恢复联网后的同步。useSync 会检查网络和登录状态、避免重复执行同步，并在仍有待同步项时安排重试；Yjs 协作服务可独立自建。',
-      en: 'Persists notes in IndexedDB and syncs a dirty queue after reconnection. useSync checks connectivity and authentication, prevents concurrent flushes, and schedules retries for pending items. The Yjs collaboration service can be self-hosted separately.',
+      zh: '基于 node:sqlite 构建本地账本核心，通过声明式规则从对话与事件中生成待确认提案（proposal），落账后提供带来源追踪的结构化聚合查询与 MCP/HTTP 接口，附 fitness 与 agent-work 领域包及 Hermes 适配插件。',
+      en: 'Implements a local node:sqlite ledger core that turns observed agent events into reviewable proposals, commits schema-checked records with source tracing, and exposes aggregations over MCP/HTTP alongside fitness/agent-work packs and a Hermes plugin.',
     },
     boundary: {
-      zh: '协作服务只广播房间更新，持久化由主应用负责。截图取自仓库演示，实际同步需要有效登录与服务端连接，不代表多人规模或性能基准。',
-      en: 'The collaboration service broadcasts room updates; persistence belongs to the main app. These repository demo captures are not scale or performance benchmarks. Actual synchronization requires authentication and a server connection.',
+      zh: '当前为早期 v0.1 Alpha MVP，watch 模式为轻量轮询，HTTP 与 MCP 需分进程运行；定位是补齐结构化计算层，而非替代全文检索或向量记忆。',
+      en: 'Early v0.1 Alpha MVP: watch uses lightweight polling and HTTP/MCP run in separate processes. Designed to complement text/vector memory with structured computation, not replace it.',
     },
     sources: [
-      { label: { zh: '同步队列实现', en: 'Sync queue implementation' }, path: 'hooks/network/useSync.ts' },
-      { label: { zh: '架构与演示说明', en: 'Architecture and demo notes' }, path: 'README.md' },
-      { label: { zh: '自建协作服务', en: 'Self-hosted collaboration' }, path: 'service/README.md' },
+      { label: { zh: '账本运行时核心', en: 'Ledger runtime core' }, path: 'packages/core/src/runtime/memtable-runtime.ts' },
+      { label: { zh: 'MCP 溯源与查询接口', en: 'MCP tracing & query surface' }, path: 'packages/server/src/mcp.ts' },
+      { label: { zh: '运行时回归测试', en: 'Runtime test suite' }, path: 'packages/core/test/runtime.test.mjs' },
     ],
-    screenshot: {
-      src: '/static/images/projects/bytenote.webp',
-      width: 1600,
-      height: 608,
-      alt: {
-        zh: 'ByteNote 演示：离线创建笔记与恢复联网后的同步状态',
-        en: 'ByteNote demo: offline note creation and synchronization after reconnecting',
-      },
-      caption: {
-        zh: '仓库演示截图 · 离线 / 在线状态对照',
-        en: 'Repository demo capture · Offline / online comparison',
-      },
-    },
   },
   {
     title: 'AI Capital Map',

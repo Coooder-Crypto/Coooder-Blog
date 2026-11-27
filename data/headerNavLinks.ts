@@ -2,6 +2,7 @@ const headerNavLinks = [
   { href: '/blog', title: 'Blog', key: 'nav.blog' },
   { href: '/projects', title: 'Projects', key: 'nav.projects' },
   { href: '/library', title: 'Library', key: 'nav.library' },
+  { href: '/now', title: 'Now', key: 'nav.now' },
   { href: '/about', title: 'About', key: 'nav.about' },
 ];
 

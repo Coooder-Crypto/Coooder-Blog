@@ -21,6 +21,7 @@ export function GET() {
     `- Site: ${siteUrl}`,
     `- RSS Feed: ${siteUrl}/feed.xml`,
     `- About / Personal Dossier: ${siteUrl}/about`,
+    `- Now / Current Focus: ${siteUrl}/now`,
     `- Projects: ${siteUrl}/projects`,
     `- Agent Harness Research Radar: ${siteUrl}/library`,
     `- GitHub: ${siteMetadata.github}`,

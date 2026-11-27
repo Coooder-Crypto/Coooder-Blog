@@ -14,14 +14,12 @@ const siteMetadata = {
   socialBanner: '/static/images/social-editorial.jpg',
   email: 'cncoooder@gmail.com',
   github: 'https://github.com/Coooder-Crypto',
-  linkedin: 'https://www.linkedin.com/in/coooder',
   twitter: 'https://x.com/Coooder_Crypto',
   locale: 'zh-CN',
   openGraphLocale: 'zh_CN',
   stickyNav: false,
   socialAccounts: {
     github: 'Coooder-Crypto',
-    linkedin: 'coooder',
   },
 };
 

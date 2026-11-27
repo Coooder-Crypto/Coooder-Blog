@@ -15,21 +15,17 @@ export default function Projects() {
   return (
     <div className="projects-index">
       <header className="editorial-page-heading">
-        <p className="eyebrow">{zh ? '构建 / 实验 / 迭代' : 'BUILD / EXPERIMENT / ITERATE'}</p>
-        <h1>
-          {t('projects.pageTitle')}
-          <span className="rust-dot">.</span>
-        </h1>
+        <h1>{t('projects.pageTitle')}</h1>
         <p>
           {zh
-            ? '从一个问题开始，把想法变成可以使用、验证与改进的系统。'
-            : 'Starting with a question. Making something useful, testable, and a little better each time.'}
+            ? '从一个具体问题开始，把想法做成可以使用、验证与改进的系统。每项代表项目都附带核验过的公开源码入口。'
+            : 'Starting with a concrete question, turning ideas into useful, verifiable software. Each selected project links to pinned public source revisions.'}
         </p>
       </header>
+      <div className="pixel-divider" aria-hidden="true" />
       <section id="evidence-title" aria-labelledby="featured-heading" className="editorial-section">
         <div className="section-heading">
-          <h2 id="featured-heading">{zh ? '代表项目' : 'Selected experiments'}</h2>
-          <span className="eyebrow">01 — {String(featured.length).padStart(2, '0')}</span>
+          <h2 id="featured-heading">{zh ? '代表项目' : 'Selected projects'}</h2>
         </div>
         <div className="case-grid project-cases">
           {featured.map((project, index) => (
@@ -44,17 +40,15 @@ export default function Projects() {
         </div>
         <p className="evidence-review-note">
           {zh
-            ? '证据核对于 2026.10.06，链接固定到核对时的公开版本。未重新运行各项目测试；测试链接用于展示覆盖设计，不代表生产验收。'
-            : 'Evidence reviewed Oct 6, 2026; links are pinned to public revisions. Project tests were not rerun; test links show coverage design, not production acceptance.'}
+            ? '证据核对于 2026.11.26，链接固定到核对时的公开版本。未重新运行各项目测试；测试链接用于展示覆盖设计，不代表生产验收。'
+            : 'Evidence reviewed Nov 26, 2026; links are pinned to public revisions. Project tests were not rerun; test links show coverage design, not production acceptance.'}
         </p>
       </section>
-      <JarvisSpotlight variant="summary" />
+      <JarvisSpotlight />
+      <div className="pixel-divider" aria-hidden="true" />
       <section aria-labelledby="archive-heading" className="editorial-section">
         <div className="section-heading">
-          <div>
-            <p className="eyebrow">{zh ? '更多探索' : 'FROM THE ARCHIVE'}</p>
-            <h2 id="archive-heading">{zh ? '其他项目与协作' : 'Other builds & collaborations'}</h2>
-          </div>
+          <h2 id="archive-heading">{zh ? '其他项目与协作' : 'Other builds & collaborations'}</h2>
         </div>
         <ProjectArchive projects={other} />
       </section>
