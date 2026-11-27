@@ -1,40 +1,47 @@
 'use client';
 
 import Link from '@/components/ui/Link';
+import { PixelArrowUpRight } from '@/components/ui/PixelIcons';
 import type { Project } from '@/types/data';
 import { useLanguage } from '@/lib/i18n';
 
 export default function ProjectArchive({ projects }: { projects: Project[] }) {
   const { language } = useLanguage();
+  const zh = language === 'zh';
+
   return (
-    <ul className="project-archive-list">
-      {projects.map((project) => (
-        <li key={project.title.en}>
-          <div>
-            <h3>{project.title[language]}</h3>
-            <p>{project.description?.[language]}</p>
-            <span className="archive-technologies">{project.builtWith.join(' / ')}</span>
-          </div>
-          <div className="archive-links">
-            {project.url && (
-              <Link
-                href={project.url}
-                aria-label={`${project.title[language]} — ${language === 'zh' ? '访问网站' : 'Visit website'}`}
-              >
-                {language === 'zh' ? '网站' : 'Website'} ↗
+    <ul className="quiet-archive-list">
+      {projects.map((project) => {
+        const primaryHref = project.url || (project.repo ? `https://github.com/${project.repo}` : null);
+        const linkLabel = project.url ? (zh ? '访问' : 'Live') : project.repo ? 'GitHub' : null;
+        const primaryTech = project.builtWith.slice(0, 2).join(' · ');
+
+        return (
+          <li key={project.title.en} className="quiet-archive-row">
+            {primaryHref ? (
+              <Link href={primaryHref} className="quiet-archive-link">
+                <span className="quiet-archive-title">{project.title[language]}</span>
+                <span className="quiet-archive-meta">
+                  <span className="quiet-archive-tech">{primaryTech}</span>
+                  {linkLabel && (
+                    <span className="quiet-archive-action">
+                      {linkLabel}
+                      <PixelArrowUpRight size={11} />
+                    </span>
+                  )}
+                </span>
               </Link>
+            ) : (
+              <div className="quiet-archive-link">
+                <span className="quiet-archive-title">{project.title[language]}</span>
+                <span className="quiet-archive-meta">
+                  <span className="quiet-archive-tech">{primaryTech}</span>
+                </span>
+              </div>
             )}
-            {project.repo && (
-              <Link
-                href={`https://github.com/${project.repo}`}
-                aria-label={`${project.title[language]} — ${language === 'zh' ? '查看源码' : 'View source'}`}
-              >
-                {language === 'zh' ? '源码' : 'Source'} ↗
-              </Link>
-            )}
-          </div>
-        </li>
-      ))}
+          </li>
+        );
+      })}
     </ul>
   );
 }

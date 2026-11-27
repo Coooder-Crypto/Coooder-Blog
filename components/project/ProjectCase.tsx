@@ -7,9 +7,30 @@ import { useLanguage } from '@/lib/i18n';
 import ProjectEvidence from './ProjectEvidence';
 import type { ProjectEvidenceRecord } from '@/data/projectEvidence';
 
+const artworkByTitle: Record<string, string> = {
+  'Vital Agent Sync': '/static/images/projects/art-vital-sync.jpg',
+  MemTable: '/static/images/projects/art-memtable.jpg',
+  'AI Capital Map': '/static/images/projects/art-ai-capital.jpg',
+};
+
+const shortTagline: Record<string, { zh: string; en: string }> = {
+  'Vital Agent Sync': {
+    zh: '面向 MCP Agent 的本地优先 Apple Health 连接器。',
+    en: 'Local-first Apple Health connector for MCP agents.',
+  },
+  MemTable: {
+    zh: '面向长运行 Agent 的本地优先结构化账本运行时。',
+    en: 'Local-first structured ledger runtime for long-running agents.',
+  },
+  'AI Capital Map': {
+    zh: '带证据溯源的 AI 产业关系图谱与候选审核平台。',
+    en: 'Evidence-backed AI industry graph & review workspace.',
+  },
+};
+
 export default function ProjectCase({
   project,
-  detailed = false,
+  index,
   evidence,
 }: {
   project: Project;
@@ -19,95 +40,71 @@ export default function ProjectCase({
   evidence?: ProjectEvidenceRecord;
 }) {
   const { language, t } = useLanguage();
-  const hasDetails = project.problem || project.outcome || (project.contribution && project.contribution.en !== 'xxx');
-
-  if (detailed) {
-    return (
-      <article className="case-card case-detailed">
-        <div className="case-body">
-          <div className="case-detailed-head-copy">
-            <div className="case-detailed-title-row">
-              <h3>{project.title[language]}</h3>
-              {evidence && <span className="case-status">{evidence.status[language]}</span>}
-            </div>
-            <p>{project.description?.[language]}</p>
-          </div>
-
-          {hasDetails && (
-            <dl className="case-details">
-              {project.problem && (
-                <div>
-                  <dt>{t('projects.problem')}</dt>
-                  <dd>{project.problem[language]}</dd>
-                </div>
-              )}
-              {project.outcome && (
-                <div>
-                  <dt>{t('projects.outcome')}</dt>
-                  <dd>{project.outcome[language]}</dd>
-                </div>
-              )}
-              {!evidence && project.contribution && project.contribution.en !== 'xxx' && (
-                <div>
-                  <dt>{t('projects.contribution')}</dt>
-                  <dd>{project.contribution[language]}</dd>
-                </div>
-              )}
-            </dl>
-          )}
-          <div className="pixel-tag-row">
-            {project.builtWith.slice(0, 4).map((tech) => (
-              <span key={tech} className="pixel-tag">
-                {tech}
-              </span>
-            ))}
-          </div>
-          {(project.url || project.repo) && (
-            <div className="case-links">
-              {project.url && (
-                <Link href={project.url} className="text-link">
-                  {language === 'zh' ? '访问网站' : 'Visit website'} <PixelArrowUpRight size={13} />
-                </Link>
-              )}
-              {project.repo && (
-                <Link href={`https://github.com/${project.repo}`} className="text-link">
-                  {language === 'zh' ? '查看源码' : 'View source'} <PixelArrowUpRight size={13} />
-                </Link>
-              )}
-            </div>
-          )}
-          {evidence && <ProjectEvidence evidence={evidence} />}
-        </div>
-      </article>
-    );
-  }
+  const zh = language === 'zh';
+  const artSrc = artworkByTitle[project.title.en] ?? '/static/images/projects/art-memtable.jpg';
+  const primaryHref = project.url || (project.repo ? `https://github.com/${project.repo}` : '#');
+  const idx = String(index + 1).padStart(2, '0');
+  const caption = shortTagline[project.title.en]?.[language] ?? project.description?.[language];
 
   return (
-    <article className="case-card">
-      <div className="case-body">
-        <h3>{project.title[language]}</h3>
-        <p>{project.description?.[language]}</p>
-        <div className="pixel-tag-row">
-          {project.builtWith.slice(0, 4).map((tech) => (
-            <span key={tech} className="pixel-tag">
-              {tech}
-            </span>
-          ))}
-        </div>
-        {(project.url || project.repo) && (
-          <div className="case-links">
+    <article className="art-gallery-tile">
+      <Link href={primaryHref} className="art-gallery-stage" aria-label={project.title[language]}>
+        <span className="art-tile-idx" aria-hidden="true">
+          {idx}
+        </span>
+        <img
+          src={artSrc}
+          alt={project.title[language]}
+          className="art-gallery-img"
+          loading={index < 2 ? 'eager' : 'lazy'}
+        />
+      </Link>
+
+      <div className="art-tile-body">
+        <div className="art-tile-head">
+          <h3>
+            <Link href={primaryHref}>{project.title[language]}</Link>
+          </h3>
+          <div className="art-tile-links">
             {project.url && (
-              <Link href={project.url} className="text-link">
-                {language === 'zh' ? '访问网站' : 'Visit website'} <PixelArrowUpRight size={13} />
+              <Link href={project.url} aria-label={`${project.title[language]} — ${zh ? '访问网站' : 'Live'}`}>
+                {zh ? '访问' : 'Live'}
+                <PixelArrowUpRight size={11} />
               </Link>
             )}
             {project.repo && (
-              <Link href={`https://github.com/${project.repo}`} className="text-link">
-                {language === 'zh' ? '查看源码' : 'View source'} <PixelArrowUpRight size={13} />
+              <Link
+                href={`https://github.com/${project.repo}`}
+                aria-label={`${project.title[language]} — GitHub`}
+              >
+                GitHub
+                <PixelArrowUpRight size={11} />
               </Link>
             )}
           </div>
-        )}
+        </div>
+
+        <p className="art-tile-caption">{caption}</p>
+
+        <details className="art-tile-drawer">
+          <summary>{zh ? '源码证据与边界' : 'Source & notes'}</summary>
+          <div className="art-drawer-content">
+            {evidence && <p className="art-drawer-status">{evidence.status[language]}</p>}
+            {project.problem && (
+              <p>
+                <strong>{t('projects.problem')}：</strong>
+                {project.problem[language]}
+              </p>
+            )}
+            {project.outcome && (
+              <p>
+                <strong>{t('projects.outcome')}：</strong>
+                {project.outcome[language]}
+              </p>
+            )}
+            {evidence && <ProjectEvidence evidence={evidence} />}
+          </div>
+        </details>
       </div>
     </article>
   );

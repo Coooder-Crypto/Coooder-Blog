@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowUpRight, Check, Copy, Github, Mail, MapPin } from 'lucide-react';
 import { Image, Link } from '@/components/ui';
+import { PixelCheck, PixelCopy, PixelGithub, PixelMail, PixelPin, PixelX } from '@/components/ui/PixelIcons';
 import { useLanguage } from '@/lib/i18n';
 
 interface AboutSidebarProps {
@@ -12,17 +12,6 @@ interface AboutSidebarProps {
   github?: string;
   twitter?: string;
 }
-
-const sections = [
-  { href: '#intro', zh: '简介', en: 'Intro' },
-  { href: '#principles', zh: '原则与态度', en: 'Principles' },
-  { href: '#workbench', zh: '当前聚焦', en: 'Now' },
-  { href: '#experience', zh: '经历与教育', en: 'Experience' },
-  { href: '#research', zh: '学术研究', en: 'Research' },
-  { href: '#community', zh: '黑客松与社区', en: 'Community' },
-  { href: '#uses', zh: '工作台 Uses', en: 'Uses' },
-  { href: '#connect', zh: '欢迎联系', en: 'Connect' },
-] as const;
 
 export default function AboutSidebar({ name, avatar, email, github, twitter }: AboutSidebarProps) {
   const { language } = useLanguage();
@@ -42,26 +31,25 @@ export default function AboutSidebar({ name, avatar, email, github, twitter }: A
       <div className="about-profile-head">
         <h3>{name}</h3>
         <span className="about-location">
-          <MapPin size={12} aria-hidden="true" />
-          {zh ? '北京 · BUPT' : 'Beijing · BUPT'}
+          <PixelPin size={12} />
+          {zh ? '北京 / 杭州 · BUPT' : 'Beijing / Hangzhou · BUPT'}
         </span>
       </div>
-      <p>AGENT HARNESS / FULLSTACK / LOCAL-FIRST</p>
 
       <div className="about-socials">
         {email && (
           <Link href={`mailto:${email}`} aria-label="Email Coooder">
-            <Mail size={18} />
+            <PixelMail size={16} />
           </Link>
         )}
         {github && (
           <Link href={github} aria-label="Coooder on GitHub">
-            <Github size={18} />
+            <PixelGithub size={16} />
           </Link>
         )}
         {twitter && (
           <Link href={twitter} aria-label="Coooder on X">
-            <ArrowUpRight size={18} />
+            <PixelX size={16} />
           </Link>
         )}
         {email && (
@@ -71,25 +59,11 @@ export default function AboutSidebar({ name, avatar, email, github, twitter }: A
             className="about-copy-chip"
             aria-label={zh ? '复制邮箱' : 'Copy email'}
           >
-            {copied ? <Check size={12} aria-hidden="true" /> : <Copy size={12} aria-hidden="true" />}
+            {copied ? <PixelCheck size={12} /> : <PixelCopy size={12} />}
             <span>{copied ? (zh ? '已复制' : 'Copied') : zh ? '邮箱' : 'Email'}</span>
           </button>
         )}
       </div>
-
-      <nav className="about-toc-nav" aria-label={zh ? '页面章节' : 'On this page'}>
-        <span className="eyebrow">{zh ? 'INDEX · 目录' : 'INDEX'}</span>
-        <ul>
-          {sections.map((section, idx) => (
-            <li key={section.href}>
-              <a href={section.href}>
-                <span>0{idx + 1}</span>
-                {section[language]}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
     </aside>
   );
 }

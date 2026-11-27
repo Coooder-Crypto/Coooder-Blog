@@ -6,7 +6,6 @@ import { CoreContent } from 'pliny/utils/contentlayer';
 import type { Blog } from 'contentlayer/generated';
 
 import { Link, Tag } from '@/components/ui';
-import { PopularTags } from '@/components/homepage';
 import { useLanguage } from '@/lib/i18n';
 import { getLocalizedBlogContent } from '@/lib/blogUtils';
 import ReadingPaths from '@/components/blog/ReadingPaths';
@@ -187,7 +186,7 @@ export default function ListLayout({
               : 'Notes on AI-native engineering, agent runtimes, personal systems, and fullstack fundamentals.'}
           </p>
         </header>
-        {showReadingPaths && !searchValue.trim() && currentPage === 1 && activeTab === 'all' && <ReadingPaths />}
+        <div className="pixel-divider" aria-hidden="true" />
         <div className="blog-toolbar">
           {showReadingPaths && (
             <div className="blog-category-tabs" role="tablist" aria-label={language === 'zh' ? '文章主题分组' : 'Post topics'}>
@@ -218,7 +217,7 @@ export default function ListLayout({
               ))}
             </div>
           )}
-          <div className="relative max-w-[420px]">
+          <div className="relative max-w-[380px]">
             <label>
               <span className="sr-only">{t('blog.searchArticles')}</span>
               <input
@@ -230,22 +229,13 @@ export default function ListLayout({
                 className="blog-search"
               />
             </label>
-            <svg
-              className="absolute right-3 top-3 h-5 w-5 text-gray-400 dark:text-gray-300"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
           </div>
-          <PopularTags />
+          {showReadingPaths && !searchValue.trim() && currentPage === 1 && activeTab === 'all' && (
+            <details className="reading-paths-drawer">
+              <summary>{language === 'zh' ? '推荐阅读路径（3 条主线）' : 'Curated reading paths (3 tracks)'}</summary>
+              <ReadingPaths />
+            </details>
+          )}
         </div>
         {searchValue.trim() && (
           <p className="blog-search-status" role="status">

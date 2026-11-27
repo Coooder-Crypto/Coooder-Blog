@@ -58,7 +58,7 @@ const companyCodes: Record<string, string> = {
   weex: 'WX',
   circuit: 'CR',
   thunderbit: 'TB',
-  longjingshi: 'LJ',
+  'semiconductor-company': 'IC',
 };
 
 const HARNESS_ASCII = [

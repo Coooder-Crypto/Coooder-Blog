@@ -1,5 +1,6 @@
 'use client';
 
+import Link from '@/components/ui/Link';
 import { useLanguage } from '@/lib/i18n';
 
 const introduction = {
@@ -25,6 +26,25 @@ export default function AboutIntro() {
       {introduction[language].map((paragraph) => (
         <p key={paragraph}>{paragraph}</p>
       ))}
+      <p className="text-sm text-[var(--muted)]">
+        {language === 'zh' ? (
+          <>
+            最近在推进的事情持续记录在{' '}
+            <Link href="/now" className="text-link">
+              /now
+            </Link>
+            。
+          </>
+        ) : (
+          <>
+            Current threads are kept up to date on{' '}
+            <Link href="/now" className="text-link">
+              /now
+            </Link>
+            .
+          </>
+        )}
+      </p>
     </div>
   );
 }

@@ -73,8 +73,8 @@ export const experiences: ExperienceItem[] = [
     },
   },
   {
-    id: 'longjingshi',
-    company: { en: 'Zhongke Longjingshi Semiconductor', zh: '中科龙晶石半导体' },
+    id: 'semiconductor-company',
+    company: { en: 'A Semiconductor Company', zh: '某芯片公司' },
     team: {
       en: 'Hardware Debugging Platform · Firmware & Waveform Dashboard (Vue3)',
       zh: '全流程硬件调试平台 · 固件烧录与波形看板（Vue3）',

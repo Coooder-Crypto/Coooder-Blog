@@ -11,6 +11,7 @@ export default function ProjectEvidence({ evidence }: { evidence: ProjectEvidenc
   const { language } = useLanguage();
   const zh = language === 'zh';
   const [showScreenshot, setShowScreenshot] = useState(false);
+
   return (
     <div className="case-evidence">
       <ul className="evidence-sources" aria-label={`${evidence.title} — ${zh ? '公开证据' : 'Public evidence'}`}>
@@ -25,27 +26,16 @@ export default function ProjectEvidence({ evidence }: { evidence: ProjectEvidenc
           </li>
         ))}
       </ul>
-      <details className="evidence-details">
-        <summary>{zh ? '实现细节与当前边界' : 'Implementation and current boundaries'}</summary>
-        <dl>
-          <div>
-            <dt>{zh ? '实现了什么' : 'What is implemented'}</dt>
-            <dd>{evidence.implementation[language]}</dd>
-          </div>
-          <div>
-            <dt>{zh ? '当前边界' : 'Current boundaries'}</dt>
-            <dd>{evidence.boundary[language]}</dd>
-          </div>
-        </dl>
-      </details>
+      <p className="evidence-inline-note">
+        <strong>{zh ? '边界：' : 'Boundary: '}</strong>
+        {evidence.boundary[language]}
+      </p>
       {evidence.screenshot && (
         <details
           className="evidence-details evidence-screenshot"
           onToggle={(event) => setShowScreenshot(event.currentTarget.open)}
         >
-          <summary>
-            {zh ? '查看演示截图' : 'View demo screenshot'} <span>{evidence.title}</span>
-          </summary>
+          <summary>{zh ? '查看界面留档' : 'Archived UI capture'}</summary>
           {showScreenshot && (
             <figure>
               <Zoom a11yNameButtonZoom={`${zh ? '放大截图' : 'Enlarge screenshot'} — ${evidence.title}`}>

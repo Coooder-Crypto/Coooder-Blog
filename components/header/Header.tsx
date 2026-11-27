@@ -18,7 +18,7 @@ export default function Header() {
       <header className="studio-header">
         <Link href="/" className="studio-wordmark" aria-label={language === 'zh' ? 'Coooder 首页' : 'Coooder home'}>
           <PixelSpark size={12} />
-          <span>coooder</span>
+          <span>Coooder</span>
         </Link>
         <div className="header-controls">
           <nav className="desktop-navigation" aria-label={t('nav.primary')}>

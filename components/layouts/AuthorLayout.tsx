@@ -2,7 +2,6 @@ import type { Authors } from 'contentlayer/generated';
 import AboutIntro from '@/components/about/AboutIntro';
 import AboutSidebar from '@/components/about/AboutSidebar';
 import OperatingPrinciples from '@/components/about/OperatingPrinciples';
-import WorkbenchNow from '@/components/about/WorkbenchNow';
 import CareerTimeline from '@/components/about/CareerTimeline';
 import ResearchSection from '@/components/about/ResearchSection';
 import CommunitySection from '@/components/about/CommunitySection';
@@ -21,6 +20,7 @@ export default function AuthorLayout({ children, content }: Props) {
   return (
     <div className="about">
       <AboutHeader />
+      <div className="pixel-divider" aria-hidden="true" />
       <div className="about-layout">
         <AboutSidebar name={name} avatar={avatar} email={email} twitter={twitter} github={github} />
         <div className="about-content prose max-w-none">
@@ -29,7 +29,6 @@ export default function AuthorLayout({ children, content }: Props) {
             {children}
           </div>
           <OperatingPrinciples />
-          <WorkbenchNow />
           <CareerTimeline />
           <ResearchSection />
           <CommunitySection />

@@ -3,9 +3,9 @@ import path from 'node:path';
 
 const directory = path.resolve('public/static/favicons');
 for (const size of [32, 180, 192, 512]) {
-  await sharp(path.join(directory, 'coooder.svg'))
-    .resize(size, size)
+  await sharp(path.join(directory, 'coooder.svg'), { density: 512 })
+    .resize(size, size, { kernel: sharp.kernel.nearest })
     .png()
     .toFile(path.join(directory, `coooder-${size}.png`));
 }
-console.log('Generated Coooder browser and install icons.');
+console.log('Generated crisp 1-bit pixel Coooder browser and install icons.');

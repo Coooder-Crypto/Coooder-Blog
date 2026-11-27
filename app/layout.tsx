@@ -7,6 +7,7 @@ import 'react-medium-image-zoom/dist/styles.css';
 import 'remark-github-blockquote-alert/alert.css';
 
 import { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/next';
 
 import { sortPosts } from 'pliny/utils/contentlayer';
 import Header from '@/components/header';
@@ -105,6 +106,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Footer />
             </SectionContainer>
           </div>
+          <Analytics />
         </LanguageProvider>
       </body>
     </html>
